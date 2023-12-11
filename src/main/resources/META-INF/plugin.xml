@@ -10,17 +10,22 @@
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor email="info@ally-keys.com" url="https://www.ally-keys.com/androidstudioplugin">Ally Keys</vendor>
 
-    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+    <!-- TODO:
+         Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
-  ]]></description>
+    <h1>Android Ally Plugin</h1>
+    The Android Ally is your partner in accessible Android development
+  ]]>
+    </description>
 
     <!-- Product and plugin compatibility requirements.
-         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
+         Android Studio plugin documentation: https://plugins.jetbrains.com/docs/intellij/android-studio.html#configuring-the-plugin-pluginxml-file
+     -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.android</depends> <!-- Required for ADB libraries -->
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->

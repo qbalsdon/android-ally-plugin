@@ -6,5 +6,7 @@ import io.reactivex.rxjava3.core.Observable
 interface Controller {
     fun <NPT: NotificationPayload> showNotification(notificationPayload: NPT)
 
-    fun subscribeToDeviceChange(): Observable<List<AndroidDevice>>
+    val deviceChangeNotifier: Observable<List<AndroidDevice>>
+
+    var selectedDeviceSerial: String
 }

@@ -3,10 +3,7 @@ package com.balsdon.androidallyplugin.ui.panel
 import com.balsdon.androidallyplugin.controller.AndroidStudioPluginNotificationPayload
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
-import java.awt.FlowLayout
 import java.awt.GridLayout
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
 import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
