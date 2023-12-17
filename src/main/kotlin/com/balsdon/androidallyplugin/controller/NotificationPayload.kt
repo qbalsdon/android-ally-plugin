@@ -1,3 +1,0 @@
-package com.balsdon.androidallyplugin.controller
-
-interface NotificationPayload

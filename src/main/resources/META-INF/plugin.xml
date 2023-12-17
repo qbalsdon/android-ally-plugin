@@ -33,7 +33,7 @@
         <notificationGroup displayType="BALLOON" id="AndroidAlly"/>
 
         <toolWindow factoryClass="com.balsdon.androidallyplugin.AndroidAllyPluginToolWindowFactory"
-                    id="Android Ally Plugin"
+                    id="Android Ally"
                     icon="/image/tool_logo.svg"
                     anchor="bottom"
         />

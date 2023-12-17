@@ -1,0 +1,3 @@
+package com.balsdon.androidallyplugin.model
+
+interface NotificationPayload
