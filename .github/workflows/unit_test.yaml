@@ -12,5 +12,7 @@ jobs:
           java-version: 17
           distribution: corretto
 
-      - name: Execute Gradle 'test' task
-        run: bash ./gradlew test --stacktrace
+      - name: Setup and execute Gradle 'test' task
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test
