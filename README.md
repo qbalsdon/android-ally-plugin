@@ -35,6 +35,15 @@ Please ensure you have read and abide by the [JetBrains developer code of conduc
 * You are rude, discriminatory or demeaning in any way
 * You use object classes or companion objects ([find out why][0])
 
+## ADB in more detail ADB
+
+```
+adb shell service list                                      # get system services and interfaces
+adb shell dumpsys settings                                  # list all elements of a service (e.g. settings can do any service)
+https://cs.android.com/android/platform/superproject/main   # search for interface (no package + ".aidl" suffix)
+adb shell service call uimode 6 i32 2                       # call 6th method of IUiModeManager.aidl with int param (can't do java obj params)
+```
+Thanks to [Chris Simmons][7] and his amazing [DroidCon presentation "Exploring Android Internals with ADB"][6]
 
 [0]: https://plugins.jetbrains.com/docs/intellij/plugin-extensions.html#implementing-extension
 [1]: https://plugins.jetbrains.com/docs/intellij/welcome.html
@@ -42,3 +51,5 @@ Please ensure you have read and abide by the [JetBrains developer code of conduc
 [3]: https://github.com/jetbrains#code-of-conduct
 [4]: https://trello.com/b/kSW3T8yG/android-ally-plugin-for-android-studio
 [5]: https://github.com/JetBrains/jewel
+[6]: https://www.droidcon.com/2022/11/15/exploring-android-internals-with-adb/
+[7]: https://www.linkedin.com/in/chrisdsimmonds/

@@ -1,8 +1,8 @@
 package com.balsdon.androidallyplugin.ui.panel
 
-import com.balsdon.androidallyplugin.controller.AndroidStudioPluginNotificationPayload
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
+import com.balsdon.androidallyplugin.model.AndroidStudioPluginNotificationPayload
 import java.awt.GridLayout
 import javax.swing.JButton
 import javax.swing.JLabel

@@ -1,4 +1,4 @@
-package com.balsdon.androidallyplugin.controller
+package com.balsdon.androidallyplugin.model
 
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
