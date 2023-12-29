@@ -1,0 +1,4 @@
+package com.balsdon.androidallyplugin
+
+const val TB4DWebPage = "https://ally-keys.com/tb4d.html"
+const val TB4DInstallHelpWebPage = "$TB4DWebPage#installation-help"
