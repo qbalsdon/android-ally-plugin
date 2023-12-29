@@ -10,4 +10,7 @@ interface Controller {
     val connectedDevicesNotifier: Observable<Set<AndroidDevice>>
 
     var selectedDeviceSerialList: MutableSet<String>
+
+    fun showInstallTB4DSuccessNotification()
+    fun showInstallTB4DErrorNotification()
 }

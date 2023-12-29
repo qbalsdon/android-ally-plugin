@@ -23,6 +23,7 @@ enum class CustomIcon(private val fileReference: String) {
     LAUNCH_SCREEN("launch"),
     SIZE_OPTIONS("size"),
     HIGH_PRIORITY("priority_high"),
+    INFO("info"),
     TOGGLE_VOICE("voice"),
     TOGGLE_TOAST("toast"),
     DEVICE_BACK("back"),
