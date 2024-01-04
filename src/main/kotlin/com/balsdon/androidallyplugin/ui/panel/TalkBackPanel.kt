@@ -1,8 +1,9 @@
 package com.balsdon.androidallyplugin.ui.panel
 
 import com.balsdon.androidallyplugin.controller.Controller
+import com.balsdon.androidallyplugin.elementMaxHeight
 import com.balsdon.androidallyplugin.localize
-import com.balsdon.androidallyplugin.model.AndroidStudioPluginNotificationPayload
+import com.intellij.ui.util.maximumHeight
 import java.awt.GridLayout
 import javax.swing.JButton
 import javax.swing.JLabel
@@ -21,24 +22,19 @@ class TalkBackPanel(private val controller: Controller) {
 
     fun create() = JPanel().apply {
         layout = GridLayout()
-        add(JLabel(talkBackLabelString))
-        add(JButton(talkBackOnButtonText).apply {
-            addActionListener {
-                controller.showNotification(
-                    AndroidStudioPluginNotificationPayload(
-                        "Test Title: On", "Test Message: On"
-                    )
-                )
-            }
-        })
-        add(JButton(talkBackOffButtonText).apply {
-            addActionListener {
-                controller.showNotification(
-                    AndroidStudioPluginNotificationPayload(
-                        "Test Title: Off", "Test Message: Off"
-                    )
-                )
-            }
+        add(JPanel().apply {
+            maximumHeight = elementMaxHeight
+            add(JLabel(talkBackLabelString))
+            add(JButton(talkBackOnButtonText).apply {
+                addActionListener {
+                    controller.runOnAllValidSelectedDevices { device -> device.turnOnTalkBack() }
+                }
+            })
+            add(JButton(talkBackOffButtonText).apply {
+                addActionListener {
+                    controller.runOnAllValidSelectedDevices { device -> device.turnOffTalkBack() }
+                }
+            })
         })
     }
 }
