@@ -2,6 +2,7 @@ package com.balsdon.androidallyplugin.ui.panel
 
 import com.balsdon.androidallyplugin.TB4DWebPage
 import com.balsdon.androidallyplugin.controller.Controller
+import com.balsdon.androidallyplugin.elementMaxHeight
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.model.AndroidDevice
 import com.balsdon.androidallyplugin.ui.CustomIcon
@@ -9,7 +10,6 @@ import com.balsdon.androidallyplugin.utils.log
 import com.intellij.ide.BrowserUtil
 import com.intellij.ui.util.maximumHeight
 import com.intellij.util.ui.JBUI
-import io.ktor.http.*
 import java.awt.BorderLayout
 import java.awt.FlowLayout
 import java.awt.Font
@@ -21,17 +21,15 @@ import javax.swing.*
 import javax.swing.border.CompoundBorder
 
 class AndroidDevicePanel(private val controller: Controller) {
-    private val elementMaxHeight = 40
     private val deviceListener = controller.connectedDevicesNotifier
-    private val mainPanel: JPanel by lazy { JPanel() }
-    private val devicePanel: JPanel by lazy { JPanel().apply { layout = BoxLayout(this, BoxLayout.Y_AXIS) } }
+    private val deviceListPanel: JPanel by lazy { JPanel().apply { layout = BoxLayout(this, BoxLayout.Y_AXIS) } }
     private val tb4dPanel: JPanel by lazy {
         JPanel().apply { layout = FlowLayout(FlowLayout.TRAILING) }
     }
 
-    private fun createDeviceSelectionCheckBox(device: AndroidDevice) = mainPanel.apply {
+    private fun createDeviceSelectionCheckBox(device: AndroidDevice) = JPanel().apply {
         layout = BorderLayout()
-        maximumHeight = elementMaxHeight // TODO: Fix this
+        maximumHeight = elementMaxHeight
         add(JPanel().apply {
             layout = FlowLayout(FlowLayout.LEADING)
             val updateState = { isSelected: Boolean ->
@@ -97,21 +95,21 @@ class AndroidDevicePanel(private val controller: Controller) {
             })
         }, BorderLayout.WEST)
 
-        updateDeviceBasedOnInstalledServices(device)
+        updateDeviceBasedOnInstalledServices(device, this)
         name = device.friendlyName
     }
 
-    private fun updateDeviceBasedOnInstalledServices(device: AndroidDevice, onRecur: Boolean = false) {
+    private fun updateDeviceBasedOnInstalledServices(device: AndroidDevice, parentPanel: JPanel, onRecur: Boolean = false) {
         device.fetchAccessibilityServices().take(1).subscribe { services ->
             val index = services.indexOfFirst { it.packageName == "com.android.talkback4d" }
             tb4dPanel.removeAll()
-            mainPanel.remove(tb4dPanel)
+            parentPanel.remove(tb4dPanel)
             if (index == -1) {
-                mainPanel.add(tb4dPanel.apply {
+                parentPanel.add(tb4dPanel.apply {
                     add(JButton(localize("panel.device.label.install.tb4d")).apply {
                         addActionListener {
                             device.installTalkBackForDevelopers().take(1).subscribe {
-                                updateDeviceBasedOnInstalledServices(device, true)
+                                updateDeviceBasedOnInstalledServices(device, parentPanel,true)
                                 if (!it) {
                                     controller.showInstallTB4DErrorNotification()
                                 }
@@ -135,16 +133,16 @@ class AndroidDevicePanel(private val controller: Controller) {
     fun create() = JPanel().apply {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         add(JLabel(localize("panel.device.title")))
-        add(devicePanel)
+        add(deviceListPanel)
         deviceListener
             .distinctUntilChanged()
             .subscribe {
-                devicePanel.removeAll()
+                deviceListPanel.removeAll()
                 if (it.isEmpty()) {
-                    devicePanel.add(JLabel(localize("panel.device.no_devices")))
+                    deviceListPanel.add(JLabel(localize("panel.device.no_devices")))
                 } else {
                     it.forEach { device ->
-                        devicePanel.add(createDeviceSelectionCheckBox(device))
+                        deviceListPanel.add(createDeviceSelectionCheckBox(device))
                     }
                 }
             }
