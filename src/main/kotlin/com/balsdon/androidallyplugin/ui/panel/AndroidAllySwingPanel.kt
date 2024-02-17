@@ -15,7 +15,10 @@ class AndroidAllySwingPanel(private val controller: Controller) : MainPlugin {
         TabbedPanel(
             mapOf(
                 localize("panel.talkback.title") to TalkBackPanel(controller).create(),
-                "Display" to JPanel().apply { add(JLabel("Panel: Display")) }
+                localize("panel.display.title") to DisplayPanel(controller).create(),
+                localize("panel.font.title") to FontPanel(controller).create(),
+                localize("panel.settings.title") to SettingsPanel(controller).create(),
+                localize("panel.debug.title") to DebugPanel(controller).create()
             )
         ).create()
     }
@@ -31,3 +34,6 @@ class AndroidAllySwingPanel(private val controller: Controller) : MainPlugin {
         postConstruction(content)
     }
 }
+// TODO: adb keyboard?
+//          type on device
+//          basic adb keys: tab, space, enter, menu, arrows

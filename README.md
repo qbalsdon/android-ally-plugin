@@ -1,4 +1,4 @@
-# Android Ally Plugin for Android Studio
+# Android Ally Plugin (AAP) for Android Studio
 
 The [Trello Board][4] will show you the project roadmap, any issues in the GitHub tracker should also be there.
 
@@ -6,14 +6,18 @@ The [Trello Board][4] will show you the project roadmap, any issues in the GitHu
 
 Yes it's written in Swing, you are more than welcome to create a [Jewel][5] version if you like. The main reasons the project is not using Jetpack Compose yet are:
 1. It's not production ready
-2. Documentation is scarce, I couldn't even create a template project
+2. Documentation is scarce, I couldn't even create a template project (not that I am all that great, I'm just on a late deadline)
 3. APIs are not settled
+4. Performance concerns: Jetpack Compose is optimised for mobile
+5. Accessibility concerns, Swing is at least old enough for AT to do some tricks
 
 ## Purpose of the project
 - Encourage developers to make their apps and features accessible
 - Consolidate the Android accessibility services and settings into a simple-to-use interface
 - Increase awareness of different accessibility settings
 - Help developers use either a physical device or emulator
+- Reduce developer context switching while conducting manual tests
+- Lower the barrier to entry in getting comfortable using screen readers
 
 ## Scope of the project
 - A plugin for Android studio
