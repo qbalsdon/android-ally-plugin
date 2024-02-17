@@ -4,8 +4,6 @@ import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.ui.component.TabbedPanel
 import com.balsdon.androidallyplugin.ui.contract.MainPlugin
-import javax.swing.JLabel
-import javax.swing.JPanel
 import javax.swing.JSplitPane
 
 class AndroidAllySwingPanel(private val controller: Controller) : MainPlugin {

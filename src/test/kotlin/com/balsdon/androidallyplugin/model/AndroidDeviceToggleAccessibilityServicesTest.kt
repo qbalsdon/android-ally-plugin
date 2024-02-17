@@ -13,9 +13,10 @@ import org.junit.Test
  *      CSR - unless they add ADB features, in which case they will be given a separate tab. Separation of concerns
  *      is the highest priority in this code.
  * 2. Not all devices need accessibility_enabled and touch_exploration_enabled, but some do
- * 3. There might be many opinions on how to turn services off, but the best way is to remove them from the colon
+ * 3. There might be many opinions on how to turn services off, but the safest way is to remove them from the colon
  *      separated list in secure enabled_accessibility_services. Putting a dummy service in its place can render
- *      some devices unusable.
+ *      some devices unusable. Using a service name not intended for the platform (e.g. using Google's dummy service
+ *      on a Samsung) can have strange outcomes on the target device.
  */
 class AndroidDeviceToggleAccessibilityServicesTest {
     @Test

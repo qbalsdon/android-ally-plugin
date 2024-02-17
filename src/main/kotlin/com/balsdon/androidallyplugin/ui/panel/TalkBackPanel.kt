@@ -1,5 +1,6 @@
 package com.balsdon.androidallyplugin.ui.panel
 
+import android.databinding.tool.ext.toCamelCase
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.elementMaxHeight
 import com.balsdon.androidallyplugin.localize
@@ -9,12 +10,12 @@ import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
 import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.placeComponent
-import com.intellij.openapi.ui.ComboBox
+import com.balsdon.androidallyplugin.values.AdbKeyCode
+import com.balsdon.androidallyplugin.values.TalkBackGranularity
 import com.intellij.ui.util.maximumHeight
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.awt.GridLayout
-import javax.swing.DefaultComboBoxModel
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JScrollPane
@@ -59,6 +60,7 @@ class TalkBackPanel(private val controller: Controller) {
         "panel.talkback.label.granularity.lines",
         "panel.talkback.label.granularity.window"
     )
+    private var selectedGranularity: TalkBackGranularity = TalkBackGranularity.Default
 
     fun create() = JPanel().apply {
         layout = GridLayout(0, 1)
@@ -66,7 +68,9 @@ class TalkBackPanel(private val controller: Controller) {
             JPanel().apply {
                 layout = GridBagLayout()
                 addTalkBackToggleComponent(0)
-                addGranularityCombo(1) { option -> log("Selected: [$option]") }
+                addGranularityCombo(1) { option ->
+                    selectedGranularity = TalkBackGranularity.valueOf(option.replace("panel.talkback.label.granularity.", "").toCamelCase())
+                }
                 addBasicControls(2)
                 addAdvancedControls(3)
                 addVolumeToggleComponent(4)
@@ -122,7 +126,7 @@ class TalkBackPanel(private val controller: Controller) {
                 CustomIcon.A11Y_SWIPE_LEFT,
                 previousButtonText,
                 ""
-            ) { log("Previous") }.create(),
+            ) { controller.runOnAllValidSelectedDevices { device -> device.tb4dNavigate(false, selectedGranularity) } }.create(),
             3, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
@@ -130,7 +134,7 @@ class TalkBackPanel(private val controller: Controller) {
                 CustomIcon.A11Y_SWIPE_RIGHT,
                 nextButtonText,
                 ""
-            ) { log("Next") }.create(),
+            ) { controller.runOnAllValidSelectedDevices { device -> device.tb4dNavigate(true, selectedGranularity) } }.create(),
             4, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
@@ -138,7 +142,7 @@ class TalkBackPanel(private val controller: Controller) {
                 CustomIcon.A11Y_TAP,
                 tapButtonText,
                 ""
-            ) { log("Tap") }.create(),
+            ) { controller.runOnAllValidSelectedDevices { device -> device.tb4dActivate() } }.create(),
             5, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
@@ -146,7 +150,7 @@ class TalkBackPanel(private val controller: Controller) {
                 CustomIcon.A11Y_TAP_LONG,
                 longTapButtonText,
                 ""
-            ) { log("Long Tap") }.create(),
+            ) { controller.runOnAllValidSelectedDevices { device -> device.tb4dActivate(true) } }.create(),
             6, y = whichRow, fillType = GridBagConstraints.BOTH
         )
     }
@@ -157,7 +161,7 @@ class TalkBackPanel(private val controller: Controller) {
                 CustomIcon.DEVICE_BACK,
                 backButtonText,
                 ""
-            ) { log("Back") }.create(),
+            ) { controller.runOnAllValidSelectedDevices { device -> device.press(AdbKeyCode.BACK) } }.create(),
             3, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
@@ -165,7 +169,7 @@ class TalkBackPanel(private val controller: Controller) {
                 CustomIcon.A11Y_OPEN_MENU,
                 menuButtonText,
                 ""
-            ) { log("Menu") }.create(),
+            ) { controller.runOnAllValidSelectedDevices { device -> device.tb4dShowMenu() } }.create(),
             5, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
@@ -173,7 +177,7 @@ class TalkBackPanel(private val controller: Controller) {
                 CustomIcon.A11Y_ACTIONS,
                 actionsButtonText,
                 ""
-            ) { log("Actions") }.create(),
+            ) { controller.runOnAllValidSelectedDevices { device -> device.tb4dShowMenu(true) } }.create(),
             6, y = whichRow, fillType = GridBagConstraints.BOTH
         )
     }

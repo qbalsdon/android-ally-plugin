@@ -2,9 +2,6 @@ package com.balsdon.androidallyplugin.ui.panel
 
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
-import com.balsdon.androidallyplugin.utils.createDropDownMenu
-import com.balsdon.androidallyplugin.utils.createToggleRow
-import com.balsdon.androidallyplugin.utils.log
 import java.awt.GridBagLayout
 import java.awt.GridLayout
 import javax.swing.JPanel

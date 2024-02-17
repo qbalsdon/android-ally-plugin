@@ -4,6 +4,8 @@ import android.databinding.tool.ext.capitalizeUS
 import com.android.ddmlib.*
 import com.balsdon.androidallyplugin.*
 import com.balsdon.androidallyplugin.utils.log
+import com.balsdon.androidallyplugin.values.AdbKeyCode
+import com.balsdon.androidallyplugin.values.TalkBackGranularity
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import java.io.File
@@ -72,6 +74,8 @@ class AndroidDevice(private val rawDevice: IDevice) {
         return subject
     }
 
+    // # Scripting
+    // ## Toggle Services
     fun installTalkBackForDevelopers() =
         installAPK("talkback-phone-release-signed-66.apk")
 
@@ -100,6 +104,36 @@ class AndroidDevice(private val rawDevice: IDevice) {
             NullOutputReceiver()
         )
     }
+
+    // ## Adb Key input
+    fun press(code: AdbKeyCode) {
+        rawDevice.executeShellCommand(
+            "input keyevent ${code.keyCode}",
+            NullOutputReceiver()
+        )
+    }
+
+    // ## TalkBack for Developers
+    fun tb4dNavigate(forward: Boolean, granularity: TalkBackGranularity = TalkBackGranularity.Default) {
+        val suffix = if (granularity == TalkBackGranularity.Default) ""
+        else " $AdbScriptTB4DParameter ${granularity.name.lowercase()}"
+        rawDevice.executeShellCommand(
+            "$AdbBroadcast ${if (forward) AdbScriptTB4DNext else AdbScriptTB4DPrevious}$suffix",
+            NullOutputReceiver()
+        )
+    }
+
+    fun tb4dActivate(long: Boolean = false) =
+        rawDevice.executeShellCommand(
+            "$AdbBroadcast ${if (long) AdbScriptTB4DLongTap else AdbScriptTB4DTap}",
+            NullOutputReceiver()
+        )
+
+    fun tb4dShowMenu(actions: Boolean = false) =
+        rawDevice.executeShellCommand(
+            "$AdbBroadcast ${if (actions) AdbScriptTB4DActions else AdbScriptTB4DMenu}",
+            NullOutputReceiver()
+        )
 
     /**
      * Installs an APK by copying it out of resources and installing a temporary file
