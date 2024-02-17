@@ -2,6 +2,8 @@ package com.balsdon.androidallyplugin.model
 
 import AndroidDeviceTestFake
 import com.balsdon.androidallyplugin.values.TalkBackGranularity
+import com.balsdon.androidallyplugin.values.TalkBackSetting
+import com.balsdon.androidallyplugin.values.TalkBackVolumeSetting
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -137,5 +139,31 @@ class AndroidDeviceNavigateTalkBackTest {
 
         testSubject.device.tb4dShowMenu(true)
         assertThat(testSubject.executedCommands[0]).isEqualTo("am broadcast -a com.a11y.adb.show_custom_actions")
+    }
+
+    @Test
+    fun tb4d_set_volume_low() {
+        val testSubject = AndroidDeviceTestFake(
+            deviceProps = mapOf(
+                "ro.product.model" to "model",
+                "ro.product.brand" to "brand",
+            )
+        )
+
+        testSubject.device.tb4dSetVolume(TalkBackVolumeSetting.VOLUME_MIN)
+        assertThat(testSubject.executedCommands[0]).isEqualTo("am broadcast -a com.a11y.adb.volume_min")
+    }
+
+    @Test
+    fun tb4d_set_speech_on() {
+        val testSubject = AndroidDeviceTestFake(
+            deviceProps = mapOf(
+                "ro.product.model" to "model",
+                "ro.product.brand" to "brand",
+            )
+        )
+
+        testSubject.device.tb4dSetting(TalkBackSetting.TOGGLE_SPEECH_OUTPUT, true)
+        assertThat(testSubject.executedCommands[0]).isEqualTo("am broadcast -a com.a11y.adb.toggle_speech_output -e value true")
     }
 }

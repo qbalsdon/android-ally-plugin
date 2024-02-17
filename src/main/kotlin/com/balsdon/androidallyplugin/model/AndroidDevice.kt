@@ -6,6 +6,8 @@ import com.balsdon.androidallyplugin.*
 import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.values.AdbKeyCode
 import com.balsdon.androidallyplugin.values.TalkBackGranularity
+import com.balsdon.androidallyplugin.values.TalkBackSetting
+import com.balsdon.androidallyplugin.values.TalkBackVolumeSetting
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import java.io.File
@@ -132,6 +134,18 @@ class AndroidDevice(private val rawDevice: IDevice) {
     fun tb4dShowMenu(actions: Boolean = false) =
         rawDevice.executeShellCommand(
             "$AdbBroadcast ${if (actions) AdbScriptTB4DActions else AdbScriptTB4DMenu}",
+            NullOutputReceiver()
+        )
+
+    fun tb4dSetVolume(setting: TalkBackVolumeSetting) =
+        rawDevice.executeShellCommand(
+            "$AdbBroadcast ${AdbScriptTB4DPackage}.${setting.name.lowercase()}",
+            NullOutputReceiver()
+        )
+
+    fun tb4dSetting(talkBackSetting: TalkBackSetting, on: Boolean) =
+        rawDevice.executeShellCommand(
+            "$AdbBroadcast ${AdbScriptTB4DPackage}.${talkBackSetting.name.lowercase()} -e value $on",
             NullOutputReceiver()
         )
 

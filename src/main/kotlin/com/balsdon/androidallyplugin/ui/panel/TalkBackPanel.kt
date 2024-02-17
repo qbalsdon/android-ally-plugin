@@ -8,10 +8,11 @@ import com.balsdon.androidallyplugin.ui.CustomIcon
 import com.balsdon.androidallyplugin.ui.component.IconButton
 import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
-import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.placeComponent
 import com.balsdon.androidallyplugin.values.AdbKeyCode
 import com.balsdon.androidallyplugin.values.TalkBackGranularity
+import com.balsdon.androidallyplugin.values.TalkBackSetting
+import com.balsdon.androidallyplugin.values.TalkBackVolumeSetting
 import com.intellij.ui.util.maximumHeight
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
@@ -97,8 +98,8 @@ class TalkBackPanel(private val controller: Controller) {
             whichRow,
             talkBackSpeechOutputOnButtonText,
             talkBackSpeechOutputOffButtonText,
-            positiveAction = { log("TODO: Speech output: On") },
-            negativeAction = { log("TODO: Speech output: Off") }
+            positiveAction = { controller.runOnAllValidSelectedDevices { device -> device.tb4dSetting(TalkBackSetting.TOGGLE_SPEECH_OUTPUT, true) } },
+            negativeAction = { controller.runOnAllValidSelectedDevices { device -> device.tb4dSetting(TalkBackSetting.TOGGLE_SPEECH_OUTPUT, false) } }
         )
     }
 
@@ -108,8 +109,8 @@ class TalkBackPanel(private val controller: Controller) {
             whichRow,
             talkBackVolumeMediumButtonText,
             talkBackVolumeLowButtonText,
-            positiveAction = { log("TODO: Volume: Medium") },
-            negativeAction = { log("TODO: Volume: Low") }
+            positiveAction = { controller.runOnAllValidSelectedDevices { device -> device.tb4dSetVolume(TalkBackVolumeSetting.VOLUME_HALF) } },
+            negativeAction = { controller.runOnAllValidSelectedDevices { device -> device.tb4dSetVolume(TalkBackVolumeSetting.VOLUME_MIN) } }
         )
     }
 
