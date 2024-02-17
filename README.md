@@ -2,8 +2,9 @@
 
 The [Trello Board][4] will show you the project roadmap, any issues in the GitHub tracker should also be there.
 
-## This is in Swing, ew!
+This plugin will only ever support [TalkBack for Developers][9] and not any other screen reader. [The code is open source][8]. This includes Google's TalkBack, Samsung's TalkBack, Amazon VoiceView and CSR - unless they add ADB features, in which case they will be given a separate tab. Separation of concerns is the highest priority in this code.
 
+## This is in Swing, ew!
 Yes it's written in Swing, you are more than welcome to create a [Jewel][5] version if you like. The main reasons the project is not using Jetpack Compose yet are:
 1. It's not production ready
 2. Documentation is scarce, I couldn't even create a template project (not that I am all that great, I'm just on a late deadline)
@@ -22,7 +23,7 @@ Yes it's written in Swing, you are more than welcome to create a [Jewel][5] vers
 ## Scope of the project
 - A plugin for Android studio
 - A user interface to various assistive technologies
-- Simple check list for accessibility standards
+- Simple check list for accessibility standards [Future work]
 
 ## Conduct and Contributing
 This plugin was built using the [JetBrains IntelliJ Platform SDK][1]. Best practice will be taken as much as possible from that document and [SOLID programming principles][2].
@@ -57,3 +58,5 @@ Thanks to [Chris Simmons][7] and his amazing [DroidCon presentation "Exploring A
 [5]: https://github.com/JetBrains/jewel
 [6]: https://www.droidcon.com/2022/11/15/exploring-android-internals-with-adb/
 [7]: https://www.linkedin.com/in/chrisdsimmonds/
+[8]: https://github.com/qbalsdon/talkback/tree/main
+[9]: https://ally-keys.com/tb4d.html
