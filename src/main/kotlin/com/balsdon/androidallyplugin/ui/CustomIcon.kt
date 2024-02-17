@@ -4,11 +4,13 @@ import com.intellij.openapi.util.IconLoader
 import com.intellij.util.ui.UIUtil
 import javax.swing.Icon
 
+
 enum class CustomIcon(private val fileReference: String) {
     PHONE("phone"),
     EMULATOR("emulator"),
     A11Y_OPEN_MENU("open_menu"),
     A11Y_EXPAND_MORE("expand_more"),
+    A11Y_ACTIONS("actions"),
     A11Y_CONTROLS("controls"),
     A11Y_MORE_MENU("more_option"),
     A11Y_SWIPE_LEFT("swipe_left"),
@@ -41,7 +43,6 @@ enum class CustomIcon(private val fileReference: String) {
             "$imageFolder$fileReference${if (UIUtil.isUnderDarcula()) darkModeId else lightModeId}$imageType",
             CustomIcon::class.java
         )
-
 
     private val imageFolder = "/icons/"
     private val imageType = ".svg"
