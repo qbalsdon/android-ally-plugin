@@ -9,9 +9,13 @@ import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.placeComponent
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.util.maximumHeight
+import javax.swing.DefaultComboBoxModel
+import javax.swing.JButton
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JScrollPane
 import java.awt.GridBagLayout
 import java.awt.GridLayout
-import javax.swing.*
 
 /**
  * Creates the Display panel

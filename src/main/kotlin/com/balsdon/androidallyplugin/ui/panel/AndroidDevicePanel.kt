@@ -10,6 +10,12 @@ import com.balsdon.androidallyplugin.utils.log
 import com.intellij.ide.BrowserUtil
 import com.intellij.ui.util.maximumHeight
 import com.intellij.util.ui.JBUI
+import javax.swing.BoxLayout
+import javax.swing.JButton
+import javax.swing.JCheckBox
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.border.CompoundBorder
 import java.awt.BorderLayout
 import java.awt.FlowLayout
 import java.awt.Font
@@ -17,8 +23,6 @@ import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
-import javax.swing.*
-import javax.swing.border.CompoundBorder
 
 class AndroidDevicePanel(private val controller: Controller) {
     private val deviceListener = controller.connectedDevicesNotifier

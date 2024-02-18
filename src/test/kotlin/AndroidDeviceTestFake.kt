@@ -1,4 +1,12 @@
-import com.android.ddmlib.*
+import com.android.ddmlib.Client
+import com.android.ddmlib.FileListingService
+import com.android.ddmlib.IDevice
+import com.android.ddmlib.IShellOutputReceiver
+import com.android.ddmlib.InstallReceiver
+import com.android.ddmlib.RawImage
+import com.android.ddmlib.ScreenRecorderOptions
+import com.android.ddmlib.ServiceInfo
+import com.android.ddmlib.SyncService
 import com.android.ddmlib.log.LogReceiver
 import com.android.sdklib.AndroidVersion
 import com.balsdon.androidallyplugin.model.AndroidDevice
@@ -8,6 +16,12 @@ import java.io.File
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
+/**
+ * Creates a wrapper for an [AndroidDevice] with a faked [IDevice]
+ *
+ * To test functions on an [AndroidDevice], use
+ * [AndroidDeviceTestFake].device
+ */
 class AndroidDeviceTestFake(
     serial: String = "",
     isEmulator: Boolean = false,

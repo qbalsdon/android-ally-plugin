@@ -1,11 +1,14 @@
 package com.balsdon.androidallyplugin.model
 
 import android.databinding.tool.ext.capitalizeUS
-import com.android.ddmlib.*
-import com.balsdon.androidallyplugin.*
+import com.android.ddmlib.AdbCommandRejectedException
+import com.android.ddmlib.IDevice
+import com.android.ddmlib.IShellOutputReceiver
+import com.android.ddmlib.InstallException
+import com.android.ddmlib.InstallReceiver
+import com.android.ddmlib.NullOutputReceiver
+import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.log
-import com.balsdon.androidallyplugin.values.AdbKeyCode
-import com.balsdon.androidallyplugin.values.TalkBackGranularity
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import java.io.File
@@ -64,81 +67,29 @@ class AndroidDevice(private val rawDevice: IDevice) {
                 val list = builder.split("\n")
                 subject.onNext(filterFromPackages(list)) // Emits the value
             }
-
                 override fun isCancelled(): Boolean = false
             })
-        } catch (e: com.android.ddmlib.AdbCommandRejectedException) {
+        } catch (e: AdbCommandRejectedException) {
             log(e)
         }
 
         return subject
     }
 
-    // # Scripting
-    // ## Toggle Services
     fun installTalkBackForDevelopers() =
-        installAPK("talkback-phone-release-signed-66.apk")
+        installAPK()
 
-    fun turnOnTalkBack() =
-        activateAccessibilityService("$TB4DPackage/$TB4DService", true)
-
-    fun turnOffTalkBack() =
-        deactivateAccessibilityService("$TB4DPackage/$TB4DService", true)
-
-    fun turnOnAccessibilityScanner() =
-        activateAccessibilityService("$ScannerPackage/$ScannerService")
-
-    fun turnOffAccessibilityScanner() =
-        deactivateAccessibilityService("$ScannerPackage/$ScannerService")
-
-    private fun activateAccessibilityService(name: String, enableTouchExploration: Boolean = false) {
+    fun executeScript(scriptString: String) {
         rawDevice.executeShellCommand(
-            "CURRENT=\$(settings get secure enabled_accessibility_services); if [[ \"\$CURRENT\" != *\"$name\"* ]]; then if [[ -z \"\$CURRENT\" || \"\$CURRENT\" == \"null\" ]]; then settings put secure enabled_accessibility_services $name; else settings put secure enabled_accessibility_services \$CURRENT:$name; fi; ${if (enableTouchExploration) "settings put secure accessibility_enabled 1; settings put secure touch_exploration_enabled 1; " else ""}fi",
+            scriptString,
             NullOutputReceiver()
         )
     }
-
-    private fun deactivateAccessibilityService(name: String, enableTouchExploration: Boolean = false) {
-        rawDevice.executeShellCommand(
-            "CURRENT=\$(settings get secure enabled_accessibility_services); if [[ \"\$CURRENT\" == *\"$name\"* ]]; then SERVICE=$name; FINAL_RESULT=\"\${CURRENT//:\$SERVICE/}\"; FINAL_RESULT=\"\${FINAL_RESULT//SERVICE:/}\"; FINAL_RESULT=\"\${FINAL_RESULT//\$SERVICE/}\"; settings put secure enabled_accessibility_services \"\$FINAL_RESULT\"; ${if (enableTouchExploration) "settings put secure accessibility_enabled 0; settings put secure touch_exploration_enabled 0; " else ""}fi",
-            NullOutputReceiver()
-        )
-    }
-
-    // ## Adb Key input
-    fun press(code: AdbKeyCode) {
-        rawDevice.executeShellCommand(
-            "input keyevent ${code.keyCode}",
-            NullOutputReceiver()
-        )
-    }
-
-    // ## TalkBack for Developers
-    fun tb4dNavigate(forward: Boolean, granularity: TalkBackGranularity = TalkBackGranularity.Default) {
-        val suffix = if (granularity == TalkBackGranularity.Default) ""
-        else " $AdbScriptTB4DParameter ${granularity.name.lowercase()}"
-        rawDevice.executeShellCommand(
-            "$AdbBroadcast ${if (forward) AdbScriptTB4DNext else AdbScriptTB4DPrevious}$suffix",
-            NullOutputReceiver()
-        )
-    }
-
-    fun tb4dActivate(long: Boolean = false) =
-        rawDevice.executeShellCommand(
-            "$AdbBroadcast ${if (long) AdbScriptTB4DLongTap else AdbScriptTB4DTap}",
-            NullOutputReceiver()
-        )
-
-    fun tb4dShowMenu(actions: Boolean = false) =
-        rawDevice.executeShellCommand(
-            "$AdbBroadcast ${if (actions) AdbScriptTB4DActions else AdbScriptTB4DMenu}",
-            NullOutputReceiver()
-        )
 
     /**
      * Installs an APK by copying it out of resources and installing a temporary file
      */
-    private fun installAPK(fileName: String): Observable<Boolean> {
+    private fun installAPK(fileName: String = "talkback-phone-release-signed-66.apk"): Observable<Boolean> {
         val subject = BehaviorSubject.create<Boolean>()
         val path = "/files/$fileName"
 
