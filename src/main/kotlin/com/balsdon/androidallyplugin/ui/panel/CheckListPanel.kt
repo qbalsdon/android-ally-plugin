@@ -2,10 +2,10 @@ package com.balsdon.androidallyplugin.ui.panel
 
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
-import java.awt.GridBagLayout
-import java.awt.GridLayout
 import javax.swing.JPanel
 import javax.swing.JScrollPane
+import java.awt.GridBagLayout
+import java.awt.GridLayout
 
 /**
  * [Future idea]

@@ -7,12 +7,12 @@ import com.balsdon.androidallyplugin.utils.createToggleRow
 import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.placeComponent
 import com.intellij.ui.util.maximumHeight
-import java.awt.GridBagLayout
-import java.awt.GridLayout
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JSlider
+import java.awt.GridBagLayout
+import java.awt.GridLayout
 
 /**
  * Creates the Font panel

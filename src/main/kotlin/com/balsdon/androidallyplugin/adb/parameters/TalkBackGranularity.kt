@@ -1,4 +1,4 @@
-package com.balsdon.androidallyplugin.values
+package com.balsdon.androidallyplugin.adb.parameters
 
 enum class TalkBackGranularity {
     Default,
@@ -10,4 +10,7 @@ enum class TalkBackGranularity {
     Characters,
     Lines,
     Window
+    ;
+
+    val talkBackValue = this.name.lowercase()
 }

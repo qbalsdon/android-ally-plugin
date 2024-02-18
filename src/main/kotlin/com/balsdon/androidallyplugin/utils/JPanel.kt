@@ -4,12 +4,12 @@ import com.balsdon.androidallyplugin.elementMaxHeight
 import com.balsdon.androidallyplugin.localize
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.util.maximumHeight
-import java.awt.Component
-import java.awt.GridBagConstraints
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
+import java.awt.Component
+import java.awt.GridBagConstraints
 
 fun JPanel.placeComponent(
     component: Component,

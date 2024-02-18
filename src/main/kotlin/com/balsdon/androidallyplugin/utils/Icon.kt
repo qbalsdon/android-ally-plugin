@@ -1,9 +1,9 @@
 package com.balsdon.androidallyplugin.utils
 
-import java.awt.GraphicsEnvironment
-import java.awt.Image
 import javax.swing.Icon
 import javax.swing.ImageIcon
+import java.awt.GraphicsEnvironment
+import java.awt.Image
 
 //TODO: Determine if this is even half way to the right approach
 fun Icon.toImage(): Image =

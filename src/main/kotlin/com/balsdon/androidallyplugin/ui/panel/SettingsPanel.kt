@@ -5,10 +5,10 @@ import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
 import com.balsdon.androidallyplugin.utils.log
-import java.awt.GridBagLayout
-import java.awt.GridLayout
 import javax.swing.JPanel
 import javax.swing.JScrollPane
+import java.awt.GridBagLayout
+import java.awt.GridLayout
 
 /**
  * Creates the Display panel

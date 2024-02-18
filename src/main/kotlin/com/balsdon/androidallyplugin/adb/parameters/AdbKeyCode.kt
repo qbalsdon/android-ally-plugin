@@ -1,9 +1,9 @@
-package com.balsdon.androidallyplugin.values
+package com.balsdon.androidallyplugin.adb.parameters
 
 /*
 Source: https://gist.github.com/ctrl-freak/9abb5aea0d89d7bd9df6a3d0ac08b73c
  */
-enum class AdbKeyCode(val keyCode: String) {
+enum class AdbKeyCode(val androidValue: String) {
     SOFT_LEFT("KEYCODE_SOFT_LEFT"),
     SOFT_RIGHT("KEYCODE_SOFT_RIGHT"),
     HOME("KEYCODE_HOME"),

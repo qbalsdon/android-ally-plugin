@@ -1,14 +1,15 @@
 package com.balsdon.androidallyplugin.ui.panel
 
+import com.balsdon.androidallyplugin.adb.parameters.SettingsScreen
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
 import com.balsdon.androidallyplugin.utils.log
-import java.awt.GridBagLayout
-import java.awt.GridLayout
 import javax.swing.JPanel
 import javax.swing.JScrollPane
+import java.awt.GridBagLayout
+import java.awt.GridLayout
 
 /**
  * Creates the Debug panel
@@ -45,18 +46,7 @@ class DebugPanel(private val controller: Controller) {
     private val switchAccessOffButtonText = localize("panel.debug.button.switch_access.off")
 
     private val openScreenLabelString = localize("panel.debug.label.screen")
-    private val openScreenOptions = listOf(
-        "panel.debug.label.screen.settings",
-        "panel.debug.label.screen.developer",
-        "panel.debug.label.screen.accessibility",
-        "panel.debug.label.screen.locale",
-        "panel.debug.label.screen.colors",
-        "panel.debug.label.screen.display",
-        "panel.debug.label.screen.dark",
-        "panel.debug.label.screen.bluetooth",
-        "panel.debug.label.screen.wifi",
-        "panel.debug.label.screen.network",
-    )
+    private val openScreenOptions = SettingsScreen.entries.map { it.identifier }
 
     fun create() = JPanel().apply {
         layout = GridLayout(0, 1)

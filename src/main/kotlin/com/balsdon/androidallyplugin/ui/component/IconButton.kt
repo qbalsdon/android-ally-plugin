@@ -2,10 +2,10 @@ package com.balsdon.androidallyplugin.ui.component
 
 import com.balsdon.androidallyplugin.ui.CustomIcon
 import com.intellij.util.ui.JBUI
-import java.awt.Dimension
-import java.awt.Font
 import javax.swing.JButton
 import javax.swing.SwingConstants
+import java.awt.Dimension
+import java.awt.Font
 
 class IconButton(
     private val imageIcon: CustomIcon,
