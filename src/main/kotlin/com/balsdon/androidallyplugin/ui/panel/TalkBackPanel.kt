@@ -30,7 +30,7 @@ import java.awt.GridLayout
  *
  * Cannot make this an invokable object according to [best practice](https://plugins.jetbrains.com/docs/intellij/plugin-extensions.html#implementing-extension)
  */
-class TalkBackPanel(private val controller: Controller) : ControllerPanel(controller) {
+class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
     private val talkBackLabelString = localize("panel.talkback.label.talkback")
     private val talkBackOnButtonText = localize("panel.talkback.button.talkback.on")
     private val talkBackOffButtonText = localize("panel.talkback.button.talkback.off")
@@ -93,8 +93,8 @@ class TalkBackPanel(private val controller: Controller) : ControllerPanel(contro
             whichRow,
             talkBackOnButtonText,
             talkBackOffButtonText,
-            positiveAction = { execute(talkBackService(true).asScript()) },
-            negativeAction = { execute(talkBackService(false).asScript()) }
+            positiveAction = { talkBackService(true).run() },
+            negativeAction = { talkBackService(false).run() }
         )
     }
 
@@ -105,14 +105,10 @@ class TalkBackPanel(private val controller: Controller) : ControllerPanel(contro
             talkBackSpeechOutputOnButtonText,
             talkBackSpeechOutputOffButtonText,
             positiveAction = {
-                execute(
-                    AdbScript.TalkBackChangeSetting(TalkBackSetting.TOGGLE_SPEECH_OUTPUT, true).asScript()
-                )
+                AdbScript.TalkBackChangeSetting(TalkBackSetting.TOGGLE_SPEECH_OUTPUT, true).run()
             },
             negativeAction = {
-                execute(
-                    AdbScript.TalkBackChangeSetting(TalkBackSetting.TOGGLE_SPEECH_OUTPUT, false).asScript()
-                )
+                AdbScript.TalkBackChangeSetting(TalkBackSetting.TOGGLE_SPEECH_OUTPUT, false).run()
             }
         )
     }
@@ -124,10 +120,10 @@ class TalkBackPanel(private val controller: Controller) : ControllerPanel(contro
             talkBackVolumeMediumButtonText,
             talkBackVolumeLowButtonText,
             positiveAction = {
-                execute(AdbScript.TalkBackSetVolume(TalkBackVolumeSetting.VOLUME_HALF).asScript())
+                AdbScript.TalkBackSetVolume(TalkBackVolumeSetting.VOLUME_HALF).run()
             },
             negativeAction = {
-                execute(AdbScript.TalkBackSetVolume(TalkBackVolumeSetting.VOLUME_MIN).asScript())
+                AdbScript.TalkBackSetVolume(TalkBackVolumeSetting.VOLUME_MIN).run()
             }
         )
     }
@@ -147,7 +143,7 @@ class TalkBackPanel(private val controller: Controller) : ControllerPanel(contro
                 previousButtonText,
                 ""
             ) {
-                execute(AdbScript.TalkBackUserAction(TalkBackAction.PREVIOUS, selectedGranularity).asScript())
+                AdbScript.TalkBackUserAction(TalkBackAction.PREVIOUS, selectedGranularity).run()
             }.create(),
             3, y = whichRow, fillType = GridBagConstraints.BOTH
         )
@@ -157,7 +153,7 @@ class TalkBackPanel(private val controller: Controller) : ControllerPanel(contro
                 nextButtonText,
                 ""
             ) {
-                execute(AdbScript.TalkBackUserAction(TalkBackAction.NEXT, selectedGranularity).asScript())
+                AdbScript.TalkBackUserAction(TalkBackAction.NEXT, selectedGranularity).run()
             }.create(),
             4, y = whichRow, fillType = GridBagConstraints.BOTH
         )
@@ -167,7 +163,7 @@ class TalkBackPanel(private val controller: Controller) : ControllerPanel(contro
                 tapButtonText,
                 ""
             ) {
-                execute(AdbScript.TalkBackUserAction(TalkBackAction.PERFORM_CLICK_ACTION).asScript())
+                AdbScript.TalkBackUserAction(TalkBackAction.PERFORM_CLICK_ACTION).run()
             }.create(),
             5, y = whichRow, fillType = GridBagConstraints.BOTH
         )
@@ -176,7 +172,7 @@ class TalkBackPanel(private val controller: Controller) : ControllerPanel(contro
                 CustomIcon.A11Y_TAP_LONG,
                 longTapButtonText,
                 ""
-            ) { execute(AdbScript.TalkBackUserAction(TalkBackAction.PERFORM_LONG_CLICK_ACTION).asScript()) }.create(),
+            ) { AdbScript.TalkBackUserAction(TalkBackAction.PERFORM_LONG_CLICK_ACTION).run() }.create(),
             6, y = whichRow, fillType = GridBagConstraints.BOTH
         )
     }
@@ -187,7 +183,7 @@ class TalkBackPanel(private val controller: Controller) : ControllerPanel(contro
                 CustomIcon.DEVICE_BACK,
                 backButtonText,
                 ""
-            ) { execute(AdbScript.PressKeyAdb(AdbKeyCode.BACK).asScript()) }.create(),
+            ) { AdbScript.PressKeyAdb(AdbKeyCode.BACK).run() }.create(),
             3, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
@@ -195,7 +191,7 @@ class TalkBackPanel(private val controller: Controller) : ControllerPanel(contro
                 CustomIcon.A11Y_OPEN_MENU,
                 menuButtonText,
                 ""
-            ) { execute(AdbScript.TalkBackUserAction(TalkBackAction.TALKBACK_BREAKOUT).asScript()) }.create(),
+            ) { AdbScript.TalkBackUserAction(TalkBackAction.TALKBACK_BREAKOUT).run() }.create(),
             5, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
@@ -203,7 +199,7 @@ class TalkBackPanel(private val controller: Controller) : ControllerPanel(contro
                 CustomIcon.A11Y_ACTIONS,
                 actionsButtonText,
                 ""
-            ) { execute(AdbScript.TalkBackUserAction(TalkBackAction.SHOW_CUSTOM_ACTIONS).asScript()) }.create(),
+            ) { AdbScript.TalkBackUserAction(TalkBackAction.SHOW_CUSTOM_ACTIONS).run() }.create(),
             6, y = whichRow, fillType = GridBagConstraints.BOTH
         )
     }

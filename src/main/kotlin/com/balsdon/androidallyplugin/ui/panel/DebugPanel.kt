@@ -1,6 +1,10 @@
 package com.balsdon.androidallyplugin.ui.panel
 
+import com.balsdon.androidallyplugin.adb.accessibilityScannerService
+import com.balsdon.androidallyplugin.adb.layoutBounds
+import com.balsdon.androidallyplugin.adb.openScreen
 import com.balsdon.androidallyplugin.adb.parameters.SettingsScreen
+import com.balsdon.androidallyplugin.adb.showTouches
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.createDropDownMenu
@@ -24,7 +28,7 @@ import java.awt.GridLayout
  * The reason why Accessibility Scanner is on here:
  *   - Developers need to take responsibility for installation and use of this tool, AAP can't provide anything more than a toggle
  */
-class DebugPanel(private val controller: Controller) {
+class DebugPanel(controller: Controller): ControllerPanel(controller) {
     private val layoutBoundsLabelString = localize("panel.debug.label.bounds")
     private val layoutBoundsOnButtonText = localize("panel.debug.button.bounds.on")
     private val layoutBoundsOffButtonText = localize("panel.debug.button.bounds.off")
@@ -46,7 +50,7 @@ class DebugPanel(private val controller: Controller) {
     private val switchAccessOffButtonText = localize("panel.debug.button.switch_access.off")
 
     private val openScreenLabelString = localize("panel.debug.label.screen")
-    private val openScreenOptions = SettingsScreen.entries.map { it.identifier }
+    private val openScreenOptions = SettingsScreen.entries.map { it.reference }
 
     fun create() = JPanel().apply {
         layout = GridLayout(0, 1)
@@ -54,7 +58,10 @@ class DebugPanel(private val controller: Controller) {
             JPanel().apply {
                 layout = GridBagLayout()
                 // open screen
-                addOpenScreenComponent(0) { option -> log("TODO: Open screen: [$option]") }
+                addOpenScreenComponent(0) { option ->
+                    val screen = SettingsScreen.entries.first { it.reference == option }
+                    openScreen(screen).run()
+                }
                 // layout bounds
                 addLayoutBoundsToggleComponent(1)
                 // show taps
@@ -80,8 +87,8 @@ class DebugPanel(private val controller: Controller) {
             whichRow,
             layoutBoundsOnButtonText,
             layoutBoundsOffButtonText,
-            positiveAction = { log("TODO: Layout Bounds: On") },
-            negativeAction = { log("TODO: Layout Bounds: Off") }
+            positiveAction = { layoutBounds(true).run() },
+            negativeAction = { layoutBounds(false).run() }
         )
     }
 
@@ -91,8 +98,8 @@ class DebugPanel(private val controller: Controller) {
             whichRow,
             showTapsOnButtonText,
             showTapsOffButtonText,
-            positiveAction = { log("TODO: Show taps: On") },
-            negativeAction = { log("TODO: Show taps: Off") }
+            positiveAction = { showTouches(true).run() },
+            negativeAction = { showTouches(false).run() }
         )
     }
 
@@ -102,8 +109,8 @@ class DebugPanel(private val controller: Controller) {
             whichRow,
             accessibilityScannerOnButtonText,
             accessibilityScannerOffButtonText,
-            positiveAction = { log("TODO: Accessibility Scanner: On") },
-            negativeAction = { log("TODO: Accessibility Scanner: Off") }
+            positiveAction = { accessibilityScannerService(true).run() },
+            negativeAction = { accessibilityScannerService(false).run() }
         )
     }
 

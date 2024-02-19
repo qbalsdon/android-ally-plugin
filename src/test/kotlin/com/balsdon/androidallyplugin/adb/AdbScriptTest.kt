@@ -3,6 +3,7 @@ package com.balsdon.androidallyplugin.adb
 import com.balsdon.androidallyplugin.adb.parameters.AdbKeyCode
 import com.balsdon.androidallyplugin.adb.parameters.ColorCorrectionType
 import com.balsdon.androidallyplugin.adb.parameters.InternalSettingType
+import com.balsdon.androidallyplugin.adb.parameters.SettingsScreen
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackAction
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackGranularity
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackSetting
@@ -110,13 +111,13 @@ class AdbScriptTest {
     }
 
     @Test
-    fun `creates a tb4d command to turn up volume`() {
+    fun creates_a_tb4d_command_to_turn_up_volume() {
         val result = AdbScript.TalkBackSetVolume(TalkBackVolumeSetting.VOLUME_MAX).asScript()
         assertThat(result).isEqualTo("am broadcast -a com.a11y.adb.${TalkBackVolumeSetting.VOLUME_MAX.name.lowercase()}")
     }
 
     @Test
-    fun `creates a tb4d command to turn turn off toast messages`() {
+    fun creates_a_tb4d_command_to_turn_turn_off_toast_messages() {
         val result = AdbScript.TalkBackChangeSetting(TalkBackSetting.TOGGLE_SPEECH_OUTPUT, false).asScript()
         assertThat(result).isEqualTo("am broadcast -a com.a11y.adb.${TalkBackSetting.TOGGLE_SPEECH_OUTPUT.name.lowercase()} -e value false")
     }
@@ -134,13 +135,13 @@ class AdbScriptTest {
     }
 
     @Test
-    fun `back key press to adb command`() {
+    fun back_key_press_to_adb_command() {
         val result = AdbScript.PressKeyAdb(AdbKeyCode.BACK).asScript()
         assertThat(result).isEqualTo("input keyevent ${AdbKeyCode.BACK.androidValue}")
     }
 
     @Test
-    fun `font scale to adb command`() {
+    fun font_scale_to_adb_command() {
         val result1 = fontScale(1.0f).asScript()
         val result2 = fontScale(0.5f).asScript()
         val result3 = fontScale(2.5f).asScript()
@@ -150,19 +151,27 @@ class AdbScriptTest {
     }
 
     @Test
-    fun `dark mode on to adb command`() {
+    fun bold_font_to_adb_command() {
+        assertThat(boldFont(true).asScript())
+            .isEqualTo("settings put secure font_weight_adjustment 300")
+        assertThat(boldFont(false).asScript())
+            .isEqualTo("settings put secure font_weight_adjustment 0")
+    }
+
+    @Test
+    fun dark_mode_on_to_adb_command() {
         val result = darkMode(true).asScript()
         assertThat(result).isEqualTo("cmd uimode night yes")
     }
 
     @Test
-    fun `dark mode off to adb command`() {
+    fun dark_mode_off_to_adb_command() {
         val result = darkMode(false).asScript()
         assertThat(result).isEqualTo("cmd uimode night no")
     }
 
     @Test
-    fun `run raw adb command`() {
+    fun run_raw_adb_command() {
         val result1 = powerOff().asScript()
         val result2 = reboot().asScript()
         assertThat(result1).isEqualTo("reboot -p")
@@ -170,63 +179,63 @@ class AdbScriptTest {
     }
 
     @Test
-    fun `run raw adb command with suffix`() {
+    fun run_raw_adb_command_with_suffix() {
         val result = typeText("hello world").asScript()
         assertThat(result).isEqualTo("input text \"hello\\ world\"")
     }
 
     @Test
-    fun `color inversion off`() {
+    fun color_inversion_off() {
         val result = colorInversion(false).asScript()
         assertThat(result).isEqualTo("settings put secure accessibility_display_inversion_enabled 0")
     }
 
     @Test
-    fun `color inversion on`() {
+    fun color_inversion_on() {
         val result = colorInversion(true).asScript()
         assertThat(result).isEqualTo("settings put secure accessibility_display_inversion_enabled 1")
     }
 
     @Test
-    fun `color correction on greyscale`() {
+    fun color_correction_on_greyscale() {
         val result = colorCorrection(ColorCorrectionType.GREYSCALE).asScript()
         assertThat(result).isEqualTo("settings put secure accessibility_display_daltonizer_enabled 1; settings put secure accessibility_display_daltonizer 0")
     }
 
     @Test
-    fun `color correction on tritanomoly`() {
+    fun color_correction_on_tritanomoly() {
         val result = colorCorrection(ColorCorrectionType.TRITANOMALY).asScript()
         assertThat(result).isEqualTo("settings put secure accessibility_display_daltonizer_enabled 1; settings put secure accessibility_display_daltonizer 13")
     }
 
     @Test
-    fun `color correction on protanomaly`() {
+    fun color_correction_on_protanomaly() {
         val result = colorCorrection(ColorCorrectionType.PROTANOMALY).asScript()
         assertThat(result).isEqualTo("settings put secure accessibility_display_daltonizer_enabled 1; settings put secure accessibility_display_daltonizer 11")
     }
 
     @Test
-    fun `color correction on deuteranomoly`() {
+    fun color_correction_on_deuteranomoly() {
         val result = colorCorrection(ColorCorrectionType.DEUTERANOMALY).asScript()
         assertThat(result).isEqualTo("settings put secure accessibility_display_daltonizer_enabled 1; settings put secure accessibility_display_daltonizer 12")
     }
 
     @Test
-    fun `color correction off`() {
+    fun color_correction_off() {
         val result = colorCorrection(ColorCorrectionType.OFF).asScript()
         assertThat(result).isEqualTo("settings put secure accessibility_display_daltonizer_enabled 0")
     }
 
     @Test
-    fun `can set time to react`() {
+    fun can_set_time_to_react() {
         listOf(0, 10000, 30000, 60000, 120000).forEach { testValue ->
             val result = timeToReact(testValue).asScript()
-            assertThat(result).isEqualTo("settings put secure accessibility_non_interactive_ui_timeout_ms $testValue")
+            assertThat(result).isEqualTo("settings put secure accessibility_interactive_ui_timeout_ms $testValue")
         }
     }
 
     @Test
-    fun `can set screen density to a value`() {
+    fun can_set_screen_density_to_a_value() {
         listOf(
             180,
             248,
@@ -247,114 +256,115 @@ class AdbScriptTest {
     }
 
     @Test
-    fun `can reset screen density`() {
+    fun can_reset_screen_density() {
         val result = displayDensity().asScript()
         assertThat(result).isEqualTo("wm density reset")
     }
 
     @Test
-    fun `can turn on layout bounds`() {
+    fun can_turn_on_layout_bounds() {
         val result = layoutBounds(true).asScript()
         assertThat(result).isEqualTo("setprop debug.layout 1; service call activity 1599295570 > /dev/null 2>&1")
     }
 
     @Test
-    fun `can turn off layout bounds`() {
+    fun can_turn_off_layout_bounds() {
         val result = layoutBounds(false).asScript()
         assertThat(result).isEqualTo("setprop debug.layout 0; service call activity 1599295570 > /dev/null 2>&1")
     }
 
     @Test
-    fun `can turn on animations`() {
+    fun can_turn_on_animations() {
         val result = animations(true).asScript()
         assertThat(result).isEqualTo("cmd settings put global animator_duration_scale 1.0; cmd settings put global transition_animation_scale 1.0; cmd settings put global window_animation_scale 1.0")
     }
 
     @Test
-    fun `can turn off animations`() {
+    fun can_turn_off_animations() {
         val result = animations(false).asScript()
         assertThat(result).isEqualTo("cmd settings put global animator_duration_scale 0.0; cmd settings put global transition_animation_scale 0.0; cmd settings put global window_animation_scale 0.0")
     }
 
     @Test
-    fun `can turn on captions`() {
+    fun can_turn_on_captions() {
         val result = captions(true).asScript()
         assertThat(result).isEqualTo("settings put secure accessibility_captioning_enabled 1")
     }
 
     @Test
-    fun `can turn off captions`() {
+    fun can_turn_off_captions() {
         val result = captions(false).asScript()
         assertThat(result).isEqualTo("settings put secure accessibility_captioning_enabled 0")
     }
 
     @Test
-    fun `can turn on audio description`() {
+    fun can_turn_on_audio_description() {
         val result = audioDescription(true).asScript()
         assertThat(result).isEqualTo("settings put secure enabled_accessibility_audio_description_by_default 1; settings put secure accessibility_audio_descriptions_enabled 1")
     }
 
     @Test
-    fun `can turn off audio description`() {
+    fun can_turn_off_audio_description() {
         val result = audioDescription(false).asScript()
         assertThat(result).isEqualTo("settings put secure enabled_accessibility_audio_description_by_default 0; settings put secure accessibility_audio_descriptions_enabled 0")
     }
 
     @Test
-    fun `can turn on show touches`() {
+    fun can_turn_on_show_touches() {
         val result = showTouches(true).asScript()
         assertThat(result).isEqualTo("settings put system show_touches 1")
     }
 
     @Test
-    fun `can turn off show touches`() {
+    fun can_turn_off_show_touches() {
         val result = showTouches(false).asScript()
         assertThat(result).isEqualTo("settings put system show_touches 0")
     }
 
     @Test
-    fun `text high contrast`() {
+    fun text_high_contrast() {
         assertThat(
             highTextContrast(true).asScript()
-        ).isEqualTo("settings put system high_text_contrast_enabled 1")
+        ).isEqualTo("settings put secure high_text_contrast_enabled 1")
 
         assertThat(
             highTextContrast(false).asScript()
-        ).isEqualTo("settings put system high_text_contrast_enabled 0")
+        ).isEqualTo("settings put secure high_text_contrast_enabled 0")
     }
 
     @Test
-    fun `get system settings`() {
+    fun get_system_settings() {
         val result = settings(InternalSettingType.SYSTEM).asScript()
         assertThat(result).isEqualTo("settings list system")
     }
 
     @Test
-    fun `get global settings`() {
+    fun get_global_settings() {
         val result = settings(InternalSettingType.GLOBAL).asScript()
         assertThat(result).isEqualTo("settings list global")
     }
 
     @Test
-    fun `get secure settings`() {
+    fun get_secure_settings() {
         val result = settings(InternalSettingType.SECURE).asScript()
         assertThat(result).isEqualTo("settings list secure")
     }
 
     @Test
-    fun `get all settings`() {
+    fun get_all_settings() {
         val result = settings(InternalSettingType.ALL).asScript()
         assertThat(result).isEqualTo("settings list system | sed 's/^/system./';settings list secure | sed 's/^/secure./';settings list global | sed 's/^/global./';")
     }
-//
-//    @Test
-//    fun `can open screen`() {
-//        SettingsScreen.values().forEach { screen ->
-//            val result = AdbScript2.DEVICE_SCREEN.fetchScript(ScriptParam.ScreenValue(screen))
-//            assertThat(result).isEqualTo("am start -a ${screen.source}")
-//        }
-//    }
-//
+
+    @Test
+    fun can_open_screen() {
+        SettingsScreen.entries.forEach { screen ->
+            assertThat(
+                openScreen(screen).asScript()
+            ).isEqualTo("am start -a ${screen.internalAndroidReference}")
+        }
+    }
+
 //    @Test
 //    fun `cat window dump`() {
 //        val result = AdbScript2.WINDOW_DUMP.fetchScript(ScriptParam.NONE)

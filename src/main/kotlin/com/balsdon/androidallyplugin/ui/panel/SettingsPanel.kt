@@ -1,10 +1,12 @@
 package com.balsdon.androidallyplugin.ui.panel
 
+import com.balsdon.androidallyplugin.adb.audioDescription
+import com.balsdon.androidallyplugin.adb.captions
+import com.balsdon.androidallyplugin.adb.timeToReact
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
-import com.balsdon.androidallyplugin.utils.log
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import java.awt.GridBagLayout
@@ -15,7 +17,7 @@ import java.awt.GridLayout
  *
  * Cannot make this an invokable object according to [best practice](https://plugins.jetbrains.com/docs/intellij/plugin-extensions.html#implementing-extension)
  */
-class SettingsPanel(private val controller: Controller) {
+class SettingsPanel(controller: Controller): ControllerPanel(controller) {
     private val captionsLabelString = localize("panel.settings.label.captions")
     private val captionsOnButtonText = localize("panel.settings.button.captions.on")
     private val captionsOffButtonText = localize("panel.settings.button.captions.off")
@@ -46,9 +48,19 @@ class SettingsPanel(private val controller: Controller) {
             JPanel().apply {
                 layout = GridBagLayout()
                 // orientation
-                addOrientationComponent(0) { option -> log("TODO: Set orientation: [$option]") }
+                addOrientationComponent(0) { option ->
+
+                }
                 // time to react
-                addTimeToReactComponent(1) { option -> log("TODO: Time to react: [$option]") }
+                addTimeToReactComponent(1) { option ->
+                    timeToReact(when (option) {
+                        "panel.settings.label.reaction.ten" -> 10
+                        "panel.settings.label.reaction.thirty" -> 30
+                        "panel.settings.label.reaction.minute" -> 60
+                        "panel.settings.label.reaction.minutes" -> 120
+                        else -> 0
+                    } * 1000).run()
+                }
                 // captions
                 addCaptionsToggleComponent(2)
                 // audio description
@@ -72,8 +84,8 @@ class SettingsPanel(private val controller: Controller) {
             whichRow,
             captionsOnButtonText,
             captionsOffButtonText,
-            positiveAction = { log("TODO: Captions: On") },
-            negativeAction = { log("TODO: Captions: Off") }
+            positiveAction = { captions(true).run() },
+            negativeAction = { captions(false).run() }
         )
     }
 
@@ -83,8 +95,8 @@ class SettingsPanel(private val controller: Controller) {
             whichRow,
             audioDescriptionOnButtonText,
             audioDescriptionOffButtonText,
-            positiveAction = { log("TODO: Audio description: On") },
-            negativeAction = { log("TODO: Audio description: Off") }
+            positiveAction = { audioDescription(true).run() },
+            negativeAction = { audioDescription(false).run() }
         )
     }
 }
