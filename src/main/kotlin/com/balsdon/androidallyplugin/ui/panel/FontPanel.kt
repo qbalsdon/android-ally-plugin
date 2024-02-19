@@ -1,10 +1,12 @@
 package com.balsdon.androidallyplugin.ui.panel
 
+import com.balsdon.androidallyplugin.adb.boldFont
+import com.balsdon.androidallyplugin.adb.fontScale
+import com.balsdon.androidallyplugin.adb.highTextContrast
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.elementMaxHeight
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.createToggleRow
-import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.placeComponent
 import com.intellij.ui.util.maximumHeight
 import javax.swing.JLabel
@@ -19,7 +21,7 @@ import java.awt.GridLayout
  *
  * Cannot make this an invokable object according to [best practice](https://plugins.jetbrains.com/docs/intellij/plugin-extensions.html#implementing-extension)
  */
-class FontPanel(private val controller: Controller) {
+class FontPanel(controller: Controller): ControllerPanel(controller) {
     private val layoutFontScaleLabelString = localize("panel.font.label.scale")
 
     private val boldFontLabelString = localize("panel.font.bold.label")
@@ -36,7 +38,7 @@ class FontPanel(private val controller: Controller) {
             JPanel().apply {
                 layout = GridBagLayout()
                 // font size
-                addFontSizeComponent(0) { scale -> log("TODO: Set scale to [$scale]") }
+                addFontSizeComponent(0) { scale -> fontScale(scale).run() }
                 // bold font
                 addBoldFontToggleComponent(1)
                 // high contrast text
@@ -80,8 +82,8 @@ class FontPanel(private val controller: Controller) {
             whichRow,
             boldFontOnButtonText,
             boldFontOffButtonText,
-            positiveAction = { log("TODO: Bold Font: On") },
-            negativeAction = { log("TODO: Bold Font: Off") }
+            positiveAction = { boldFont(true).run() },
+            negativeAction = { boldFont(false).run() }
         )
     }
 
@@ -91,8 +93,8 @@ class FontPanel(private val controller: Controller) {
             whichRow,
             highContrastOnButtonText,
             highContrastOffButtonText,
-            positiveAction = { log("TODO: High contrast text: On") },
-            negativeAction = { log("TODO: High contrast text: Off") }
+            positiveAction = { highTextContrast(true).run() },
+            negativeAction = { highTextContrast(false).run() }
         )
     }
 }

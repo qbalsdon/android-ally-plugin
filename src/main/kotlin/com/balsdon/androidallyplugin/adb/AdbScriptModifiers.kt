@@ -7,6 +7,7 @@ import com.balsdon.androidallyplugin.adb.parameters.BooleanPrintMode
 import com.balsdon.androidallyplugin.adb.parameters.ColorCorrectionAdbParam
 import com.balsdon.androidallyplugin.adb.parameters.ColorCorrectionType
 import com.balsdon.androidallyplugin.adb.parameters.InternalSettingType
+import com.balsdon.androidallyplugin.adb.parameters.SettingsScreen
 import com.balsdon.androidallyplugin.adb.parameters.TypingTextAdbParam
 import com.balsdon.androidallyplugin.adb.parameters.UnitAdbParam
 
@@ -30,8 +31,14 @@ fun fontScale(scale: Float) = AdbScript.InternalSetting(
     settingValue = AdbParamUsingString(scale)
 )
 
+fun boldFont(enabled: Boolean) = AdbScript.InternalSetting(
+    name = "font_weight_adjustment",
+    internalSettingType = InternalSettingType.SECURE,
+    settingValue = AdbParamUsingString(if (enabled) "300" else "0")
+)
+
 fun timeToReact(value: Int) = AdbScript.InternalSetting(
-    name = "accessibility_non_interactive_ui_timeout_ms",
+    name = "accessibility_interactive_ui_timeout_ms",
     internalSettingType = InternalSettingType.SECURE,
     settingValue = AdbParamUsingString(value)
 )
@@ -60,7 +67,7 @@ fun showTouches(isEnabled: Boolean) = AdbScript.InternalSetting(
 
 fun highTextContrast(isEnabled: Boolean) = AdbScript.InternalSetting(
     name = "high_text_contrast_enabled",
-    internalSettingType = InternalSettingType.SYSTEM,
+    internalSettingType = InternalSettingType.SECURE,
     settingValue = AdbBoolean(isEnabled, BooleanPrintMode.BINARY)
 )
 
@@ -142,3 +149,9 @@ fun settings(internalSettingType: InternalSettingType) = if (internalSettingType
         listOf(AdbParamUsingString(internalSettingType.name, true))
     )
 }
+
+fun openScreen(settingsScreen: SettingsScreen) =
+    AdbScript.Command(
+        "am start -a $1",
+        listOf(AdbParamUsingString(settingsScreen.internalAndroidReference))
+    )

@@ -1,11 +1,16 @@
 package com.balsdon.androidallyplugin.ui.panel
 
 import com.android.tools.lint.detector.api.isNumberString
+import com.balsdon.androidallyplugin.adb.animations
+import com.balsdon.androidallyplugin.adb.colorCorrection
+import com.balsdon.androidallyplugin.adb.colorInversion
+import com.balsdon.androidallyplugin.adb.darkMode
+import com.balsdon.androidallyplugin.adb.displayDensity
+import com.balsdon.androidallyplugin.adb.parameters.ColorCorrectionType
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.elementMaxHeight
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.createToggleRow
-import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.placeComponent
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.util.maximumHeight
@@ -22,7 +27,7 @@ import java.awt.GridLayout
  *
  * Cannot make this an invokable object according to [best practice](https://plugins.jetbrains.com/docs/intellij/plugin-extensions.html#implementing-extension)
  */
-class DisplayPanel(private val controller: Controller) {
+class DisplayPanel(controller: Controller): ControllerPanel(controller) {
     private val darkModeLabelString = localize("panel.display.dark.label")
     private val darkModeOnButtonText = localize("panel.display.dark.on")
     private val darkModeOffButtonText = localize("panel.display.dark.off")
@@ -41,10 +46,10 @@ class DisplayPanel(private val controller: Controller) {
     private val colorCorrectionLabelString = localize("panel.display.label.correction")
     private val colorCorrectionOptions = listOf(
         "panel.display.label.correction.off",
-        "panel.display.label.correction.grey",
-        "panel.display.label.correction.green",
-        "panel.display.label.correction.red",
-        "panel.display.label.correction.blue"
+        "panel.display.label.correction.greyscale",
+        "panel.display.label.correction.deuteranomaly",
+        "panel.display.label.correction.tritanomaly",
+        "panel.display.label.correction.protanomaly"
     )
 
     fun create() = JPanel().apply {
@@ -53,7 +58,9 @@ class DisplayPanel(private val controller: Controller) {
             JPanel().apply {
                 layout = GridBagLayout()
                 // display size secure display_density_forced [, 356, 540, 500, 460]
-                addDisplayDensityComponent(0) { density -> log("TODO: Set density: [$density]") }
+                addDisplayDensityComponent(0) { density ->
+                    displayDensity(if (isNumberString(density)) density.toInt() else -1).run()
+                }
                 // dark mode
                 addDarkModeToggleComponent(1)
                 // animations
@@ -61,7 +68,10 @@ class DisplayPanel(private val controller: Controller) {
                 // colour inversion
                 addColorInversionToggleComponent(3)
                 // color correction
-                addColorCorrectionComponent(4) { option -> log("TODO: Set correction: [$option]") }
+                addColorCorrectionComponent(4) { option ->
+                    val optionName = option.split(".").last().uppercase()
+                    colorCorrection(ColorCorrectionType.valueOf(optionName)).run()
+                }
             }).apply {
             autoscrolls = true
         })
@@ -97,8 +107,8 @@ class DisplayPanel(private val controller: Controller) {
             whichRow,
             darkModeOnButtonText,
             darkModeOffButtonText,
-            positiveAction = { log("TODO: Dark mode: On") },
-            negativeAction = { log("TODO: Dark mode: Off") }
+            positiveAction = { darkMode(true).run() },
+            negativeAction = { darkMode(false).run() }
         )
     }
 
@@ -108,8 +118,8 @@ class DisplayPanel(private val controller: Controller) {
             whichRow,
             animationOnButtonText,
             animationOffButtonText,
-            positiveAction = { log("TODO: Animations: On") },
-            negativeAction = { log("TODO: Animations: Off") }
+            positiveAction = { animations(true).run() },
+            negativeAction = { animations(false).run() }
         )
     }
 
@@ -119,8 +129,8 @@ class DisplayPanel(private val controller: Controller) {
             whichRow,
             colorInversionOnButtonText,
             colorInversionOffButtonText,
-            positiveAction = { log("TODO: Color Inversion: On") },
-            negativeAction = { log("TODO: Color Inversion: Off") }
+            positiveAction = { colorInversion(true).run() },
+            negativeAction = { colorInversion(false).run() }
         )
     }
 
