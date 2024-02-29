@@ -1,7 +1,6 @@
 package com.balsdon.androidallyplugin.model
 
 import android.databinding.tool.ext.capitalizeUS
-import com.android.ddmlib.AdbCommandRejectedException
 import com.android.ddmlib.IDevice
 import com.android.ddmlib.IShellOutputReceiver
 import com.android.ddmlib.InstallException
@@ -11,6 +10,11 @@ import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.log
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -22,57 +26,84 @@ class AndroidDevice(private val rawDevice: IDevice) {
 
     val isEmulator: Boolean by lazy { rawDevice.isEmulator }
     val serial: String by lazy { rawDevice.serialNumber }
-    val apiLevel: String by lazy { rawDevice.getProperty(IDevice.PROP_BUILD_API_LEVEL) ?: "" }
-    val sdkLevel: String by lazy { rawDevice.getProperty(IDevice.PROP_BUILD_VERSION) ?: "" }
-    val friendlyName: String by lazy {
-        val unknownDeviceLabel = localize("panel.device.label.device_unknown")
-        try {
-            if (isEmulator) {
-                val avdName = rawDevice.avdData.get().name
-                if (avdName.isNullOrEmpty()) {
-                    unknownDeviceLabel
+    private val apiLevel: String get() = rawDevice.getProperty(IDevice.PROP_BUILD_API_LEVEL) ?: ""
+    private val sdkLevel: String get() = rawDevice.getProperty(IDevice.PROP_BUILD_VERSION) ?: ""
+    val friendlyName: String
+        get() {
+            val unknownDeviceLabel = localize("panel.device.label.device_unknown")
+            return try {
+                if (isEmulator) {
+                    val avdName = rawDevice.avdData.get().name
+                    if (avdName.isNullOrEmpty()) {
+                        unknownDeviceLabel
+                    } else {
+                        avdName.replace("_", " ")
+                    }
                 } else {
-                    avdName.replace("_", " ")
+                    val brand = rawDevice.getProperty("ro.product.brand") ?: ""
+                    val model = rawDevice.getProperty(IDevice.PROP_DEVICE_MODEL) ?: ""
+                    val name = "${brand.lowercase()} $model".trim().capitalizeUS()
+                    name.ifBlank {
+                        unknownDeviceLabel
+                    }
                 }
-            } else {
-                val brand = rawDevice.getProperty("ro.product.brand") ?: ""
-                val model = rawDevice.getProperty(IDevice.PROP_DEVICE_MODEL) ?: ""
-                val name = "${brand.lowercase()} $model".trim().capitalizeUS()
-                name.ifBlank {
-                    unknownDeviceLabel
-                }
+            } catch (e: Exception) {
+                log(e)
+                unknownDeviceLabel
             }
-        } catch (e: Exception) {
-            log(e)
-            unknownDeviceLabel
         }
-    }
 
-    /**
-     * [filterFromPackages] is tested, rather than testing an RX Wrapper
-     *
-     * I am not great at RXJava, I need help cleaning this up
-     */
-    fun fetchAccessibilityServices(): Observable<List<AccessibilityService>> {
-        val subject = BehaviorSubject.create<List<AccessibilityService>>()
-
+    private fun getPackageList(fn: (List<String>) -> Unit) {
+        val builder = StringBuilder()
         try {
-            val builder = StringBuilder()
             rawDevice.executeShellCommand("pm list packages", object : IShellOutputReceiver {
                 override fun addOutput(data: ByteArray, offset: Int, length: Int) {
                     builder.append(String(data, offset, length, StandardCharsets.UTF_8))
                 }
 
-            override fun flush() {
-                val list = builder.split("\n")
-                subject.onNext(filterFromPackages(list)) // Emits the value
-            }
+                override fun flush() {
+                    val list = builder.split("\n")
+                    fn(list)
+                }
+
                 override fun isCancelled(): Boolean = false
             })
-        } catch (e: AdbCommandRejectedException) {
+        } catch (e: com.android.ddmlib.AdbCommandRejectedException) {
             log(e)
+            fn(emptyList())
         }
+    }
 
+    /**
+     * Opportunity for improvement here!!
+     *
+     * I need help making this efficient and less overwhelming for the system.
+     *
+     * There is no isReady function I could call or wait for.
+     */
+    fun requestData(): Observable<BasicDeviceInfo> {
+        val subject = BehaviorSubject.create<BasicDeviceInfo>()
+        val unknownDeviceLabel = localize("panel.device.label.device_unknown")
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch {
+            var name = friendlyName
+            var api = apiLevel
+            var sdk = sdkLevel
+            while (name == unknownDeviceLabel) {
+                delay(100)
+                name = friendlyName
+            }
+            while (api.isBlank()) {
+                delay(100)
+                api = apiLevel
+            }
+            while (sdk.isBlank()) {
+                delay(100)
+                sdk = sdkLevel
+            }
+
+            getPackageList { list -> subject.onNext(BasicDeviceInfo(name, api, sdk, list)) }
+        }
         return subject
     }
 

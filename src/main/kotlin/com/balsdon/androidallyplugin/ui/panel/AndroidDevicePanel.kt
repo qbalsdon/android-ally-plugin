@@ -1,5 +1,6 @@
 package com.balsdon.androidallyplugin.ui.panel
 
+import com.balsdon.androidallyplugin.TB4DPackageName
 import com.balsdon.androidallyplugin.TB4DWebPage
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.elementMaxHeight
@@ -27,13 +28,15 @@ import java.awt.event.MouseListener
 class AndroidDevicePanel(private val controller: Controller) {
     private val deviceListener = controller.connectedDevicesNotifier
     private val deviceListPanel: JPanel by lazy { JPanel().apply { layout = BoxLayout(this, BoxLayout.Y_AXIS) } }
-    private val tb4dPanel: JPanel by lazy {
-        JPanel().apply { layout = FlowLayout(FlowLayout.TRAILING) }
-    }
 
     private fun createDeviceSelectionCheckBox(device: AndroidDevice) = JPanel().apply {
         layout = BorderLayout()
         maximumHeight = elementMaxHeight
+        val nameLabel = JLabel(device.serial)
+        val dataLabel = JLabel("...").apply {
+            val oldFont = font
+            font = Font(oldFont.fontName, Font.ITALIC, oldFont.size - 3)
+        }
         add(JPanel().apply {
             layout = FlowLayout(FlowLayout.LEADING)
             val updateState = { isSelected: Boolean ->
@@ -89,48 +92,50 @@ class AndroidDevicePanel(private val controller: Controller) {
             })
             add(JPanel().apply {
                 layout = BoxLayout(this, BoxLayout.Y_AXIS)
-                add(
-                    JLabel(device.friendlyName)
-                )
-                add(JLabel("${device.serial} - [${device.apiLevel} / ${device.sdkLevel}]").apply {
-                    val oldFont = font
-                    font = Font(oldFont.fontName, Font.ITALIC, oldFont.size - 3)
-                })
+                add(nameLabel)
+                add(dataLabel)
             })
         }, BorderLayout.WEST)
 
-        updateDeviceBasedOnInstalledServices(device, this)
-        name = device.friendlyName
+        name = device.serial
+        device.requestData()
+            .take(1)
+            .subscribe { deviceInfo ->
+                log("Device data: [${deviceInfo}]")
+                this.name = deviceInfo.name
+                nameLabel.text = deviceInfo.name
+                dataLabel.text = "${device.serial} - [${deviceInfo.api} / ${deviceInfo.sdk}]"
+                tb4dInstallPanel(this, device, deviceInfo.packageList)
+            }
     }
 
-    private fun updateDeviceBasedOnInstalledServices(device: AndroidDevice, parentPanel: JPanel, onRecur: Boolean = false) {
-        device.fetchAccessibilityServices().take(1).subscribe { services ->
-            val index = services.indexOfFirst { it.packageName == "com.android.talkback4d" }
-            tb4dPanel.removeAll()
-            parentPanel.remove(tb4dPanel)
-            if (index == -1) {
-                parentPanel.add(tb4dPanel.apply {
-                    add(JButton(localize("panel.device.label.install.tb4d")).apply {
-                        addActionListener {
-                            device.installTalkBackForDevelopers().take(1).subscribe {
-                                updateDeviceBasedOnInstalledServices(device, parentPanel,true)
-                                if (!it) {
+    private fun tb4dInstallPanel(parentPanel: JPanel, device: AndroidDevice, services: List<String>) {
+        val index = services.indexOfFirst { it.contains(TB4DPackageName) }
+
+        if (index == -1) {
+            val tb4dPanel = JPanel().apply { layout = FlowLayout(FlowLayout.TRAILING) }
+            parentPanel.add(tb4dPanel.apply {
+                add(JButton(localize("panel.device.label.install.tb4d")).apply {
+                    addActionListener {
+                        device
+                            .installTalkBackForDevelopers()
+                            .take(1)
+                            .subscribe {
+                                if (it) {
+                                    controller.showInstallTB4DSuccessNotification()
+                                    parentPanel.remove(tb4dPanel)
+                                } else {
                                     controller.showInstallTB4DErrorNotification()
                                 }
                             }
-                        }
-                    })
-                    add(JButton(CustomIcon.INFO.create()).apply {
-                        addActionListener {
-                            BrowserUtil.browse(TB4DWebPage)
-                        }
-                    })
-                }, BorderLayout.EAST)
-            } else {
-                if (onRecur) {
-                    controller.showInstallTB4DSuccessNotification()
-                }
-            }
+                    }
+                })
+                add(JButton(CustomIcon.INFO.create()).apply {
+                    addActionListener {
+                        BrowserUtil.browse(TB4DWebPage)
+                    }
+                })
+            }, BorderLayout.EAST)
         }
     }
 
