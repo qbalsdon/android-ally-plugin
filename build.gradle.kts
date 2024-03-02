@@ -28,7 +28,8 @@ intellij {
      * WIP: Jewel
      * @see [https://packages.jetbrains.team/maven/p/kpm/public/org/jetbrains/jewel/jewel-ide-laf-bridge-platform-specific/]
      */
-    val intellijVersion = "231.9392.1.2311.11076708"
+
+    val intellijVersion = "231.9392.1.2311.11076708" // Android studio version
     version.set(intellijVersion)
     type.set("AI") // Target Android Studio IDE Platform
     plugins.set(listOf("android"))
@@ -71,7 +72,7 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("222")
-        untilBuild.set("232.*")
+        untilBuild.set("233.*")
     }
 
     signPlugin {

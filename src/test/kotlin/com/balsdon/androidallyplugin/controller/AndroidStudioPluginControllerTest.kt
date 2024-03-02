@@ -306,6 +306,8 @@ class AndroidStudioPluginControllerTest {
             listeners.add(listener)
         }
 
+        override fun refreshAdb() = Unit
+
         fun testDeviceConnected(device: IDevice) {
             listeners.forEach {
                 it.deviceConnected(device)
