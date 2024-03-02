@@ -21,7 +21,7 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 class AndroidStudioPluginController(
     private val project: Project,
-    adbProvider: AdbProvider = AndroidDebugBridgeProvider()
+    private val adbProvider: AdbProvider = AndroidDebugBridgeProvider()
 ) : Controller {
     private val groupId = "AndroidAlly"
     private val connectedDeviceList: MutableList<AndroidDevice> = mutableListOf()
@@ -102,6 +102,8 @@ class AndroidStudioPluginController(
             .filter { it.serial in selectedDeviceSerialList }
             .map { fn(it) }
     }
+
+    override fun refreshAdb() = adbProvider.refreshAdb()
 
     private fun <NPT : NotificationPayload> showNotification(notificationPayload: NPT) {
         require(notificationPayload is AndroidStudioPluginNotificationPayload)

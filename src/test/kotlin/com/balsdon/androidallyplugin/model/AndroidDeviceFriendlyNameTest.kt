@@ -15,7 +15,7 @@ class AndroidDeviceFriendlyNameTest {
             )
         )
 
-        assertThat(testSubject.device.friendlyName).isEqualTo("Brand model")
+        assertThat(testSubject.device.friendlyName).isEqualTo("Brand Model")
     }
 
     @Test
@@ -40,6 +40,18 @@ class AndroidDeviceFriendlyNameTest {
         )
 
         assertThat(testSubject.device.friendlyName).isEqualTo("Model")
+    }
+
+    @Test
+    fun friendly_name_for_real_device_brand_not_duplicated_if_in_model() {
+        val testSubject = AndroidDeviceTestFake(
+            deviceProps = mapOf(
+                "ro.product.model" to "model has Brand",
+                "ro.product.brand" to "Model",
+            )
+        )
+
+        assertThat(testSubject.device.friendlyName).isEqualTo("Model Has Brand")
     }
 
     @Test

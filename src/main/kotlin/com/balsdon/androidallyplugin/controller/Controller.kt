@@ -9,4 +9,6 @@ interface Controller {
     fun showInstallTB4DSuccessNotification()
     fun showInstallTB4DErrorNotification()
     fun runOnAllValidSelectedDevices(fn: (AndroidDevice) -> Unit)
+
+    fun refreshAdb()
 }

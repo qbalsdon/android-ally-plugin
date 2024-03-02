@@ -9,6 +9,7 @@ enum class CustomIcon(private val fileReference: String) {
     PHONE("phone"),
     EMULATOR("emulator"),
     A11Y_OPEN_MENU("open_menu"),
+    REFRESH("sync"),
     A11Y_EXPAND_MORE("expand_more"),
     A11Y_ACTIONS("actions"),
     A11Y_CONTROLS("controls"),

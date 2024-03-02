@@ -8,6 +8,7 @@ import com.android.ddmlib.InstallReceiver
 import com.android.ddmlib.NullOutputReceiver
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.log
+import com.balsdon.androidallyplugin.utils.onException
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.CoroutineScope
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.jetbrains.kotlin.util.classNameAndMessage
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -40,9 +42,15 @@ class AndroidDevice(private val rawDevice: IDevice) {
                         avdName.replace("_", " ")
                     }
                 } else {
-                    val brand = rawDevice.getProperty("ro.product.brand") ?: ""
-                    val model = rawDevice.getProperty(IDevice.PROP_DEVICE_MODEL) ?: ""
-                    val name = "${brand.lowercase()} $model".trim().capitalizeUS()
+                    val brand = (rawDevice.getProperty("ro.product.brand") ?: "").lowercase()
+                    val model = (rawDevice.getProperty(IDevice.PROP_DEVICE_MODEL) ?: "").lowercase()
+                    val name = if (model.startsWith(brand)) {
+                        model
+                    } else {
+                        "$brand $model"
+                    }.trim()
+                        .split(" ")
+                        .joinToString(" ") { t -> t.capitalizeUS() }
                     name.ifBlank {
                         unknownDeviceLabel
                     }
@@ -55,7 +63,7 @@ class AndroidDevice(private val rawDevice: IDevice) {
 
     private fun getPackageList(fn: (List<String>) -> Unit) {
         val builder = StringBuilder()
-        try {
+        runCatching {
             rawDevice.executeShellCommand("pm list packages", object : IShellOutputReceiver {
                 override fun addOutput(data: ByteArray, offset: Int, length: Int) {
                     builder.append(String(data, offset, length, StandardCharsets.UTF_8))
@@ -68,8 +76,11 @@ class AndroidDevice(private val rawDevice: IDevice) {
 
                 override fun isCancelled(): Boolean = false
             })
-        } catch (e: com.android.ddmlib.AdbCommandRejectedException) {
-            log(e)
+        }.onException(
+            com.android.ddmlib.AdbCommandRejectedException::class,
+            java.net.SocketException::class
+        ) {
+            log(it.classNameAndMessage)
             fn(emptyList())
         }
     }
