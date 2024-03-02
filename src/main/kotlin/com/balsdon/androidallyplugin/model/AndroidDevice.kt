@@ -6,6 +6,7 @@ import com.android.ddmlib.IShellOutputReceiver
 import com.android.ddmlib.InstallException
 import com.android.ddmlib.InstallReceiver
 import com.android.ddmlib.NullOutputReceiver
+import com.balsdon.androidallyplugin.latestApkFileName
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.onException
@@ -131,7 +132,7 @@ class AndroidDevice(private val rawDevice: IDevice) {
     /**
      * Installs an APK by copying it out of resources and installing a temporary file
      */
-    private fun installAPK(fileName: String = "talkback-phone-release-signed-66.apk"): Observable<Boolean> {
+    private fun installAPK(fileName: String = latestApkFileName): Observable<Boolean> {
         val subject = BehaviorSubject.create<Boolean>()
         val path = "/files/$fileName"
 
