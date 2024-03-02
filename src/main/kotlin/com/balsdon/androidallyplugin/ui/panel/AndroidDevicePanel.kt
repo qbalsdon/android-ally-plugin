@@ -16,6 +16,7 @@ import javax.swing.JButton
 import javax.swing.JCheckBox
 import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.Timer
 import javax.swing.border.CompoundBorder
 import java.awt.BorderLayout
 import java.awt.FlowLayout
@@ -141,7 +142,31 @@ class AndroidDevicePanel(private val controller: Controller) {
 
     fun create() = JPanel().apply {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
-        add(JLabel(localize("panel.device.title")))
+        add(JPanel().apply {
+            layout = BorderLayout()
+            maximumHeight = elementMaxHeight
+            add(JLabel(localize("panel.device.title")).apply {
+                val oldFont = font
+                font = Font(oldFont.fontName, Font.BOLD, oldFont.size + 2)
+            }, BorderLayout.LINE_START)
+            add(JButton(localize("panel.device.refresh")).apply {
+                icon = CustomIcon.REFRESH.create()
+                addActionListener {
+                    isEnabled = false
+                    Timer(500) { isEnabled = true }.start()
+                    deviceListPanel.let {
+                        it.removeAll()
+                        it.add(JLabel(localize("panel.device.wait")).apply {
+                            val oldFont = font
+                            font = Font(oldFont.fontName, Font.BOLD, oldFont.size + 5)
+                        }, BorderLayout.CENTER)
+                    }
+                    controller.refreshAdb()
+                }
+                maximumHeight = elementMaxHeight
+            }, BorderLayout.LINE_END)
+        })
+
         add(deviceListPanel)
         deviceListener
             .distinctUntilChanged()
@@ -150,9 +175,10 @@ class AndroidDevicePanel(private val controller: Controller) {
                 if (it.isEmpty()) {
                     deviceListPanel.add(JLabel(localize("panel.device.no_devices")))
                 } else {
-                    it.forEach { device ->
-                        deviceListPanel.add(createDeviceSelectionCheckBox(device))
-                    }
+                    it.sortedWith(compareBy({ device -> device.isEmulator }, { device -> device.friendlyName }))
+                        .forEach { device ->
+                            deviceListPanel.add(createDeviceSelectionCheckBox(device))
+                        }
                 }
             }
     }
