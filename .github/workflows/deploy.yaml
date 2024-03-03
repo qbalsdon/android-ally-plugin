@@ -1,4 +1,4 @@
-name: Sign Plugin
+name: Sign And Publish Plugin
 
 #on: [workflow_dispatch]
 on:
@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION_NUMBER: ${{ vars.VERSION_NUMBER }}-${{ github.run_number }}
+      PUBLISH_TOKEN: ${{ secrets.PLUGIN_TOKEN }}
       PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
       CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
       PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
@@ -40,5 +41,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
+          run: |
+            echo "This tasks encapsulates the zip inside another zip. Manual uploading needs to be done with the contained zip file."
           name: android-ally-plugin-${{ env.VERSION_NUMBER }}
           path: ${{ env.OUTPUT_DIR }}/android-ally-plugin-${{ env.VERSION_NUMBER }}-signed.zip
+
+      - name: Setup and execute Gradle 'publishPlugin' task
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publishPlugin
