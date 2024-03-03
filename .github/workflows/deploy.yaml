@@ -42,4 +42,3 @@ jobs:
           if-no-files-found: error
           name: android-ally-plugin-${{ env.VERSION_NUMBER }}
           path: ${{ env.OUTPUT_DIR }}/android-ally-plugin-${{ env.VERSION_NUMBER }}-signed.zip
-          compression-level: 0 # no compression since this is zipped
