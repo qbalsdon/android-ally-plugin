@@ -35,5 +35,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: android-ally-${VERSION_NUMBER}-signed.zip
-          path: ./build/distributions/android-ally-plugin-${VERSION_NUMBER}-signed.zip
+          name: android-ally-plugin-$VERSION_NUMBER.zip
+          path: ./build/distributions/android-ally-plugin-$VERSION_NUMBER-signed.zip
