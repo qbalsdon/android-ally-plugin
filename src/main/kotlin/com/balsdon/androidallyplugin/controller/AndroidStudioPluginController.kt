@@ -13,6 +13,8 @@ import com.intellij.ide.BrowserUtil
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import io.reactivex.rxjava3.core.Observable
@@ -67,6 +69,18 @@ class AndroidStudioPluginController(
             }
 
         })
+    }
+
+    override fun showNotification(title: String,
+                                  message: String,
+                                  type: NotificationType,
+                                  actions: Collection<NotificationAction>) {
+        showNotification(AndroidStudioPluginNotificationPayload(
+            title,
+            message,
+            type,
+            actions
+        ))
     }
 
     override fun showInstallTB4DSuccessNotification() {

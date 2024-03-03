@@ -1,15 +1,25 @@
 package com.balsdon.androidallyplugin.ui.panel
 
+import com.balsdon.androidallyplugin.TB4DWebPage
+import com.balsdon.androidallyplugin.TB4DWebPageNeedHelp
 import com.balsdon.androidallyplugin.adb.accessibilityScannerService
 import com.balsdon.androidallyplugin.adb.layoutBounds
 import com.balsdon.androidallyplugin.adb.openScreen
 import com.balsdon.androidallyplugin.adb.parameters.SettingsScreen
 import com.balsdon.androidallyplugin.adb.showTouches
+import com.balsdon.androidallyplugin.adb.switchAccessService
+import com.balsdon.androidallyplugin.adb.talkBackService
+import com.balsdon.androidallyplugin.adb.voiceAccessService
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
 import com.balsdon.androidallyplugin.utils.log
+import com.intellij.ide.BrowserUtil
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationAction
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.actionSystem.AnActionEvent
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import java.awt.GridBagLayout
@@ -28,7 +38,7 @@ import java.awt.GridLayout
  * The reason why Accessibility Scanner is on here:
  *   - Developers need to take responsibility for installation and use of this tool, AAP can't provide anything more than a toggle
  */
-class DebugPanel(controller: Controller): ControllerPanel(controller) {
+class DebugPanel(private val controller: Controller) : ControllerPanel(controller) {
     private val layoutBoundsLabelString = localize("panel.debug.label.bounds")
     private val layoutBoundsOnButtonText = localize("panel.debug.button.bounds.on")
     private val layoutBoundsOffButtonText = localize("panel.debug.button.bounds.off")
@@ -69,9 +79,35 @@ class DebugPanel(controller: Controller): ControllerPanel(controller) {
                 // accessibility scanner
                 addAccessibilityScannerToggleComponent(3)
                 // voice access
-                addVoiceAccessToggleComponent(4)
+                addVoiceAccessToggleComponent(4) {
+                    controller.showNotification(
+                        localize("notification.voice.access.help.title"),
+                        localize("notification.voice.access.help.message"),
+                        NotificationType.INFORMATION,
+                        listOf(
+                            object : NotificationAction(localize("notification.voice.access.help.action")) {
+                                override fun actionPerformed(event: AnActionEvent, notification: Notification) {
+                                    BrowserUtil.browse(TB4DWebPageNeedHelp)
+                                }
+                            }
+                        )
+                    )
+                }
                 // switch access
-                addSwitchAccessToggleComponent(5)
+                addSwitchAccessToggleComponent(5) {
+                    controller.showNotification(
+                        localize("notification.switch.access.help.title"),
+                        localize("notification.switch.access.help.message"),
+                        NotificationType.INFORMATION,
+                        listOf(
+                            object : NotificationAction(localize("notification.switch.access.help.action")) {
+                                override fun actionPerformed(event: AnActionEvent, notification: Notification) {
+                                    BrowserUtil.browse(TB4DWebPageNeedHelp)
+                                }
+                            }
+                        )
+                    )
+                }
             }).apply {
             autoscrolls = true
         })
@@ -114,25 +150,31 @@ class DebugPanel(controller: Controller): ControllerPanel(controller) {
         )
     }
 
-    private fun JPanel.addVoiceAccessToggleComponent(whichRow: Int) {
+    private fun JPanel.addVoiceAccessToggleComponent(whichRow: Int, showNotification: () -> Unit) {
         createToggleRow(
             voiceAccessLabelString,
             whichRow,
             voiceAccessOnButtonText,
             voiceAccessOffButtonText,
-            positiveAction = { log("TODO: Voice Access: On") },
-            negativeAction = { log("TODO: Voice Access: Off") }
+            positiveAction = {
+                showNotification()
+                voiceAccessService(true).run()
+            },
+            negativeAction = { voiceAccessService(false).run() }
         )
     }
 
-    private fun JPanel.addSwitchAccessToggleComponent(whichRow: Int) {
+    private fun JPanel.addSwitchAccessToggleComponent(whichRow: Int, showNotification: () -> Unit) {
         createToggleRow(
             switchAccessLabelString,
             whichRow,
             switchAccessOnButtonText,
             switchAccessOffButtonText,
-            positiveAction = { log("TODO: Switch Access: On") },
-            negativeAction = { log("TODO: Switch Access: Off") }
+            positiveAction = {
+                showNotification()
+                switchAccessService(true).run()
+            },
+            negativeAction = { switchAccessService(false).run() }
         )
     }
 }
