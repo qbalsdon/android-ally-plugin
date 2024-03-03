@@ -3,7 +3,7 @@ name: Sign Plugin
 on: [workflow_dispatch]
 
 jobs:
-  build-test:
+  sign-plugin:
     runs-on: ubuntu-latest
     env:
       VERSION_NUMBER: ${{ vars.VERSION_NUMBER }}-${{ github.run_number }}
