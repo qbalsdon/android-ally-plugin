@@ -14,7 +14,6 @@ class AndroidAllySwingPanel(private val controller: Controller) : MainPlugin {
             mapOf(
                 localize("panel.talkback.title") to TalkBackPanel(controller).create(),
                 localize("panel.display.title") to DisplayPanel(controller).create(),
-                localize("panel.font.title") to FontPanel(controller).create(),
                 localize("panel.settings.title") to SettingsPanel(controller).create(),
                 localize("panel.debug.title") to DebugPanel(controller).create()
             )

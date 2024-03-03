@@ -25,6 +25,20 @@ fun accessibilityScannerService(activate: Boolean) = AdbScript.AccessibilityServ
     "com.google.android.apps.accessibility.auditor.ScannerService"
 )
 
+fun voiceAccessService(activate: Boolean) = AdbScript.AccessibilityService(
+    activate,
+    false,
+    "com.google.android.apps.accessibility.voiceaccess",
+    "com.google.android.apps.accessibility.voiceaccess.JustSpeakService"
+)
+
+fun switchAccessService(activate: Boolean) = AdbScript.AccessibilityService(
+    activate,
+    false,
+    "com.google.android.accessibility.switchaccess",
+    "com.android.switchaccess.SwitchAccessService"
+)
+
 fun fontScale(scale: Float) = AdbScript.InternalSetting(
     name = "font_scale",
     internalSettingType = InternalSettingType.SYSTEM,

@@ -117,9 +117,21 @@ class AdbScriptTest {
     }
 
     @Test
-    fun creates_a_tb4d_command_to_turn_turn_off_toast_messages() {
-        val result = AdbScript.TalkBackChangeSetting(TalkBackSetting.TOGGLE_SPEECH_OUTPUT, false).asScript()
-        assertThat(result).isEqualTo("am broadcast -a com.a11y.adb.${TalkBackSetting.TOGGLE_SPEECH_OUTPUT.name.lowercase()} -e value false")
+    fun creates_a_tb4d_command_to_turn_toggle_toast_messages() {
+        val testSetting = TalkBackSetting.TOGGLE_SPEECH_OUTPUT
+        listOf(true, false).forEach { testValue ->
+            val result = AdbScript.TalkBackChangeSetting(testSetting, testValue).asScript()
+            assertThat(result).isEqualTo("am broadcast -a com.a11y.adb.${testSetting.name.lowercase()} -e value $testValue")
+        }
+    }
+
+    @Test
+    fun creates_a_tb4d_command_to_turn_toggle_block_out() {
+        val testSetting = TalkBackSetting.BLOCK_OUT
+        listOf(true, false).forEach { testValue ->
+            val result = AdbScript.TalkBackChangeSetting(testSetting, testValue).asScript()
+            assertThat(result).isEqualTo("am broadcast -a com.a11y.adb.${testSetting.name.lowercase()} -e value $testValue")
+        }
     }
 
     @Test

@@ -51,6 +51,9 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
     private val backButtonText = localize("panel.talkback.button.back")
     private val menuButtonText = localize("panel.talkback.button.menu")
     private val actionsButtonText = localize("panel.talkback.button.actions")
+    private val talkBackBlockOutLabelString = localize("panel.talkback.blockout")
+    private val talkBackBlockOutOnText = localize("panel.talkback.blockout.on")
+    private val talkBackBlockOutOffText = localize("panel.talkback.blockout.off")
 
     private val granularityLabelString = localize("panel.talkback.label.granularity")
     private val granularityOptions = listOf(
@@ -81,6 +84,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 addAdvancedControls(3)
                 addVolumeToggleComponent(4)
                 addSpeechOutputToggleComponent(5)
+                addBlockOutComponent(6)
             }).apply {
             autoscrolls = true
         })
@@ -130,6 +134,21 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
 
     private fun JPanel.addGranularityCombo(whichRow: Int, onOption: (String) -> Unit) {
         createDropDownMenu(granularityLabelString, whichRow, granularityOptions, onOption)
+    }
+
+    private fun JPanel.addBlockOutComponent(whichRow: Int) {
+        createToggleRow(
+            talkBackBlockOutLabelString,
+            whichRow,
+            talkBackBlockOutOnText,
+            talkBackBlockOutOffText,
+            positiveAction = {
+                AdbScript.TalkBackChangeSetting(TalkBackSetting.BLOCK_OUT, true).run()
+            },
+            negativeAction = {
+                AdbScript.TalkBackChangeSetting(TalkBackSetting.BLOCK_OUT, false).run()
+            }
+        )
     }
 
     private fun JPanel.addBasicControls(whichRow: Int) {
