@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.balsdon"
-version = "1.0-SNAPSHOT"
+version = System.getenv("VERSION_NUMBER")
 
 repositories {
     mavenCentral()
@@ -54,6 +54,11 @@ dependencies {
 tasks {
     // Set the JVM compatibility versions
     val jvm = "17"
+
+    buildSearchableOptions {
+        enabled = false
+    }
+
     compileKotlin {
         kotlinOptions.jvmTarget = jvm
     }
@@ -72,7 +77,6 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("222.*")
-        untilBuild.set("233.*")
     }
 
     signPlugin {

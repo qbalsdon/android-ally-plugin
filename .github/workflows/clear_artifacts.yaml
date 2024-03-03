@@ -1,0 +1,19 @@
+name: Clear Artifacts
+
+on: [workflow_dispatch]
+
+jobs:
+  clear-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get artifacts
+        run: |
+          TOKEN="${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          ARTIFACTS=$(curl -s -X GET -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts" | jq -r '.artifacts[].id')
+          echo "$ARTIFACTS" > artifacts.txt
+      - name: Delete artifacts
+        run: |
+          TOKEN="${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          while read -r artifact; do
+            curl -s -X DELETE -H "Authorization: token ${TOKEN}" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/$artifact"
+          done < artifacts.txt

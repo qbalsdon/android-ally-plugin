@@ -8,15 +8,21 @@
     <name>Android Ally</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="info@ally-keys.com" url="https://www.ally-keys.com/androidstudioplugin">Ally Keys</vendor>
+    <vendor email="info@ally-keys.com" url="https://www.ally-keys.com/plugin.html">Ally Keys</vendor>
 
-    <!-- TODO:
-         Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
-         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
     <h1>Android Ally Plugin</h1>
-    The Android Ally is your partner in accessible Android development
+    <p>The Android Ally is your partner in accessible Android development.</p>
+
+    <h2>Shortcuts simplified</h2>
+    <p>Get fas access to the different settings available on your device, such as modifying font scale, setting animations on and off, without ever having to leave your application. The Android Ally uses the power of the Android Debug Bridge (ADB) to change settings quickly.</p>
+
+    <h2>TalkBack For Developers</h2>
+    <p>A custom fork of the TalkBack source code, again empowered by the Android Debug Bridge. TalkBack For Developers allows developers to take control of the screen reader with a user interface rather than having to remember all the gestures. While developers still need to understand how screen readers work, it simplifies having to learn all the settings and combinations of gesture controls.</p>
+    <p>One massive advantage of TalkBack for developers is that you can install and run TalkBack on an emulator.</p>
+
+    <h2>Open Source</h2>
+    <p>The <a href="https://github.com/qbalsdon/android-ally-plugin">plugin is open source</a>, and new contributions are encouraged and welcomed.</p>
   ]]>
     </description>
 
