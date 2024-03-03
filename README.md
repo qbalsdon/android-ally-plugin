@@ -76,4 +76,4 @@ Using this method you will not be able to upload to the store, but this is how y
 [8]: https://github.com/qbalsdon/talkback/tree/main
 [9]: https://ally-keys.com/tb4d.html
 [10]: https://plugins.jetbrains.com/docs/intellij/plugin-signing.html#signing-methods
-[11]
+[11]: https://plugins.jetbrains.com/docs/intellij/plugin-signing.html#provide-secrets-to-ide
