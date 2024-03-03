@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 jobs:
-  sign-plugin:
+  publish-plugin-to-marketplace:
     runs-on: ubuntu-latest
     env:
       VERSION_NUMBER: ${{ vars.VERSION_NUMBER }}-${{ github.run_number }}
@@ -26,25 +26,6 @@ jobs:
           echo "INTERNAL VERSION : ${{ vars.VERSION_NUMBER }}"
           echo "GITHUB RUN NUMBER: ${{ github.run_number }}"
           echo "VERSION_NUMBER   : ${VERSION_NUMBER}"
-
-      - name: Setup and execute Gradle 'signPlugin' task
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: signPlugin
-
-      - name: Output details
-        run: |          
-          echo "Contents of ${{ env.OUTPUT_DIR }}"
-          ls -1 ${{ env.OUTPUT_DIR }}
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          if-no-files-found: error
-          run: |
-            echo "This tasks encapsulates the zip inside another zip. Manual uploading needs to be done with the contained zip file."
-          name: android-ally-plugin-${{ env.VERSION_NUMBER }}
-          path: ${{ env.OUTPUT_DIR }}/android-ally-plugin-${{ env.VERSION_NUMBER }}-signed.zip
 
       - name: Setup and execute Gradle 'publishPlugin' task
         uses: gradle/gradle-build-action@v2
