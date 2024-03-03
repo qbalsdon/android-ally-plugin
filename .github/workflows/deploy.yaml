@@ -17,22 +17,19 @@ jobs:
         with:
           arguments: signPlugin
         env:
-          VERSION_NUMBER: ${{ env.VERSION_NUMBER }}-${{ github.run_number }}
+          VERSION_NUMBER: ${{ vars.VERSION_NUMBER }}-${{ github.run_number }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
           PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
 
-      - name: Show environment variables
+      - name: Output details
         run: |
-          echo "VERSION_NUMBER: $VERSION_NUMBER"
-          echo "PRIVATE_KEY: $PRIVATE_KEY"
-          echo "CERTIFICATE_CHAIN: $CERTIFICATE_CHAIN"
-          echo "PRIVATE_KEY_PASSWORD: $PRIVATE_KEY_PASSWORD"
+          echo "VERSION_NUMBER: ${VERSION_NUMBER}"
           echo "==========================================================="
           echo "Contents of ./build/distributions/"
           ls -1 ./build/distributions/
         env:
-          VERSION_NUMBER: ${{ env.VERSION_NUMBER }}-${{ github.run_number }}
+          VERSION_NUMBER: ${{ vars.VERSION_NUMBER }}-${{ github.run_number }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
           PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
@@ -40,7 +37,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: android-ally-${{ env.VERSION_NUMBER }}-signed.zip
-          path: ./build/distributions/android-ally-plugin-${{ env.VERSION_NUMBER }}-signed.zip
+          name: android-ally-${VERSION_NUMBER}-signed.zip
+          path: ./build/distributions/android-ally-plugin-${VERSION_NUMBER}-signed.zip
         env:
-          VERSION_NUMBER: ${{ env.VERSION_NUMBER }}-${{ github.run_number }}
+          VERSION_NUMBER: ${{ vars.VERSION_NUMBER }}-${{ github.run_number }}
