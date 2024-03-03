@@ -36,5 +36,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           if-no-files-found: error
-          name: android-ally-plugin-${{ env.VERSION_NUMBER }}.zip
+          name: android-ally-plugin-${{ env.VERSION_NUMBER }}
           path: ./build/distributions/android-ally-plugin-*-signed.zip
