@@ -1,15 +1,13 @@
-name: Sign Plugin
+name: Sign And Publish Plugin
 
 on: [workflow_dispatch]
-#on:
-#  pull_request:
-#    branches: [main]
 
 jobs:
-  sign-plugin:
+  publish-plugin-to-marketplace:
     runs-on: ubuntu-latest
     env:
       VERSION_NUMBER: ${{ vars.VERSION_NUMBER }}-${{ github.run_number }}
+      PUBLISH_TOKEN: ${{ secrets.PLUGIN_TOKEN }}
       PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
       CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
       PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
@@ -26,19 +24,7 @@ jobs:
           echo "GITHUB RUN NUMBER: ${{ github.run_number }}"
           echo "VERSION_NUMBER   : ${VERSION_NUMBER}"
 
-      - name: Setup and execute Gradle 'signPlugin' task
+      - name: Setup and execute Gradle 'publishPlugin' task
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: signPlugin
-
-      - name: Output details
-        run: |          
-          echo "Contents of ${{ env.OUTPUT_DIR }}"
-          ls -1 ${{ env.OUTPUT_DIR }}
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          if-no-files-found: error
-          name: android-ally-plugin-${{ env.VERSION_NUMBER }}
-          path: ${{ env.OUTPUT_DIR }}/android-ally-plugin-${{ env.VERSION_NUMBER }}-signed.zip
+          arguments: publishPlugin
