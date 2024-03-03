@@ -1,9 +1,9 @@
 name: Sign Plugin
 
-#on: [workflow_dispatch]
-on:
-  pull_request:
-    branches: [main]
+on: [workflow_dispatch]
+#on:
+#  pull_request:
+#    branches: [main]
 
 jobs:
   sign-plugin:
