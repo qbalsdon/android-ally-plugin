@@ -353,11 +353,6 @@ class AndroidStudioPluginControllerTest {
             TODO("Not yet implemented")
         }
 
-        @Deprecated("Deprecated in Java")
-        override fun getPicoContainer(): PicoContainer {
-            TODO("Not yet implemented")
-        }
-
         override fun isInjectionForExtensionSupported(): Boolean {
             TODO("Not yet implemented")
         }
@@ -375,6 +370,10 @@ class AndroidStudioPluginControllerTest {
         }
 
         override fun <T : Any?> getService(p0: Class<T>): T {
+            TODO("Not yet implemented")
+        }
+
+        override fun <T : Any?> instantiateClass(p0: Class<T>, p1: PluginId): T {
             TODO("Not yet implemented")
         }
 
