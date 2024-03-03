@@ -50,6 +50,10 @@ adb shell service call uimode 6 i32 2                       # call 6th method of
 ```
 Thanks to [Chris Simmons][7] and his amazing [DroidCon presentation "Exploring Android Internals with ADB"][6]
 
+## Building Locally
+
+
+
 [0]: https://plugins.jetbrains.com/docs/intellij/plugin-extensions.html#implementing-extension
 [1]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [2]: https://en.wikipedia.org/wiki/SOLID
