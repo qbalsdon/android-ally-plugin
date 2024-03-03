@@ -50,9 +50,20 @@ adb shell service call uimode 6 i32 2                       # call 6th method of
 ```
 Thanks to [Chris Simmons][7] and his amazing [DroidCon presentation "Exploring Android Internals with ADB"][6]
 
-## Building Locally
+## Signing Locally
 
+Follow the [instructions to generate a private key and chain file][10]
+You'll need to set up 4 environment variables:
+```bash
+export VERSION_NUMBER=[VERSION NUMBER]
+export CERTIFICATE_CHAIN=$(cat chain.crt)
+export PRIVATE_KEY=$(cat private.pem)
+export PRIVATE_KEY_PASSWORD=[YOUR PASSWORD]
+```
 
+And then you can run `./gradlew signPlugin` - I have not been successful [running this from the IDE][11], but you're welcome to try.
+
+Using this method you will not be able to upload to the store, but this is how you can test locally.
 
 [0]: https://plugins.jetbrains.com/docs/intellij/plugin-extensions.html#implementing-extension
 [1]: https://plugins.jetbrains.com/docs/intellij/welcome.html
@@ -64,3 +75,5 @@ Thanks to [Chris Simmons][7] and his amazing [DroidCon presentation "Exploring A
 [7]: https://www.linkedin.com/in/chrisdsimmonds/
 [8]: https://github.com/qbalsdon/talkback/tree/main
 [9]: https://ally-keys.com/tb4d.html
+[10]: https://plugins.jetbrains.com/docs/intellij/plugin-signing.html#signing-methods
+[11]
