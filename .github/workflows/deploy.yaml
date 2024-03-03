@@ -35,5 +35,6 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
+          if-no-files-found: error
           name: android-ally-plugin-$VERSION_NUMBER.zip
-          path: ./build/distributions/android-ally-plugin-$VERSION_NUMBER-signed.zip
+          path: ./build/distributions/android-ally-plugin-*-signed.zip
