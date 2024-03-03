@@ -1,9 +1,9 @@
 name: Sign Plugin
 
-on: [workflow_dispatch]
-#on:
-#  pull_request:
-#    branches: [main]
+#on: [workflow_dispatch]
+on:
+  pull_request:
+    branches: [main]
 
 jobs:
   sign-plugin:
@@ -37,8 +37,9 @@ jobs:
           ls -1 ${{ env.OUTPUT_DIR }}
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: android-ally-plugin-${{ env.VERSION_NUMBER }}
           path: ${{ env.OUTPUT_DIR }}/android-ally-plugin-${{ env.VERSION_NUMBER }}-signed.zip
+          compression-level: 0 # no compression since this is zipped
