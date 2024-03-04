@@ -29,7 +29,11 @@ intellij {
      * @see [https://packages.jetbrains.team/maven/p/kpm/public/org/jetbrains/jewel/jewel-ide-laf-bridge-platform-specific/]
      */
 
-    val intellijVersion = "232.10227.8.2321.11379558" // https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html#configuration
+    val androidStudioVersion = mapOf(
+        "Hedgehog" to "231.9392.1.2311.11330709",
+        "Iguana" to "232.10227.8.2321.11379558"
+    )
+    val intellijVersion = androidStudioVersion["Iguana"] // https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html#configuration
     version.set(intellijVersion)
     type.set("AI") // Target Android Studio IDE Platform
     plugins.set(listOf("android"))
