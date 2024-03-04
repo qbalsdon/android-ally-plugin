@@ -1,4 +1,4 @@
-name: Sign And Publish Plugin
+name: Generate artifact on Github
 
 on: [workflow_dispatch]
 
