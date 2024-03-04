@@ -30,6 +30,7 @@ intellij {
      */
 
     val androidStudioVersion = mapOf(
+        "Giraffe" to "223.8836.35.2231.11090377",
         "Hedgehog" to "231.9392.1.2311.11330709",
         "Iguana" to "232.10227.8.2321.11379558"
     )
@@ -80,7 +81,7 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("222.*")
+        sinceBuild.set("222")
     }
 
     signPlugin {

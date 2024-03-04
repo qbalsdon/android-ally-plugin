@@ -1,14 +1,15 @@
 package com.balsdon.androidallyplugin.utils
 
-import com.balsdon.androidallyplugin.elementMaxHeight
 import com.balsdon.androidallyplugin.localize
 import com.intellij.openapi.ui.ComboBox
-import com.intellij.ui.util.maximumHeight
+import com.intellij.util.ui.JBUI
+import javax.swing.Box
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
 import java.awt.Component
+import java.awt.Dimension
 import java.awt.GridBagConstraints
 
 fun JPanel.placeComponent(
@@ -17,7 +18,6 @@ fun JPanel.placeComponent(
     y: Int,
     w: Int = 1,
     h: Int = 1,
-    top: Boolean = false,
     fillType: Int = GridBagConstraints.HORIZONTAL
 ) {
     add(component, GridBagConstraints().apply {
@@ -25,12 +25,10 @@ fun JPanel.placeComponent(
         gridy = y
         gridwidth = w
         gridheight = h
+        anchor = GridBagConstraints.NORTHWEST
         weightx = 1.0
-        weighty = 1.0
-        if (top) {
-            anchor = GridBagConstraints.NORTHWEST
-        }
         fill = fillType
+        insets = JBUI.emptyInsets()
     })
 }
 
@@ -45,16 +43,16 @@ fun JPanel.createToggleRow(
     negativeAction: () -> Unit
 ) {
     placeComponent(JLabel(label).apply {
-        maximumHeight = elementMaxHeight
+        setMaxComponentSize()
     }, 0, y = whichRow, 2)
     placeComponent(JButton(positiveLabel).apply {
-        maximumHeight = elementMaxHeight
+        setMaxComponentSize()
         addActionListener {
             positiveAction()
         }
     }, colStart, w = colSpan, y = whichRow)
     placeComponent(JButton(negativeLabel).apply {
-        maximumHeight = elementMaxHeight
+        setMaxComponentSize()
         addActionListener {
             negativeAction()
         }
@@ -62,15 +60,35 @@ fun JPanel.createToggleRow(
 }
 
 fun JPanel.createDropDownMenu(label: String, whichRow: Int, options: List<String>, onSelectionChanged: (String) -> Unit) {
-    placeComponent(JLabel(label).apply { maximumHeight = elementMaxHeight }, 0, y = whichRow, 2)
+    placeComponent(JLabel(label).apply { setMaxComponentSize() }, 0, y = whichRow, 2)
 
     placeComponent(ComboBox(DefaultComboBoxModel<String>().apply {
         options.forEach { addElement(localize(it)) }
     }).apply {
-        maximumHeight = elementMaxHeight
-
+        setMaxComponentSize()
         addActionListener {
             onSelectionChanged(options[this.selectedIndex])
         }
     }, 3, y = whichRow, 4)
+}
+
+fun JPanel.addFiller(index: Int = -1) {
+    if (index == -1) {
+        add(
+            Box.Filler(
+                Dimension(0, 0),
+                Dimension(0, Int.MAX_VALUE),
+                Dimension(0, Int.MAX_VALUE)
+            )
+        )
+    } else {
+        add(
+            Box.Filler(
+                Dimension(0, 0),
+                Dimension(0, Int.MAX_VALUE),
+                Dimension(0, Int.MAX_VALUE)
+            ),
+            index
+        )
+    }
 }

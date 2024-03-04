@@ -7,18 +7,15 @@ import com.balsdon.androidallyplugin.adb.fontScale
 import com.balsdon.androidallyplugin.adb.highTextContrast
 import com.balsdon.androidallyplugin.adb.timeToReact
 import com.balsdon.androidallyplugin.controller.Controller
-import com.balsdon.androidallyplugin.elementMaxHeight
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
 import com.balsdon.androidallyplugin.utils.placeComponent
-import com.intellij.ui.util.maximumHeight
+import com.balsdon.androidallyplugin.utils.setMaxComponentSize
 import javax.swing.JLabel
 import javax.swing.JPanel
-import javax.swing.JScrollPane
 import javax.swing.JSlider
 import java.awt.GridBagLayout
-import java.awt.GridLayout
 
 /**
  * Creates the Display panel
@@ -53,36 +50,31 @@ class SettingsPanel(controller: Controller) : ControllerPanel(controller) {
     private val highContrastOnButtonText = localize("panel.font.contrast.on")
     private val highContrastOffButtonText = localize("panel.font.contrast.off")
 
-    fun create() = JPanel().apply {
-        layout = GridLayout(0, 1)
-        add(JScrollPane(
-            JPanel().apply {
-                layout = GridBagLayout()
-                addFontSizeComponent(0) { scale -> fontScale(scale).run() }
-                // bold font
-                addBoldFontToggleComponent(1)
-                // high contrast text
-                addHighContrastToggleComponent(2)
-                // time to react
-                addTimeToReactComponent(3) { option ->
-                    timeToReact(
-                        when (option) {
-                            "panel.settings.label.reaction.ten" -> 10
-                            "panel.settings.label.reaction.thirty" -> 30
-                            "panel.settings.label.reaction.minute" -> 60
-                            "panel.settings.label.reaction.minutes" -> 120
-                            else -> 0
-                        } * 1000
-                    ).run()
-                }
-                // captions
-                addCaptionsToggleComponent(4)
-                // audio description
-                addAudioDescriptionToggleComponent(5)
-            }).apply {
-            autoscrolls = true
-        })
+    override fun buildComponent() = JPanel().apply {
+        layout = GridBagLayout()
+        addFontSizeComponent(0) { scale -> fontScale(scale).run() }
+        // bold font
+        addBoldFontToggleComponent(1)
+        // high contrast text
+        addHighContrastToggleComponent(2)
+        // time to react
+        addTimeToReactComponent(3) { option ->
+            timeToReact(
+                when (option) {
+                    "panel.settings.label.reaction.ten" -> 10
+                    "panel.settings.label.reaction.thirty" -> 30
+                    "panel.settings.label.reaction.minute" -> 60
+                    "panel.settings.label.reaction.minutes" -> 120
+                    else -> 0
+                } * 1000
+            ).run()
+        }
+        // captions
+        addCaptionsToggleComponent(4)
+        // audio description
+        addAudioDescriptionToggleComponent(5)
     }
+
 
     private fun JPanel.addTimeToReactComponent(whichRow: Int, onOption: (String) -> Unit) {
         createDropDownMenu(reactionLabelString, whichRow, reactionOptions, onOption)
@@ -111,9 +103,9 @@ class SettingsPanel(controller: Controller) : ControllerPanel(controller) {
     }
 
     private fun JPanel.addFontSizeComponent(whichRow: Int, onSliderChanged: (Float) -> Unit) {
-        val label = JLabel(layoutFontScaleLabelString).apply { maximumHeight = elementMaxHeight }
+        val label = JLabel(layoutFontScaleLabelString).apply { setMaxComponentSize() }
         val slider = JSlider(50, 300, 100).apply {
-            maximumHeight = elementMaxHeight
+            setMaxComponentSize()
             paintTrack = true
             paintTicks = true
             paintLabels = true
