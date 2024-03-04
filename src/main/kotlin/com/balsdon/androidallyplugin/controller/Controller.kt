@@ -3,7 +3,6 @@ package com.balsdon.androidallyplugin.controller
 import com.balsdon.androidallyplugin.model.AndroidDevice
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.actionSystem.AnAction
 import io.reactivex.rxjava3.core.Observable
 
 interface Controller {

@@ -19,7 +19,6 @@ import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.kotlin.backend.common.push
 import org.junit.Assert
 import org.junit.Test
-import org.picocontainer.PicoContainer
 
 class AndroidStudioPluginControllerTest {
     @Test

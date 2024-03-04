@@ -1,6 +1,5 @@
 package com.balsdon.androidallyplugin.ui.panel
 
-import com.balsdon.androidallyplugin.TB4DWebPage
 import com.balsdon.androidallyplugin.TB4DWebPageNeedHelp
 import com.balsdon.androidallyplugin.adb.accessibilityScannerService
 import com.balsdon.androidallyplugin.adb.layoutBounds
@@ -8,22 +7,18 @@ import com.balsdon.androidallyplugin.adb.openScreen
 import com.balsdon.androidallyplugin.adb.parameters.SettingsScreen
 import com.balsdon.androidallyplugin.adb.showTouches
 import com.balsdon.androidallyplugin.adb.switchAccessService
-import com.balsdon.androidallyplugin.adb.talkBackService
 import com.balsdon.androidallyplugin.adb.voiceAccessService
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
-import com.balsdon.androidallyplugin.utils.log
 import com.intellij.ide.BrowserUtil
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import javax.swing.JPanel
-import javax.swing.JScrollPane
 import java.awt.GridBagLayout
-import java.awt.GridLayout
 
 /**
  * Creates the Debug panel
@@ -62,55 +57,50 @@ class DebugPanel(private val controller: Controller) : ControllerPanel(controlle
     private val openScreenLabelString = localize("panel.debug.label.screen")
     private val openScreenOptions = SettingsScreen.entries.map { it.reference }
 
-    fun create() = JPanel().apply {
-        layout = GridLayout(0, 1)
-        add(JScrollPane(
-            JPanel().apply {
-                layout = GridBagLayout()
-                // open screen
-                addOpenScreenComponent(0) { option ->
-                    val screen = SettingsScreen.entries.first { it.reference == option }
-                    openScreen(screen).run()
-                }
-                // layout bounds
-                addLayoutBoundsToggleComponent(1)
-                // show taps
-                addShowTapsToggleComponent(2)
-                // accessibility scanner
-                addAccessibilityScannerToggleComponent(3)
-                // voice access
-                addVoiceAccessToggleComponent(4) {
-                    controller.showNotification(
-                        localize("notification.voice.access.help.title"),
-                        localize("notification.voice.access.help.message"),
-                        NotificationType.INFORMATION,
-                        listOf(
-                            object : NotificationAction(localize("notification.voice.access.help.action")) {
-                                override fun actionPerformed(event: AnActionEvent, notification: Notification) {
-                                    BrowserUtil.browse(TB4DWebPageNeedHelp)
-                                }
-                            }
-                        )
-                    )
-                }
-                // switch access
-                addSwitchAccessToggleComponent(5) {
-                    controller.showNotification(
-                        localize("notification.switch.access.help.title"),
-                        localize("notification.switch.access.help.message"),
-                        NotificationType.INFORMATION,
-                        listOf(
-                            object : NotificationAction(localize("notification.switch.access.help.action")) {
-                                override fun actionPerformed(event: AnActionEvent, notification: Notification) {
-                                    BrowserUtil.browse(TB4DWebPageNeedHelp)
-                                }
-                            }
-                        )
-                    )
-                }
-            }).apply {
-            autoscrolls = true
-        })
+    override fun buildComponent() = JPanel().apply {
+
+        layout = GridBagLayout()
+        // open screen
+        addOpenScreenComponent(0) { option ->
+            val screen = SettingsScreen.entries.first { it.reference == option }
+            openScreen(screen).run()
+        }
+        // layout bounds
+        addLayoutBoundsToggleComponent(1)
+        // show taps
+        addShowTapsToggleComponent(2)
+        // accessibility scanner
+        addAccessibilityScannerToggleComponent(3)
+        // voice access
+        addVoiceAccessToggleComponent(4) {
+            controller.showNotification(
+                localize("notification.voice.access.help.title"),
+                localize("notification.voice.access.help.message"),
+                NotificationType.INFORMATION,
+                listOf(
+                    object : NotificationAction(localize("notification.voice.access.help.action")) {
+                        override fun actionPerformed(event: AnActionEvent, notification: Notification) {
+                            BrowserUtil.browse(TB4DWebPageNeedHelp)
+                        }
+                    }
+                )
+            )
+        }
+        // switch access
+        addSwitchAccessToggleComponent(5) {
+            controller.showNotification(
+                localize("notification.switch.access.help.title"),
+                localize("notification.switch.access.help.message"),
+                NotificationType.INFORMATION,
+                listOf(
+                    object : NotificationAction(localize("notification.switch.access.help.action")) {
+                        override fun actionPerformed(event: AnActionEvent, notification: Notification) {
+                            BrowserUtil.browse(TB4DWebPageNeedHelp)
+                        }
+                    }
+                )
+            )
+        }
     }
 
     private fun JPanel.addOpenScreenComponent(whichRow: Int, onOption: (String) -> Unit) {

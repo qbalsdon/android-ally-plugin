@@ -3,14 +3,16 @@ package com.balsdon.androidallyplugin.ui.panel
 import com.balsdon.androidallyplugin.TB4DPackageName
 import com.balsdon.androidallyplugin.TB4DWebPage
 import com.balsdon.androidallyplugin.controller.Controller
-import com.balsdon.androidallyplugin.elementMaxHeight
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.model.AndroidDevice
 import com.balsdon.androidallyplugin.ui.CustomIcon
+import com.balsdon.androidallyplugin.utils.addFiller
 import com.balsdon.androidallyplugin.utils.log
+import com.balsdon.androidallyplugin.utils.setMaxComponentSize
 import com.intellij.ide.BrowserUtil
-import com.intellij.ui.util.maximumHeight
+import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
+import javax.swing.Box
 import javax.swing.BoxLayout
 import javax.swing.JButton
 import javax.swing.JCheckBox
@@ -19,6 +21,7 @@ import javax.swing.JPanel
 import javax.swing.Timer
 import javax.swing.border.CompoundBorder
 import java.awt.BorderLayout
+import java.awt.Color
 import java.awt.FlowLayout
 import java.awt.Font
 import java.awt.event.KeyEvent
@@ -32,7 +35,7 @@ class AndroidDevicePanel(private val controller: Controller) {
 
     private fun createDeviceSelectionCheckBox(device: AndroidDevice) = JPanel().apply {
         layout = BorderLayout()
-        maximumHeight = elementMaxHeight
+        setMaxComponentSize()
         val nameLabel = JLabel(device.serial)
         val dataLabel = JLabel("...").apply {
             val oldFont = font
@@ -143,17 +146,21 @@ class AndroidDevicePanel(private val controller: Controller) {
     fun create() = JPanel().apply {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         add(JPanel().apply {
-            layout = BorderLayout()
-            maximumHeight = elementMaxHeight
+            layout = BoxLayout(this, BoxLayout.X_AXIS)
+            setMaxComponentSize()
             add(JLabel(localize("panel.device.title")).apply {
+                setMaxComponentSize()
                 val oldFont = font
                 font = Font(oldFont.fontName, Font.BOLD, oldFont.size + 2)
-            }, BorderLayout.LINE_START)
+            })
+            add(Box.createHorizontalGlue())
             add(JButton(localize("panel.device.refresh")).apply {
+                setMaxComponentSize()
                 icon = CustomIcon.REFRESH.create()
                 addActionListener {
-                    isEnabled = false
-                    Timer(500) { isEnabled = true }.start()
+//                    isEnabled = false
+                    background = JBColor.DARK_GRAY
+                    Timer(500) { background = JBColor.LIGHT_GRAY }.start()
                     deviceListPanel.let {
                         it.removeAll()
                         it.add(JLabel(localize("panel.device.wait")).apply {
@@ -163,8 +170,7 @@ class AndroidDevicePanel(private val controller: Controller) {
                     }
                     controller.refreshAdb()
                 }
-                maximumHeight = elementMaxHeight
-            }, BorderLayout.LINE_END)
+            })
         })
 
         add(deviceListPanel)
@@ -179,6 +185,7 @@ class AndroidDevicePanel(private val controller: Controller) {
                         .forEach { device ->
                             deviceListPanel.add(createDeviceSelectionCheckBox(device))
                         }
+                    deviceListPanel.addFiller()
                 }
             }
     }

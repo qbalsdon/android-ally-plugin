@@ -9,20 +9,17 @@ import com.balsdon.androidallyplugin.adb.parameters.TalkBackSetting
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackVolumeSetting
 import com.balsdon.androidallyplugin.adb.talkBackService
 import com.balsdon.androidallyplugin.controller.Controller
-import com.balsdon.androidallyplugin.elementMaxHeight
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.ui.CustomIcon
 import com.balsdon.androidallyplugin.ui.component.IconButton
 import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
 import com.balsdon.androidallyplugin.utils.placeComponent
-import com.intellij.ui.util.maximumHeight
+import com.balsdon.androidallyplugin.utils.setMaxComponentSize
 import javax.swing.JLabel
 import javax.swing.JPanel
-import javax.swing.JScrollPane
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
-import java.awt.GridLayout
 
 
 /**
@@ -69,25 +66,19 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
     )
     private var selectedGranularity: TalkBackGranularity = TalkBackGranularity.Default
 
-    fun create() = JPanel().apply {
-        layout = GridLayout(0, 1)
-        add(JScrollPane(
-            JPanel().apply {
-                layout = GridBagLayout()
-                addTalkBackToggleComponent(0)
-                addGranularityCombo(1) { option ->
-                    selectedGranularity = TalkBackGranularity.valueOf(
-                        option.replace("panel.talkback.label.granularity.", "").toCamelCase()
-                    )
-                }
-                addBasicControls(2)
-                addAdvancedControls(3)
-                addVolumeToggleComponent(4)
-                addSpeechOutputToggleComponent(5)
-                addBlockOutComponent(6)
-            }).apply {
-            autoscrolls = true
-        })
+    override fun buildComponent() = JPanel().apply {
+        layout = GridBagLayout()
+        addTalkBackToggleComponent(0)
+        addGranularityCombo(1) { option ->
+            selectedGranularity = TalkBackGranularity.valueOf(
+                option.replace("panel.talkback.label.granularity.", "").toCamelCase()
+            )
+        }
+        addBasicControls(2)
+        addAdvancedControls(3)
+        addVolumeToggleComponent(4)
+        addSpeechOutputToggleComponent(5)
+        addBlockOutComponent(6)
     }
 
 
@@ -153,8 +144,8 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
 
     private fun JPanel.addBasicControls(whichRow: Int) {
         placeComponent(
-            JLabel(navigationLabelString).apply { maximumHeight = elementMaxHeight },
-            x = 0, y = whichRow, 2, top = true
+            JLabel(navigationLabelString).apply { setMaxComponentSize() },
+            x = 0, y = whichRow, 2
         )
         placeComponent(
             IconButton(
