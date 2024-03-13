@@ -46,8 +46,13 @@
     </extensions>
 
     <change-notes><![CDATA[
+        <h2>Whats new</h2>
+        <ul>
+            <li>Added reset font scale button <a href="https://trello.com/c/PHGrQq5V">Trello issue link</a></li>
+        </ul>
         <h2>Bug fixes</h2>
         <ul>
+            <li>Fixed issue where labels where no vertically centered <a href="https://trello.com/c/PHGrQq5V">Trello issue link</a></li>
             <li>Fixed spelling error from "fas" with "fast" <a href="https://trello.com/c/Q33JbqAS">Trello issue link</a></li>
         </ul>
     ]]></change-notes>
