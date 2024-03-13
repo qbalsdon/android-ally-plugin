@@ -52,8 +52,8 @@
         </ul>
         <h2>Bug fixes</h2>
         <ul>
-            <li>Fixed issue where labels where no vertically centered <a href="https://trello.com/c/PHGrQq5V">Trello issue link</a></li>
-            <li>Fixed spelling error from "fas" with "fast" <a href="https://trello.com/c/Q33JbqAS">Trello issue link</a></li>
+            <li>Fixed issue where labels where not vertically centered <a href="https://trello.com/c/PHGrQq5V">Trello issue link</a></li>
+            <li>Fixed spelling error from "fas" to "fast" <a href="https://trello.com/c/Q33JbqAS">Trello issue link</a></li>
         </ul>
     ]]></change-notes>
 </idea-plugin>
