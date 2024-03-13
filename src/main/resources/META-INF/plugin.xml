@@ -15,7 +15,7 @@
     <p>The Android Ally is your partner in accessible Android development.</p>
 
     <h2>Shortcuts simplified</h2>
-    <p>Get fas access to the different settings available on your device, such as modifying font scale, setting animations on and off, without ever having to leave your application. The Android Ally uses the power of the Android Debug Bridge (ADB) to change settings quickly.</p>
+    <p> on your device, such as modifying font scale, setting animations on and off, without ever having to leave your application. The Android Ally uses the power of the Android Debug Bridge (ADB) to change settings quickly.</p>
 
     <h2>TalkBack For Developers</h2>
     <p>A custom fork of the TalkBack source code, again empowered by the Android Debug Bridge. TalkBack For Developers allows developers to take control of the screen reader with a user interface rather than having to remember all the gestures. While developers still need to understand how screen readers work, it simplifies having to learn all the settings and combinations of gesture controls.</p>
@@ -44,4 +44,11 @@
                     anchor="bottom"
         />
     </extensions>
+
+    <change-notes><![CDATA[
+        <h2>Bug fixes</h2>
+        <ul>
+            <li>Fixed spelling error from "fas" with "fast" <a href="https://trello.com/c/Q33JbqAS">Trello issue link</a></li>
+        </ul>
+    ]]></change-notes>
 </idea-plugin>
