@@ -18,14 +18,15 @@ fun JPanel.placeComponent(
     y: Int,
     w: Int = 1,
     h: Int = 1,
-    fillType: Int = GridBagConstraints.HORIZONTAL
+    fillType: Int = GridBagConstraints.HORIZONTAL,
+    anchorType: Int = GridBagConstraints.NORTHWEST
 ) {
     add(component, GridBagConstraints().apply {
         gridx = x
         gridy = y
         gridwidth = w
         gridheight = h
-        anchor = GridBagConstraints.NORTHWEST
+        anchor = anchorType
         weightx = 1.0
         fill = fillType
         insets = JBUI.emptyInsets()
@@ -42,9 +43,15 @@ fun JPanel.createToggleRow(
     positiveAction: () -> Unit,
     negativeAction: () -> Unit
 ) {
-    placeComponent(JLabel(label).apply {
-        setMaxComponentSize()
-    }, 0, y = whichRow, 2)
+    placeComponent(
+        JLabel(label).apply {
+            setMaxComponentSize()
+        },
+        x = 0,
+        y = whichRow,
+        w = 2,
+        anchorType = GridBagConstraints.CENTER
+    )
     placeComponent(JButton(positiveLabel).apply {
         setMaxComponentSize()
         addActionListener {
@@ -59,8 +66,19 @@ fun JPanel.createToggleRow(
     }, colStart + colSpan, w = colSpan, y = whichRow)
 }
 
-fun JPanel.createDropDownMenu(label: String, whichRow: Int, options: List<String>, onSelectionChanged: (String) -> Unit) {
-    placeComponent(JLabel(label).apply { setMaxComponentSize() }, 0, y = whichRow, 2)
+fun JPanel.createDropDownMenu(
+    label: String,
+    whichRow: Int,
+    options: List<String>,
+    onSelectionChanged: (String) -> Unit
+) {
+    placeComponent(
+        JLabel(label).apply { setMaxComponentSize() },
+        x = 0,
+        y = whichRow,
+        w = 2,
+        anchorType = GridBagConstraints.CENTER
+    )
 
     placeComponent(ComboBox(DefaultComboBoxModel<String>().apply {
         options.forEach { addElement(localize(it)) }
