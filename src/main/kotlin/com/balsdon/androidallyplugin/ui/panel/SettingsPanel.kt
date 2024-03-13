@@ -12,9 +12,11 @@ import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
 import com.balsdon.androidallyplugin.utils.placeComponent
 import com.balsdon.androidallyplugin.utils.setMaxComponentSize
+import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JSlider
+import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 
 /**
@@ -41,6 +43,7 @@ class SettingsPanel(controller: Controller) : ControllerPanel(controller) {
     )
 
     private val layoutFontScaleLabelString = localize("panel.font.label.scale")
+    private val layoutFontScaleResetString = localize("panel.font.label.reset")
 
     private val boldFontLabelString = localize("panel.font.bold.label")
     private val boldFontOnButtonText = localize("panel.font.bold.on")
@@ -119,14 +122,22 @@ class SettingsPanel(controller: Controller) : ControllerPanel(controller) {
                 }
             }
         }
+        val resetButton = JButton(layoutFontScaleResetString).apply {
+            setMaxComponentSize()
+            addActionListener { slider.value = 100 }
+        }
 
         placeComponent(
             label,
-            x = 0, y = whichRow, 1
+            x = 0, y = whichRow, w = 1, anchorType = GridBagConstraints.CENTER
+        )
+        placeComponent(
+            resetButton,
+            x = 1, y = whichRow, w = 1, anchorType = GridBagConstraints.CENTER
         )
         placeComponent(
             slider,
-            x = 3, y = whichRow, 4
+            x = 3, y = whichRow, w = 4
         )
     }
 

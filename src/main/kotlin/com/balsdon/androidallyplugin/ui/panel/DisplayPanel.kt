@@ -17,6 +17,7 @@ import javax.swing.DefaultComboBoxModel
 import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
+import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 
 /**
@@ -73,7 +74,7 @@ class DisplayPanel(controller: Controller) : ControllerPanel(controller) {
     private fun JPanel.addDisplayDensityComponent(whichRow: Int, onDensitySelected: (String) -> Unit) {
         placeComponent(
             JLabel(displayDensityLabelString).apply { setMaxComponentSize() },
-            x = 0, y = whichRow, 1
+            x = 0, y = whichRow, w = 1, anchorType = GridBagConstraints.CENTER
         )
         val startIndex = 2
         listOf("356", displayDensityDefaultString, "460", "540", "500").forEachIndexed { index, label ->
@@ -130,9 +131,10 @@ class DisplayPanel(controller: Controller) : ControllerPanel(controller) {
     private fun JPanel.addColorCorrectionComponent(whichRow: Int, onOption: (String) -> Unit) {
         placeComponent(
             JLabel(colorCorrectionLabelString).apply { setMaxComponentSize() },
-            0,
+            x = 0,
             y = whichRow,
-            2
+            w = 2,
+            anchorType = GridBagConstraints.CENTER
         )
 
         placeComponent(ComboBox(DefaultComboBoxModel<String>().apply {
@@ -143,6 +145,6 @@ class DisplayPanel(controller: Controller) : ControllerPanel(controller) {
             addActionListener {
                 onOption(colorCorrectionOptions[this.selectedIndex])
             }
-        }, 3, y = whichRow, 4)
+        }, x = 3, y = whichRow, w = 4)
     }
 }
