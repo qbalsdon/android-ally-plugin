@@ -61,18 +61,18 @@ class DebugPanel(private val controller: Controller) : ControllerPanel(controlle
 
         layout = GridBagLayout()
         // open screen
-        addOpenScreenComponent(0) { option ->
+        addOpenScreenComponent(whichRow = 0) { option ->
             val screen = SettingsScreen.entries.first { it.reference == option }
             openScreen(screen).run()
         }
         // layout bounds
-        addLayoutBoundsToggleComponent(1)
+        addLayoutBoundsToggleComponent(whichRow = 1)
         // show taps
-        addShowTapsToggleComponent(2)
+        addShowTapsToggleComponent(whichRow = 2)
         // accessibility scanner
-        addAccessibilityScannerToggleComponent(3)
+        addAccessibilityScannerToggleComponent(whichRow = 3)
         // voice access
-        addVoiceAccessToggleComponent(4) {
+        addVoiceAccessToggleComponent(whichRow = 4) {
             controller.showNotification(
                 localize("notification.voice.access.help.title"),
                 localize("notification.voice.access.help.message"),
@@ -87,7 +87,7 @@ class DebugPanel(private val controller: Controller) : ControllerPanel(controlle
             )
         }
         // switch access
-        addSwitchAccessToggleComponent(5) {
+        addSwitchAccessToggleComponent(whichRow = 5) {
             controller.showNotification(
                 localize("notification.switch.access.help.title"),
                 localize("notification.switch.access.help.message"),

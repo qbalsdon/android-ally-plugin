@@ -22,6 +22,7 @@ class AndroidAllySwingPanel(private val controller: Controller) : MainPlugin {
 
     private val content: JSplitPane
         get() = JSplitPane(JSplitPane.HORIZONTAL_SPLIT).apply {
+            @Suppress("MagicNumber")
             resizeWeight = 0.3
             leftComponent = devicePanel
             rightComponent = tabPanel

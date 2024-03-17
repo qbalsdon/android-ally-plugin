@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit
  * To test functions on an [AndroidDevice], use
  * [AndroidDeviceTestFake].device
  */
+@Suppress("TooGenericExceptionThrown", "UnusedPrivateProperty")
 class AndroidDeviceTestFake(
     serial: String = "",
     isEmulator: Boolean = false,

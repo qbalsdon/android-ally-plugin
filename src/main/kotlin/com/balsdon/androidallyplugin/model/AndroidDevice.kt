@@ -6,7 +6,7 @@ import com.android.ddmlib.IShellOutputReceiver
 import com.android.ddmlib.InstallException
 import com.android.ddmlib.InstallReceiver
 import com.android.ddmlib.NullOutputReceiver
-import com.balsdon.androidallyplugin.latestApkFileName
+import com.balsdon.androidallyplugin.LatestApkFileName
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.onException
@@ -31,6 +31,7 @@ class AndroidDevice(private val rawDevice: IDevice) {
     val serial: String by lazy { rawDevice.serialNumber }
     private val apiLevel: String get() = rawDevice.getProperty(IDevice.PROP_BUILD_API_LEVEL) ?: ""
     private val sdkLevel: String get() = rawDevice.getProperty(IDevice.PROP_BUILD_VERSION) ?: ""
+    @Suppress("TooGenericExceptionCaught")
     val friendlyName: String
         get() {
             val unknownDeviceLabel = localize("panel.device.label.device_unknown")
@@ -93,6 +94,7 @@ class AndroidDevice(private val rawDevice: IDevice) {
      *
      * There is no isReady function I could call or wait for.
      */
+    @Suppress("MagicNumber")
     fun requestData(): Observable<BasicDeviceInfo> {
         val subject = BehaviorSubject.create<BasicDeviceInfo>()
         val unknownDeviceLabel = localize("panel.device.label.device_unknown")
@@ -132,7 +134,8 @@ class AndroidDevice(private val rawDevice: IDevice) {
     /**
      * Installs an APK by copying it out of resources and installing a temporary file
      */
-    private fun installAPK(fileName: String = latestApkFileName): Observable<Boolean> {
+    @Suppress("TooGenericExceptionCaught")
+    private fun installAPK(fileName: String = LatestApkFileName): Observable<Boolean> {
         val subject = BehaviorSubject.create<Boolean>()
         val path = "/files/$fileName"
 
@@ -150,9 +153,11 @@ class AndroidDevice(private val rawDevice: IDevice) {
                 }
             })
         } catch (installException: InstallException) {
-            installException.printStackTrace()
+            subject.onNext(false)
+            log(installException)
         } catch (exception: Exception) {
-            exception.printStackTrace()
+            subject.onNext(false)
+            log(exception)
         }
         return subject
     }

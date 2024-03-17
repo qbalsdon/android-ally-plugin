@@ -74,11 +74,11 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 option.replace("panel.talkback.label.granularity.", "").toCamelCase()
             )
         }
-        addBasicControls(2)
-        addAdvancedControls(3)
-        addVolumeToggleComponent(4)
-        addSpeechOutputToggleComponent(5)
-        addBlockOutComponent(6)
+        addBasicControls(whichRow = 2)
+        addAdvancedControls(whichRow = 3)
+        addVolumeToggleComponent(whichRow = 4)
+        addSpeechOutputToggleComponent(whichRow = 5)
+        addBlockOutComponent(whichRow = 6)
     }
 
 
@@ -155,7 +155,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             ) {
                 AdbScript.TalkBackUserAction(TalkBackAction.PREVIOUS, selectedGranularity).run()
             }.create(),
-            3, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 3, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
             IconButton(
@@ -165,7 +165,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             ) {
                 AdbScript.TalkBackUserAction(TalkBackAction.NEXT, selectedGranularity).run()
             }.create(),
-            4, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 4, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
             IconButton(
@@ -175,7 +175,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             ) {
                 AdbScript.TalkBackUserAction(TalkBackAction.PERFORM_CLICK_ACTION).run()
             }.create(),
-            5, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 5, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
             IconButton(
@@ -183,7 +183,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 longTapButtonText,
                 ""
             ) { AdbScript.TalkBackUserAction(TalkBackAction.PERFORM_LONG_CLICK_ACTION).run() }.create(),
-            6, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 6, y = whichRow, fillType = GridBagConstraints.BOTH
         )
     }
 
@@ -194,7 +194,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 backButtonText,
                 ""
             ) { AdbScript.PressKeyAdb(AdbKeyCode.BACK).run() }.create(),
-            3, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 3, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
             IconButton(
@@ -202,7 +202,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 menuButtonText,
                 ""
             ) { AdbScript.TalkBackUserAction(TalkBackAction.TALKBACK_BREAKOUT).run() }.create(),
-            5, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 5, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
             IconButton(
@@ -210,7 +210,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 actionsButtonText,
                 ""
             ) { AdbScript.TalkBackUserAction(TalkBackAction.SHOW_CUSTOM_ACTIONS).run() }.create(),
-            6, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 6, y = whichRow, fillType = GridBagConstraints.BOTH
         )
     }
 }

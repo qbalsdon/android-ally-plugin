@@ -66,9 +66,9 @@ class AndroidDeviceFriendlyNameTest {
         assertThat(testSubject.device.friendlyName).isEqualTo("Unknown device")
     }
 
-    /**
-     * TODO: Fix this test!
-     *       Because the [avdData] is an extension prop it's hard to figure this one out
+    // TODO: Fix this test!
+    //       Because the [avdData] is an extension prop it's hard to figure this one out
+    /*
     @Test
     fun friendly_name_for_emulator() {
     val testSubject = createDeviceFake(
@@ -78,7 +78,7 @@ class AndroidDeviceFriendlyNameTest {
 
     assertThat(testSubject.friendlyName).isEqualTo("My custom emulator")
     }
-     */
+    */
 
     @Test
     fun unknown_name_for_emulator() {

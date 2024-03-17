@@ -53,15 +53,19 @@ class SettingsPanel(controller: Controller) : ControllerPanel(controller) {
     private val highContrastOnButtonText = localize("panel.font.contrast.on")
     private val highContrastOffButtonText = localize("panel.font.contrast.off")
 
+    @Suppress("MagicNumber")
+    private val defaultFontScale = 100
+
     override fun buildComponent() = JPanel().apply {
         layout = GridBagLayout()
-        addFontSizeComponent(0) { scale -> fontScale(scale).run() }
+        addFontSizeComponent(whichRow = 0) { scale -> fontScale(scale).run() }
         // bold font
-        addBoldFontToggleComponent(1)
+        addBoldFontToggleComponent(whichRow = 1)
         // high contrast text
-        addHighContrastToggleComponent(2)
+        addHighContrastToggleComponent(whichRow = 2)
         // time to react
-        addTimeToReactComponent(3) { option ->
+        addTimeToReactComponent(whichRow = 3) { option ->
+            @Suppress("MagicNumber")
             timeToReact(
                 when (option) {
                     "panel.settings.label.reaction.ten" -> 10
@@ -73,9 +77,9 @@ class SettingsPanel(controller: Controller) : ControllerPanel(controller) {
             ).run()
         }
         // captions
-        addCaptionsToggleComponent(4)
+        addCaptionsToggleComponent(whichRow = 4)
         // audio description
-        addAudioDescriptionToggleComponent(5)
+        addAudioDescriptionToggleComponent(whichRow = 5)
     }
 
 
@@ -107,16 +111,19 @@ class SettingsPanel(controller: Controller) : ControllerPanel(controller) {
 
     private fun JPanel.addFontSizeComponent(whichRow: Int, onSliderChanged: (Float) -> Unit) {
         val label = JLabel(layoutFontScaleLabelString).apply { setMaxComponentSize() }
+        @Suppress("MagicNumber")
         val slider = JSlider(50, 300, 100).apply {
             setMaxComponentSize()
             paintTrack = true
             paintTicks = true
             paintLabels = true
             snapToTicks = true
+            @Suppress("MagicNumber")
             majorTickSpacing = 50
+            @Suppress("MagicNumber")
             minorTickSpacing = 10
             addChangeListener {
-                val floatValue = value / 100f
+                val floatValue = value / defaultFontScale.toFloat() // percent to float
                 if (!this.valueIsAdjusting) {
                     onSliderChanged(floatValue)
                 }
@@ -124,7 +131,7 @@ class SettingsPanel(controller: Controller) : ControllerPanel(controller) {
         }
         val resetButton = JButton(layoutFontScaleResetString).apply {
             setMaxComponentSize()
-            addActionListener { slider.value = 100 }
+            addActionListener { slider.value = defaultFontScale }
         }
 
         placeComponent(

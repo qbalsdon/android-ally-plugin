@@ -4,10 +4,12 @@ import com.android.ddmlib.AndroidDebugBridge
 import java.util.concurrent.TimeUnit
 
 class AndroidDebugBridgeProvider: AdbProvider {
+    @Suppress("MagicNumber")
+    private val restartTimeout = 500L
     override fun addDeviceChangeListener(listener: AndroidDebugBridge.IDeviceChangeListener) =
         AndroidDebugBridge.addDeviceChangeListener(listener)
 
     override fun refreshAdb() {
-        AndroidDebugBridge.getBridge().restart(500, TimeUnit.MILLISECONDS)
+        AndroidDebugBridge.getBridge().restart(restartTimeout, TimeUnit.MILLISECONDS)
     }
 }

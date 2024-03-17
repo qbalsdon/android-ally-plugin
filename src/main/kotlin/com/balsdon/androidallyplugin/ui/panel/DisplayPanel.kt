@@ -55,17 +55,17 @@ class DisplayPanel(controller: Controller) : ControllerPanel(controller) {
         JPanel().apply {
             layout = GridBagLayout()
             // display size secure display_density_forced [, 356, 540, 500, 460]
-            addDisplayDensityComponent(0) { density ->
+            addDisplayDensityComponent(whichRow = 0) { density ->
                 displayDensity(if (isNumberString(density)) density.toInt() else -1).run()
             }
             // dark mode
-            addDarkModeToggleComponent(1)
+            addDarkModeToggleComponent(whichRow = 1)
             // animations
-            addAnimationsToggleComponent(2)
+            addAnimationsToggleComponent(whichRow = 2)
             // colour inversion
-            addColorInversionToggleComponent(3)
+            addColorInversionToggleComponent(whichRow = 3)
             // color correction
-            addColorCorrectionComponent(4) { option ->
+            addColorCorrectionComponent(whichRow = 4) { option ->
                 val optionName = option.split(".").last().uppercase()
                 colorCorrection(ColorCorrectionType.valueOf(optionName)).run()
             }
