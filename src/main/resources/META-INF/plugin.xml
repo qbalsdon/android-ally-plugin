@@ -40,7 +40,7 @@
 
         <toolWindow factoryClass="com.balsdon.androidallyplugin.AndroidAllyPluginToolWindowFactory"
                     id="Android Ally"
-                    icon="/image/tool_logo.svg"
+                    icon="/icons/tool_window_icon.svg"
                     anchor="bottom"
         />
     </extensions>
@@ -52,6 +52,7 @@
         </ul>
         <h2>Bug fixes</h2>
         <ul>
+            <li>Fixed the way light and dark icons are loaded, removed unused image references <a href="https://trello.com/c/upTMdfcW">Trello issue link</a></li>
             <li>Fixed issue where labels where not vertically centered <a href="https://trello.com/c/PHGrQq5V">Trello issue link</a></li>
             <li>Fixed spelling error from "fas" to "fast" <a href="https://trello.com/c/Q33JbqAS">Trello issue link</a></li>
         </ul>
