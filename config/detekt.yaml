@@ -1,0 +1,16 @@
+config:
+  validation: true
+  warningsAsErrors: false
+  excludes: ''
+style:
+  NewLineAtEndOfFile:
+    active: false
+  MaxLineLength:
+    active: false
+  UnusedImports:
+    active: true
+  ForbiddenComment:
+    active: false
+complexity:
+  CyclomaticComplexMethod:
+    active: false

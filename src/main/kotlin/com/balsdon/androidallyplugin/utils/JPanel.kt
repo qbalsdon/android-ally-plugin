@@ -12,6 +12,7 @@ import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 
+@Suppress("LongParameterList")
 fun JPanel.placeComponent(
     component: Component,
     x: Int,
@@ -33,6 +34,7 @@ fun JPanel.placeComponent(
     })
 }
 
+@Suppress("LongParameterList")
 fun JPanel.createToggleRow(
     label: String,
     whichRow: Int,
@@ -87,7 +89,7 @@ fun JPanel.createDropDownMenu(
         addActionListener {
             onSelectionChanged(options[this.selectedIndex])
         }
-    }, 3, y = whichRow, 4)
+    }, x = 3, y = whichRow, w = 4)
 }
 
 fun JPanel.addFiller(index: Int = -1) {

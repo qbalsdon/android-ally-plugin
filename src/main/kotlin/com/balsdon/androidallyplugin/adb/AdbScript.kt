@@ -62,6 +62,7 @@ import java.io.File
  *       normally don't toggle well or invoke screen refresh
  */
 
+@Suppress("TooManyFunctions")
 sealed class AdbScript {
     data class AccessibilityService(
         val on: Boolean,

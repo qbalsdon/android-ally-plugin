@@ -7,6 +7,7 @@ import javax.swing.SwingConstants
 import java.awt.Dimension
 import java.awt.Font
 
+@Suppress("MagicNumber")
 class IconButton(
     private val imageIcon: CustomIcon,
     private val buttonText: String,

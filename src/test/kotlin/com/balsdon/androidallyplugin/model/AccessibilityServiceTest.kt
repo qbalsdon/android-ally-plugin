@@ -3,6 +3,7 @@ package com.balsdon.androidallyplugin.model
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
+@Suppress("LargeClass")
 class AccessibilityServiceTest {
     @Test
     fun no_packages_has_empty_list() {

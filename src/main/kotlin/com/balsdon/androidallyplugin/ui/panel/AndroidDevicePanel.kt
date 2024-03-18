@@ -21,7 +21,6 @@ import javax.swing.JPanel
 import javax.swing.Timer
 import javax.swing.border.CompoundBorder
 import java.awt.BorderLayout
-import java.awt.Color
 import java.awt.FlowLayout
 import java.awt.Font
 import java.awt.event.KeyEvent
@@ -30,15 +29,19 @@ import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 
 class AndroidDevicePanel(private val controller: Controller) {
+    @Suppress("MagicNumber")
+    private val refreshDeviceTimeout = 500
     private val deviceListener = controller.connectedDevicesNotifier
     private val deviceListPanel: JPanel by lazy { JPanel().apply { layout = BoxLayout(this, BoxLayout.Y_AXIS) } }
 
+    @Suppress("LongMethod")
     private fun createDeviceSelectionCheckBox(device: AndroidDevice) = JPanel().apply {
         layout = BorderLayout()
         setMaxComponentSize()
         val nameLabel = JLabel(device.serial)
         val dataLabel = JLabel("...").apply {
             val oldFont = font
+            @Suppress("MagicNumber")
             font = Font(oldFont.fontName, Font.ITALIC, oldFont.size - 3)
         }
         add(JPanel().apply {
@@ -92,6 +95,7 @@ class AndroidDevicePanel(private val controller: Controller) {
                     CustomIcon.PHONE.create()
                 }
             ).apply {
+                @Suppress("MagicNumber")
                 border = CompoundBorder(border, JBUI.Borders.empty(0, 10))
             })
             add(JPanel().apply {
@@ -158,13 +162,13 @@ class AndroidDevicePanel(private val controller: Controller) {
                 setMaxComponentSize()
                 icon = CustomIcon.REFRESH.create()
                 addActionListener {
-//                    isEnabled = false
                     background = JBColor.DARK_GRAY
-                    Timer(500) { background = JBColor.LIGHT_GRAY }.start()
+                    Timer(refreshDeviceTimeout) { background = JBColor.LIGHT_GRAY }.start()
                     deviceListPanel.let {
                         it.removeAll()
                         it.add(JLabel(localize("panel.device.wait")).apply {
                             val oldFont = font
+                            @Suppress("MagicNumber")
                             font = Font(oldFont.fontName, Font.BOLD, oldFont.size + 5)
                         }, BorderLayout.CENTER)
                     }

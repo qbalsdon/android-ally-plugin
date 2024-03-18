@@ -1,3 +1,4 @@
+@file:Suppress("TooManyFunctions")
 package com.balsdon.androidallyplugin.adb
 
 import com.balsdon.androidallyplugin.adb.parameters.AdbBoolean

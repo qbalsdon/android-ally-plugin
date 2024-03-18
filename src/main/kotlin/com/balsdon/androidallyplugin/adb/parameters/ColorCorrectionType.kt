@@ -1,5 +1,6 @@
 package com.balsdon.androidallyplugin.adb.parameters
 
+@Suppress("MagicNumber")
 enum class ColorCorrectionType(val adbValue: Int) {
     OFF(-1),
     GREYSCALE(0),
