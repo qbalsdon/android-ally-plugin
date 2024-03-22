@@ -2,7 +2,7 @@
 
 The [Trello Board][4] will show you the project roadmap, any issues in the GitHub tracker should also be there.
 
-This plugin will only ever support [TalkBack for Developers][9] and not any other screen reader. [The code is open source][8]. This includes Google's TalkBack, Samsung's TalkBack, Amazon VoiceView and CSR - unless they add ADB features, in which case they will be given a separate tab. Separation of concerns is the highest priority in this code.
+This plugin will only ever support [TalkBack for Developers][9] and not any other screen reader without ADB-friendly controls. [The code is open source][8]. This includes Google's TalkBack, Samsung's TalkBack, Amazon VoiceView and CSR - unless they add ADB features, in which case they will be given a separate tab. Separation of concerns is the highest priority in this code.
 
 ## This is in Swing, ew!
 Yes it's written in Swing, you are more than welcome to create a [Jewel][5] version if you like. The main reasons the project is not using Jetpack Compose yet are:
@@ -40,7 +40,7 @@ Please ensure you have read and abide by the [JetBrains developer code of conduc
 * You are rude, discriminatory or demeaning in any way
 * You use object classes or companion objects ([find out why][0])
 
-## ADB in more detail ADB
+## ADB in more detail
 
 ```
 adb shell service list                                      # get system services and interfaces
