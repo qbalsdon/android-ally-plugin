@@ -10,7 +10,6 @@ import com.balsdon.androidallyplugin.utils.addFiller
 import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.setMaxComponentSize
 import com.intellij.ide.BrowserUtil
-import com.intellij.ui.JBColor
 import com.intellij.util.ui.JBUI
 import javax.swing.Box
 import javax.swing.BoxLayout
@@ -18,7 +17,6 @@ import javax.swing.JButton
 import javax.swing.JCheckBox
 import javax.swing.JLabel
 import javax.swing.JPanel
-import javax.swing.Timer
 import javax.swing.border.CompoundBorder
 import java.awt.BorderLayout
 import java.awt.FlowLayout
@@ -29,8 +27,6 @@ import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 
 class AndroidDevicePanel(private val controller: Controller) {
-    @Suppress("MagicNumber")
-    private val refreshDeviceTimeout = 500
     private val deviceListener = controller.connectedDevicesNotifier
     private val deviceListPanel: JPanel by lazy { JPanel().apply { layout = BoxLayout(this, BoxLayout.Y_AXIS) } }
 
@@ -44,6 +40,13 @@ class AndroidDevicePanel(private val controller: Controller) {
             @Suppress("MagicNumber")
             font = Font(oldFont.fontName, Font.ITALIC, oldFont.size - 3)
         }
+        val deviceIconLabel = JLabel(
+            if (device.isEmulator) {
+                CustomIcon.EMULATOR.create()
+            } else {
+                CustomIcon.PHONE.create()
+            }
+        )
         add(JPanel().apply {
             layout = FlowLayout(FlowLayout.LEADING)
             val updateState = { isSelected: Boolean ->
@@ -88,13 +91,7 @@ class AndroidDevicePanel(private val controller: Controller) {
                 override fun mouseExited(e: MouseEvent?) = Unit
             })
             add(checkBox)
-            add(JLabel(
-                if (device.isEmulator) {
-                    CustomIcon.EMULATOR.create()
-                } else {
-                    CustomIcon.PHONE.create()
-                }
-            ).apply {
+            add(deviceIconLabel.apply {
                 @Suppress("MagicNumber")
                 border = CompoundBorder(border, JBUI.Borders.empty(0, 10))
             })
@@ -113,6 +110,19 @@ class AndroidDevicePanel(private val controller: Controller) {
                 this.name = deviceInfo.name
                 nameLabel.text = deviceInfo.name
                 dataLabel.text = "${device.serial} - [${deviceInfo.api} / ${deviceInfo.sdk}]"
+                deviceIconLabel.icon = if (device.isEmulator) {
+                    if (device.isWatch) {
+                        CustomIcon.EMULATOR_WATCH.create()
+                    } else {
+                        CustomIcon.EMULATOR.create()
+                    }
+                } else {
+                    if (device.isWatch) {
+                        CustomIcon.WATCH.create()
+                    } else {
+                        CustomIcon.PHONE.create()
+                    }
+                }
                 tb4dInstallPanel(this, device, deviceInfo.packageList)
             }
     }
@@ -125,15 +135,17 @@ class AndroidDevicePanel(private val controller: Controller) {
             parentPanel.add(tb4dPanel.apply {
                 add(JButton(localize("panel.device.label.install.tb4d")).apply {
                     addActionListener {
+                        this.isEnabled = false
                         device
                             .installTalkBackForDevelopers()
                             .take(1)
                             .subscribe {
+                                this.isEnabled = true
                                 if (it) {
-                                    controller.showInstallTB4DSuccessNotification()
+                                    controller.showInstallTB4DSuccessNotification(device)
                                     parentPanel.remove(tb4dPanel)
                                 } else {
-                                    controller.showInstallTB4DErrorNotification()
+                                    controller.showInstallTB4DErrorNotification(device)
                                 }
                             }
                     }
@@ -162,8 +174,6 @@ class AndroidDevicePanel(private val controller: Controller) {
                 setMaxComponentSize()
                 icon = CustomIcon.REFRESH.create()
                 addActionListener {
-                    background = JBColor.DARK_GRAY
-                    Timer(refreshDeviceTimeout) { background = JBColor.LIGHT_GRAY }.start()
                     deviceListPanel.let {
                         it.removeAll()
                         it.add(JLabel(localize("panel.device.wait")).apply {

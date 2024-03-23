@@ -6,7 +6,8 @@ import com.android.ddmlib.IShellOutputReceiver
 import com.android.ddmlib.InstallException
 import com.android.ddmlib.InstallReceiver
 import com.android.ddmlib.NullOutputReceiver
-import com.balsdon.androidallyplugin.LatestApkFileName
+import com.balsdon.androidallyplugin.LatestPhoneApkFileName
+import com.balsdon.androidallyplugin.LatestWearApkFileName
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.onException
@@ -29,8 +30,12 @@ class AndroidDevice(private val rawDevice: IDevice) {
 
     val isEmulator: Boolean by lazy { rawDevice.isEmulator }
     val serial: String by lazy { rawDevice.serialNumber }
+    val isWatch: Boolean by lazy {
+        rawDevice.getProperty(IDevice.PROP_BUILD_CHARACTERISTICS)?.contains("watch") ?: false
+    }
     private val apiLevel: String get() = rawDevice.getProperty(IDevice.PROP_BUILD_API_LEVEL) ?: ""
     private val sdkLevel: String get() = rawDevice.getProperty(IDevice.PROP_BUILD_VERSION) ?: ""
+
     @Suppress("TooGenericExceptionCaught")
     val friendlyName: String
         get() {
@@ -90,6 +95,11 @@ class AndroidDevice(private val rawDevice: IDevice) {
     /**
      * Opportunity for improvement here!!
      *
+     * This method runs async between the device being detected and reported back to the UI
+     * It's goal is to run all the commands on the ADB to gather info before reporting back
+     * Friendly name, device sdk and api levels all run different commands and the
+     * packageList can be a bit heavy.
+     *
      * I need help making this efficient and less overwhelming for the system.
      *
      * There is no isReady function I could call or wait for.
@@ -98,7 +108,7 @@ class AndroidDevice(private val rawDevice: IDevice) {
     fun requestData(): Observable<BasicDeviceInfo> {
         val subject = BehaviorSubject.create<BasicDeviceInfo>()
         val unknownDeviceLabel = localize("panel.device.label.device_unknown")
-        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        val scope = CoroutineScope(Job() + Dispatchers.IO)
         scope.launch {
             var name = friendlyName
             var api = apiLevel
@@ -116,13 +126,13 @@ class AndroidDevice(private val rawDevice: IDevice) {
                 sdk = sdkLevel
             }
 
-            getPackageList { list -> subject.onNext(BasicDeviceInfo(name, api, sdk, list)) }
+            getPackageList { list -> subject.onNext(BasicDeviceInfo(name, api, sdk, isWatch, list)) }
         }
         return subject
     }
 
     fun installTalkBackForDevelopers() =
-        installAPK()
+        installAPK(if (isWatch) LatestWearApkFileName else LatestPhoneApkFileName)
 
     fun executeScript(scriptString: String) {
         rawDevice.executeShellCommand(
@@ -135,29 +145,33 @@ class AndroidDevice(private val rawDevice: IDevice) {
      * Installs an APK by copying it out of resources and installing a temporary file
      */
     @Suppress("TooGenericExceptionCaught")
-    private fun installAPK(fileName: String = LatestApkFileName): Observable<Boolean> {
+    private fun installAPK(fileName: String): Observable<Boolean> {
         val subject = BehaviorSubject.create<Boolean>()
-        val path = "/files/$fileName"
+        log("Installing [$fileName] on [$friendlyName]")
+        CoroutineScope(Job() + Dispatchers.IO).launch {
+            val path = "/files/$fileName"
 
-        val inputStream: InputStream = AndroidDevice::class.java.getResourceAsStream(path)
-            ?: throw FileNotFoundException("installAPK: [$path] not found")
-        val temporaryFile: File = File.createTempFile("base", ".apk")
-        Files.copy(inputStream, temporaryFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
-        try {
-            rawDevice.installPackage(temporaryFile.absolutePath, true, object : InstallReceiver() {
-                override fun done() {
-                    log("Install was successful: $isSuccessfullyCompleted")
-                    temporaryFile.delete()
-                    subject.onNext(isSuccessfullyCompleted)
-                    super.done()
-                }
-            })
-        } catch (installException: InstallException) {
-            subject.onNext(false)
-            log(installException)
-        } catch (exception: Exception) {
-            subject.onNext(false)
-            log(exception)
+            val inputStream: InputStream = AndroidDevice::class.java.getResourceAsStream(path)
+                ?: throw FileNotFoundException("installAPK: [$path] not found")
+            val temporaryFile: File = File.createTempFile("base", ".apk")
+            Files.copy(inputStream, temporaryFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+            try {
+                rawDevice.installPackage(temporaryFile.absolutePath, true, object : InstallReceiver() {
+                    override fun done() {
+                        log("Install was successful: $isSuccessfullyCompleted")
+                        temporaryFile.delete()
+                        subject.onNext(isSuccessfullyCompleted)
+                        super.done()
+                    }
+
+                })
+            } catch (installException: InstallException) {
+                subject.onNext(false)
+                log(installException)
+            } catch (exception: Exception) {
+                subject.onNext(false)
+                log(exception)
+            }
         }
         return subject
     }

@@ -36,7 +36,8 @@ intellij {
     val androidStudioVersion = mapOf(
         "Giraffe" to "223.8836.35.2231.11090377",
         "Hedgehog" to "231.9392.1.2311.11330709",
-        "Iguana" to "232.10227.8.2321.11379558"
+        "Iguana" to "232.10227.8.2321.11379558",
+        "Jellyfish" to "233.14475.28.2331.11543046",
     )
     val intellijVersion = androidStudioVersion["Iguana"] // https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html#configuration
     version.set(intellijVersion)
@@ -121,4 +122,10 @@ tasks {
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN"))
     }
+
+//    runIde {
+//        // Absolute path to installed target 3.5 Android Studio to use as
+//        // IDE Development Instance (the "Contents" directory is macOS specific):
+//        ideDir.set(file("/Applications/Android Studio.app/Contents"))
+//    }
 }

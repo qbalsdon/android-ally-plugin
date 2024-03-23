@@ -16,8 +16,8 @@ interface Controller {
         actions: Collection<NotificationAction> = emptyList()
     )
 
-    fun showInstallTB4DSuccessNotification()
-    fun showInstallTB4DErrorNotification()
+    fun showInstallTB4DSuccessNotification(device: AndroidDevice)
+    fun showInstallTB4DErrorNotification(device: AndroidDevice)
     fun runOnAllValidSelectedDevices(fn: (AndroidDevice) -> Unit)
 
     fun refreshAdb()

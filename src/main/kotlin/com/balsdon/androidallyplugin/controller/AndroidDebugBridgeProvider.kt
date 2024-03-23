@@ -9,7 +9,12 @@ class AndroidDebugBridgeProvider: AdbProvider {
     override fun addDeviceChangeListener(listener: AndroidDebugBridge.IDeviceChangeListener) =
         AndroidDebugBridge.addDeviceChangeListener(listener)
 
+    @Suppress("SwallowedException")
     override fun refreshAdb() {
-        AndroidDebugBridge.getBridge().restart(restartTimeout, TimeUnit.MILLISECONDS)
+        try {
+            AndroidDebugBridge.getBridge().restart(restartTimeout, TimeUnit.MILLISECONDS)
+        } catch (e: IllegalStateException) {
+            println("Prevented crash from restart")
+        }
     }
 }

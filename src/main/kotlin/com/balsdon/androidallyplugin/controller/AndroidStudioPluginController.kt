@@ -19,7 +19,6 @@ import com.intellij.openapi.project.Project
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 
-
 class AndroidStudioPluginController(
     private val project: Project,
     private val adbProvider: AdbProvider = AndroidDebugBridgeProvider()
@@ -60,32 +59,52 @@ class AndroidStudioPluginController(
                 }
             }
 
-            /*
-            Do not update the device list - it creates a backlog of requests on the device
-             */
+            // Do not update the device list - it creates a backlog of requests on the device
             override fun deviceChanged(device: IDevice?, changeMask: Int) {
-                log("deviceChanged: [${device?.serialNumber}] [$changeMask]")
-            }
+                if (device != null) {
+                    val sb = StringBuilder()
+                    if (changeMask and IDevice.CHANGE_BUILD_INFO != 0) {
+                        sb.append("CHANGE_BUILD_INFO")
+                    }
+                    if (changeMask and IDevice.CHANGE_STATE != 0) {
+                        if (sb.isNotBlank()) sb.append(" ")
+                        sb.append("CHANGE_STATE")
+                    }
+                    if (changeMask and IDevice.CHANGE_CLIENT_LIST != 0) {
+                        if (sb.isNotBlank()) sb.append(" ")
+                        sb.append("CHANGE_CLIENT_LIST")
+                    }
 
+                    if (changeMask and IDevice.CHANGE_PROFILEABLE_CLIENT_LIST != 0) {
+                        if (sb.isNotBlank()) sb.append(" ")
+                        sb.append("CHANGE_PROFILEABLE_CLIENT_LIST")
+                    }
+                    log("deviceChanged: [${device.serialNumber}] [$changeMask] [$sb]")
+                }
+            }
         })
     }
 
-    override fun showNotification(title: String,
-                                  message: String,
-                                  type: NotificationType,
-                                  actions: Collection<NotificationAction>) {
-        showNotification(AndroidStudioPluginNotificationPayload(
-            title,
-            message,
-            type,
-            actions
-        ))
+    override fun showNotification(
+        title: String,
+        message: String,
+        type: NotificationType,
+        actions: Collection<NotificationAction>
+    ) {
+        showNotification(
+            AndroidStudioPluginNotificationPayload(
+                title,
+                message,
+                type,
+                actions
+            )
+        )
     }
 
-    override fun showInstallTB4DSuccessNotification() {
+    override fun showInstallTB4DSuccessNotification(device: AndroidDevice) {
         showNotification(AndroidStudioPluginNotificationPayload(
             localize("tb4d.install.success.title"),
-            localize("tb4d.install.success.message"),
+            localize("tb4d.install.success.message", device.friendlyName),
             actions = listOf(
                 object : NotificationAction(localize("tb4d.install.success.action")) {
                     override fun actionPerformed(event: AnActionEvent, notification: Notification) {
@@ -96,7 +115,7 @@ class AndroidStudioPluginController(
         ))
     }
 
-    override fun showInstallTB4DErrorNotification() {
+    override fun showInstallTB4DErrorNotification(device: AndroidDevice) {
         showNotification(AndroidStudioPluginNotificationPayload(
             localize("tb4d.install.error.title"),
             localize("tb4d.install.error.message"),
