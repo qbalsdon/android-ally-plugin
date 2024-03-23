@@ -6,7 +6,9 @@ import javax.swing.Icon
 
 enum class CustomIcon(private val fileReference: String) {
     PHONE("phone"),
+    WATCH("watch"),
     EMULATOR("emulator"),
+    EMULATOR_WATCH("emulator_watch"),
     A11Y_OPEN_MENU("open_menu"),
     REFRESH("sync"),
     A11Y_ACTIONS("actions"),

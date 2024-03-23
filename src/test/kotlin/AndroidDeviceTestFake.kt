@@ -5,7 +5,6 @@ import com.android.ddmlib.IShellOutputReceiver
 import com.android.ddmlib.InstallReceiver
 import com.android.ddmlib.RawImage
 import com.android.ddmlib.ScreenRecorderOptions
-import com.android.ddmlib.ServiceInfo
 import com.android.ddmlib.SyncService
 import com.android.ddmlib.log.LogReceiver
 import com.android.sdklib.AndroidVersion
@@ -75,9 +74,7 @@ class AndroidDeviceTestFake(
         override fun getProperty(name: String?): String =
             if (name in deviceProps.keys) {
                 deviceProps[name]!!
-            } else {
-                throw Exception("createDeviceFake(...).getProperty exception: [$name] not found")
-            }
+            } else "" // This matches the behaviour of the adb
 
         override fun arePropertiesSet(): Boolean {
             TODO("Not yet implemented")
@@ -88,10 +85,6 @@ class AndroidDeviceTestFake(
         }
 
         override fun supportsFeature(feature: IDevice.HardwareFeature?): Boolean {
-            TODO("Not yet implemented")
-        }
-
-        override fun services(): MutableMap<String, ServiceInfo> {
             TODO("Not yet implemented")
         }
 
