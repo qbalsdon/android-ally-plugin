@@ -48,11 +48,14 @@
     <change-notes><![CDATA[
         <h2>Whats new</h2>
         <ul>
-            <li>Added reset font scale button <a href="https://trello.com/c/PHGrQq5V">Trello issue link</a></li>
+            <li>[0.0.7] Added WearOS support <a href="https://trello.com/c/HBTuwZWE">Trello issue link</a></li>
+            <li>[0.0.6] Added reset font scale button <a href="https://trello.com/c/PHGrQq5V">Trello issue link</a></li>
         </ul>
         <h2>Bug fixes</h2>
         <ul>
-            <li>Fixed the way light and dark icons are loaded, removed unused image references <a href="https://trello.com/c/upTMdfcW">Trello issue link</a></li>
+            <li>[0.0.7] Removed duplicated word in heading <a href="https://github.com/qbalsdon/android-ally-plugin/pull/30">Pull request</a></li>
+            <li>[0.0.7] Added detekt for code linting <a href="https://trello.com/c/Uf7KogQC">Trello issue link</a></li>
+            <li>[0.0.7] Fixed the way light and dark icons are loaded, removed unused image references <a href="https://trello.com/c/upTMdfcW">Trello issue link</a></li>
             <li>Fixed issue where labels where not vertically centered <a href="https://trello.com/c/PHGrQq5V">Trello issue link</a></li>
             <li>Fixed spelling error from "fas" to "fast" <a href="https://trello.com/c/Q33JbqAS">Trello issue link</a></li>
         </ul>
