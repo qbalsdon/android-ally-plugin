@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.backend.common.push
 import org.junit.Assert
 import org.junit.Test
 
+
 class AndroidStudioPluginControllerTest {
     @Test
     fun adds_new_devices() {
@@ -148,15 +149,18 @@ class AndroidStudioPluginControllerTest {
 
         // when
         //    runOnAllValidSelectedDevices called
-        val devicesActedUpon = mutableListOf<AndroidDevice>()
-        testSubject.runOnAllValidSelectedDevices { device -> devicesActedUpon.push(device) }
-
+        var deviceCount = 0
+        try {
+            testSubject.runOnAllValidSelectedDevices { _ -> deviceCount += 1 }
+        } catch (e: NullPointerException) {
+            assertThat(e.stackTrace.count { element -> element.methodName == "showNoSelectedDevicesNotification" }).isEqualTo(1)
+        }
         // then the resulting devices acted on is 0
-        assertThat(devicesActedUpon.size).isEqualTo(0)
+        assertThat(deviceCount).isEqualTo(0)
     }
 
     @Test
-    fun function_not_run_when_one_device_selected() {
+    fun function_run_when_one_device_selected() {
         // given a controller
         val testSubject = AndroidStudioPluginController(
             projectFake,

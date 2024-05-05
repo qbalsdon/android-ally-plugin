@@ -129,10 +129,20 @@ class AndroidStudioPluginController(
         ))
     }
 
+    private fun showNoSelectedDevicesNotification() {
+        showNotification(AndroidStudioPluginNotificationPayload(
+            localize("plugin.notification.no_devices.title"),
+            localize("plugin.notification.no_devices.message"),
+            notificationType = NotificationType.ERROR,
+            actions = emptyList()
+        ))
+    }
+
     override fun runOnAllValidSelectedDevices(fn: (AndroidDevice) -> Unit) {
         connectedDeviceList
             .filter { it.serial in selectedDeviceSerialList }
             .map { fn(it) }
+            .ifEmpty { showNoSelectedDevicesNotification() }
     }
 
     override fun refreshAdb() = adbProvider.refreshAdb()
