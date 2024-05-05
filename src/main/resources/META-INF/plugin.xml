@@ -48,6 +48,7 @@
     <change-notes><![CDATA[
         <h2>Whats new</h2>
         <ul>
+            <li>[0.0.8] Added a home button <a href="https://trello.com/c/NrhyxaIk">Trello issue link</a></li>
             <li>[0.0.7] Added WearOS support <a href="https://trello.com/c/HBTuwZWE">Trello issue link</a></li>
             <li>[0.0.6] Added reset font scale button <a href="https://trello.com/c/PHGrQq5V">Trello issue link</a></li>
         </ul>
