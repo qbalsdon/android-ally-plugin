@@ -45,6 +45,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
     private val nextButtonText = localize("panel.talkback.button.next")
     private val tapButtonText = localize("panel.talkback.button.tap")
     private val longTapButtonText = localize("panel.talkback.button.longTap")
+    private val homeButtonText = localize("panel.talkback.button.home")
     private val backButtonText = localize("panel.talkback.button.back")
     private val menuButtonText = localize("panel.talkback.button.menu")
     private val actionsButtonText = localize("panel.talkback.button.actions")
@@ -195,6 +196,14 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 ""
             ) { AdbScript.PressKeyAdb(AdbKeyCode.BACK).run() }.create(),
             x = 3, y = whichRow, fillType = GridBagConstraints.BOTH
+        )
+        placeComponent(
+            IconButton(
+                CustomIcon.DEVICE_HOME,
+                homeButtonText,
+                ""
+            ) { AdbScript.PressKeyAdb(AdbKeyCode.HOME).run() }.create(),
+            x = 4, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
             IconButton(
