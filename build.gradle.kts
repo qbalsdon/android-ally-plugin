@@ -37,9 +37,10 @@ intellij {
         "Giraffe" to "223.8836.35.2231.11090377",
         "Hedgehog" to "231.9392.1.2311.11330709",
         "Iguana" to "232.10227.8.2321.11379558",
-        "Jellyfish" to "233.14475.28.2331.11543046",
+        "Jellyfish" to "233.14808.21.2331.11643467",
+        "Koala" to "233.14475.28.2332.11606850",
     )
-    val intellijVersion = androidStudioVersion["Iguana"] // https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html#configuration
+    val intellijVersion = androidStudioVersion["Koala"] // https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html#configuration
     version.set(intellijVersion)
     type.set("AI") // Target Android Studio IDE Platform
     plugins.set(listOf("android"))
