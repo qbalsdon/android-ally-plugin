@@ -15,7 +15,9 @@ class AndroidAllySwingPanel(private val controller: Controller) : MainPlugin {
                 localize("panel.talkback.title") to TalkBackPanel(controller).create(),
                 localize("panel.display.title") to DisplayPanel(controller).create(),
                 localize("panel.settings.title") to SettingsPanel(controller).create(),
-                localize("panel.debug.title") to DebugPanel(controller).create()
+                localize("panel.debug.title") to DebugPanel(controller).create(),
+                localize("panel.checklist.title") to CheckListPanel(controller).create()
+
             )
         ).create()
     }

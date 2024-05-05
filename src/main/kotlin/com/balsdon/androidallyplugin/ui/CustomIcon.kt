@@ -19,6 +19,12 @@ enum class CustomIcon(private val fileReference: String) {
     INFO("info"),
     DEVICE_BACK("back"),
     DEVICE_HOME("home"),
+    NOT_APPLICABLE("not_applicable"),
+    PERCEIVABLE("perceivable"),
+    OPERABLE("operable"),
+    UNDERSTANDABLE("understandable"),
+    ROBUST("robust"),
+    LINK("link"),
     ;
 
     private fun createFileReference() = "$imageFolder$fileReference$imageType"
