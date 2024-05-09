@@ -22,6 +22,7 @@ val checkListItemList = listOf(
     CheckListItem("text", AccessibilityPrinciple.Perceivable, AssistiveTechnologyType.AccessibilityRule),
     CheckListItem("caption", AccessibilityPrinciple.Perceivable, AssistiveTechnologyType.AccessibilityRule),
     CheckListItem("colorAlone", AccessibilityPrinciple.Perceivable, AssistiveTechnologyType.AccessibilityRule),
+    CheckListItem("colorContrast", AccessibilityPrinciple.Perceivable, AssistiveTechnologyType.AccessibilityRule),
 
     CheckListItem("size", AccessibilityPrinciple.Operable, AssistiveTechnologyType.AccessibilityRule),
     CheckListItem("actions", AccessibilityPrinciple.Operable, AssistiveTechnologyType.AccessibilityRule),
