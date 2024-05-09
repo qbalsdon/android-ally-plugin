@@ -85,6 +85,7 @@ class CheckListPanel(private val controller: Controller) {
                     this.addBorderedGroup(whichRow = 1, serviceGroupHeading, serviceCheckList)
                     this.addBorderedGroup(whichRow = 2, settingGroupHeading, settingCheckList)
                     this.addBorderedGroup(whichRow = 3, ruleGroupHeading, ruleCheckList)
+                    this.addFooter(whichRow = 4)
                 }
                 resetPanel()
             }).apply {
@@ -236,6 +237,24 @@ class CheckListPanel(private val controller: Controller) {
                 }
             )
         }, BorderLayout.EAST)
+    }
+
+    private fun JPanel.addFooter(whichRow: Int) {
+        placeComponent(
+            component = JPanel().apply {
+                layout = FlowLayout(FlowLayout.LEADING)
+                val linkText = localize("panel.checklist.label.disclaimer.link")
+                add(JLabel(localize("panel.checklist.label.disclaimer", linkText)).apply {
+                    addInteractionFunction {
+                        BrowserUtil.browse(linkText)
+                    }
+                })
+            },
+            x = 0,
+            y = whichRow,
+            w = 2,
+            anchorType = GridBagConstraints.CENTER
+        )
     }
 
     private fun JComponent.addInteractionFunction(fn: () -> Unit) = this.apply {
