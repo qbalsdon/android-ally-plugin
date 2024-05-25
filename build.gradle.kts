@@ -2,9 +2,8 @@ import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 
 plugins {
-    id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.0"
-    id("org.jetbrains.intellij") version "1.16.0"
+    id("org.jetbrains.intellij") version "1.16.1"
     id("io.gitlab.arturbosch.detekt") version "1.23.5"
 }
 
@@ -33,17 +32,10 @@ intellij {
      * @see [https://packages.jetbrains.team/maven/p/kpm/public/org/jetbrains/jewel/jewel-ide-laf-bridge-platform-specific/]
      */
 
-    val androidStudioVersion = mapOf(
-        "Giraffe" to "223.8836.35.2231.11090377",
-        "Hedgehog" to "231.9392.1.2311.11330709",
-        "Iguana" to "232.10227.8.2321.11379558",
-        "Jellyfish" to "233.14808.21.2331.11643467",
-        "Koala" to "233.14475.28.2332.11606850",
-    )
-    val intellijVersion = androidStudioVersion["Koala"] // https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html#configuration
-    version.set(intellijVersion)
+    version.set(project.property("ideVersion").toString())
     type.set("AI") // Target Android Studio IDE Platform
     plugins.set(listOf("android"))
+    updateSinceUntilBuild = false
 }
 
 dependencies {
@@ -111,7 +103,7 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("222")
+        sinceBuild.set(project.property("sinceBuild").toString())
     }
 
     signPlugin {
