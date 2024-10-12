@@ -30,8 +30,10 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
          Android Studio plugin documentation: https://plugins.jetbrains.com/docs/intellij/android-studio.html#configuring-the-plugin-pluginxml-file
      -->
-    <depends>org.jetbrains.android</depends> <!-- Required for ADB libraries -->
+
+    <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.androidstudio</depends>
+    <depends>org.jetbrains.android</depends> <!-- Required for ADB libraries -->
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
@@ -55,6 +57,7 @@
         </ul>
         <h2>Bug fixes</h2>
         <ul>
+            <li>[1.0.1] Fix for Ladybug Android Studio (Canary 3) <a href="https://trello.com/c/gJ2dgyT6">Trello issue link</a></li>
             <li>[1.0.0] Fix for Jellyfish patch 1 compatibility <a href="https://trello.com/c/gJ2dgyT6">Trello issue link</a></li>
             <li>[1.0.0] No devices selected warning <a href="https://trello.com/c/iGB442Ik">Trello issue link</a></li>
             <li>[0.0.7] Removed duplicated word in heading <a href="https://github.com/qbalsdon/android-ally-plugin/pull/30">Pull request</a></li>
