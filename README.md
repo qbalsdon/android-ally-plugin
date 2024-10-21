@@ -22,8 +22,8 @@ Yes it's written in Swing, you are more than welcome to create a [Jewel][5] vers
 
 ## Scope of the project
 - A plugin for Android studio
-- A user interface to various assistive technologies
-- Simple check list for accessibility standards [Future work]
+- A user interface to various assistive technologies and settings
+- Simple check list for accessibility standards
 
 ## Conduct and Contributing
 This plugin was built using the [JetBrains IntelliJ Platform SDK][1]. Best practice will be taken as much as possible from that document and [SOLID programming principles][2].

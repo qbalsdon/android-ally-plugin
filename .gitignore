@@ -18,6 +18,7 @@ out/
 !**/src/test/**/out/
 .idea/codeStyles/codeStyleConfig.xml
 .idea/uiDesigner.xml
+.intellijPlatform/
 
 ### Eclipse ###
 .apt_generated

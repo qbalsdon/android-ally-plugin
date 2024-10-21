@@ -18,7 +18,7 @@ class CustomIconTest {
 
     @Test
     fun every_icon_has_light_and_dark() {
-        CustomIcon.entries.forEach { testObject ->
+        CustomIcon.values().forEach { testObject ->
             val testSubject = CustomIcon::class
                 .java
                 .getDeclaredMethod("createFileReference")
@@ -42,7 +42,7 @@ class CustomIconTest {
 
     @Test
     fun every_icon_light_and_dark_specific_colors() {
-        CustomIcon.entries.forEach { testObject ->
+        CustomIcon.values().forEach { testObject ->
             val testSubject = CustomIcon::class
                 .java
                 .getDeclaredMethod("createFileReference")

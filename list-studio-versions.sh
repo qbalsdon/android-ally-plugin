@@ -20,4 +20,4 @@ if ! command_exists xmlstarlet; then
 fi
 
 # If all commands exist, execute the provided command
-curl -sL https://jb.gg/android-studio-releases-list.xml | xmlstarlet sel -t -m "//item" -v "concat('[', name, '] ideVersion=', version, ' sinceBuild=', platformBuild)" -nl | head -n 10
+curl -sL https://jb.gg/android-studio-releases-list.xml | xmlstarlet sel -t -m "//item" -v "concat('[', name, '] ideVersion=', version, ' sinceBuild=', platformBuild)" -nl | head -n 50
