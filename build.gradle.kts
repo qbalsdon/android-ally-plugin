@@ -34,6 +34,16 @@ intellijPlatform {
     }
     buildSearchableOptions.set(false)
     instrumentCode = true
+
+    signing {
+        privateKey = System.getenv("PRIVATE_KEY")
+        password = System.getenv("PRIVATE_KEY_PASSWORD")
+        certificateChain = System.getenv("CERTIFICATE_CHAIN")
+    }
+
+    publishing {
+        token = System.getenv("PUBLISH_TOKEN")
+    }
 }
 
 dependencies {
@@ -110,29 +120,15 @@ tasks {
         sourceCompatibility = projectJvmTarget
         targetCompatibility = projectJvmTarget
     }
+
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions.jvmTarget = projectJvmTarget
         all {
             kotlinOptions {
                 jvmTarget = jvmTarget
                 apiVersion = projectApiVersion
-//                languageVersion = '1.1'
             }
         }
-    }
-
-    patchPluginXml {
-        sinceBuild.set(project.property("sinceBuild").toString())
-    }
-
-    signPlugin {
-        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-        privateKey.set(System.getenv("PRIVATE_KEY"))
-        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
-    }
-
-    publishPlugin {
-        token.set(System.getenv("PUBLISH_TOKEN"))
     }
 
     runIde {
