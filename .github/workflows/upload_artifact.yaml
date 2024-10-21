@@ -19,7 +19,7 @@ jobs:
           java-version: 17
           distribution: corretto
       - name: Version details
-        run: |          
+        run: |
           echo "INTERNAL VERSION : ${{ vars.VERSION_NUMBER }}"
           echo "GITHUB RUN NUMBER: ${{ github.run_number }}"
           echo "VERSION_NUMBER   : ${VERSION_NUMBER}"

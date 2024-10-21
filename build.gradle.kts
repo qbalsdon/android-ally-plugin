@@ -67,6 +67,11 @@ dependencies {
     // The platform version is a supported major IJP version (e.g., 232 or 233 for 2023.2 and 2023.3 respectively)
     // implementation("org.jetbrains.jewel:jewel-ide-laf-bridge-platform-specific:$jewelVersion-ij-${platformVersion}")
 
+    // ----- Signing -----
+    // @see https://github.com/JetBrains/marketplace-zip-signer
+    val zipSigner = "0.1.8"
+    implementation(dependencyNotation = "org.jetbrains:marketplace-zip-signer:$zipSigner")
+
     // ----- Testing -----
     val googleTruth = "1.1.4"
     // Google truth
