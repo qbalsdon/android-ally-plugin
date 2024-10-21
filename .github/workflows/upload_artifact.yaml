@@ -28,7 +28,7 @@ jobs:
           FOLDER=${FOLDER}/performanceTesting/lib
           FILE=performance-testing-242.23339.19.jar
           URL=https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/performanceTesting/performance-testing/242.23339.19/${FILE}
-          wget ${URL}
+          wget -O ${FOLDER}/performanceTesting.jar ${URL}
           ls -l ${FOLDER}          
 
       - name: Version details
