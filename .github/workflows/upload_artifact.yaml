@@ -18,8 +18,21 @@ jobs:
         with:
           java-version: 17
           distribution: corretto
-      - name: Version details
+      - name: Missing performanceTesting jar hack fix
         run: |
+          echo "Temp fix for linux builds, see https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1738"
+          FOLDER=/home/runner/.gradle/caches/transforms-3/e773a64bc76e36769f59d43df2c66fa6/transformed/android-studio-2024.2.1.10-linux/plugins
+          mkdir -p ${FOLDER}/performanceTesting
+          mkdir -p ${FOLDER}/performanceTesting/lib
+  
+          FOLDER=${FOLDER}/performanceTesting/lib
+          FILE=performance-testing-242.23339.19.jar
+          URL=https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/performanceTesting/performance-testing/242.23339.19/${FILE}
+          wget ${URL}
+          ls -l ${FOLDER}          
+
+      - name: Version details
+        run: |          
           echo "INTERNAL VERSION : ${{ vars.VERSION_NUMBER }}"
           echo "GITHUB RUN NUMBER: ${{ github.run_number }}"
           echo "VERSION_NUMBER   : ${VERSION_NUMBER}"
