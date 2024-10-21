@@ -51,6 +51,7 @@ dependencies {
         bundledPlugin("org.jetbrains.android")
         instrumentationTools()
         testFramework(TestFrameworkType.Platform)
+        zipSigner()
         if (project.hasProperty("localIdeOverride")) {
             local(property("localIdeOverride").toString())
         } else {
