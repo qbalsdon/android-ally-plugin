@@ -99,18 +99,11 @@ fun performanceTestCheck() {
         println("performanceTestCheck Fix not applied outside of LadyBug")
         return
     }
-    /*    for DIR in *; do; echo "I like ${DIR}"; done;
-    ffe8041e1f997e1cefbd7aed4acc0526
-    5ceab852c3ae7b2e76b43964d277f777
-
-    for DIR in *; do; if [ -d ${DIR}/transformed ]; then; echo "[${DIR}] has a transform folder"; fi; done;
-    for DIR in *; do; if [ -d ${DIR}/transformed ]; then; find ${DIR}/transformed -name "android-studio-2024.2.1.9*"; fi; done;
-     */
     val homeDir = System.getProperty("user.home")
 
     // get the cache lib dir
     val dirs = fileTree("$homeDir/.gradle/caches/transforms-3")
-    val target = dirs.filter {
+    val targetCacheDir = dirs.filter {
         it.path.contains("/transformed/") && it.path.contains("android-studio-2024.2.1.9")
     }.map {
         it.path
@@ -118,23 +111,19 @@ fun performanceTestCheck() {
             .substringBefore("/")
     }.toSet()
 
-    if (target.size > 1) {
-        println("performanceTestCheck: Not sure what to do in this situation")
+    if (targetCacheDir.isEmpty() || targetCacheDir.size > 1) {
+        println("performanceTestCheck: Not sure what to do in this situation [targetCacheDir.size=${targetCacheDir.size}]")
         return
     }
 
-    val androidStudio = fileTree("$homeDir/.gradle/caches/transforms-3/${target.first()}/transformed")
+    val androidStudio = fileTree("$homeDir/.gradle/caches/transforms-3/${targetCacheDir.first()}/transformed")
         .first()
         .path
-        .replace("$homeDir/.gradle/caches/transforms-3/${target.first()}/transformed/", "")
+        .replace("$homeDir/.gradle/caches/transforms-3/${targetCacheDir.first()}/transformed/", "")
         .substringBefore("/")
 
 
-    val destinationRoot =
-        "$homeDir/.gradle/caches/transforms-3/${target.first()}/transformed/${androidStudio}/plugins/"
-    if (File(destinationRoot).exists()) {
-        println("performanceTestCheck(): plugins dir exists")
-    }
+    val destinationRoot = "$homeDir/.gradle/caches/transforms-3/${targetCacheDir.first()}/transformed/${androidStudio}/plugins/"
 
     File("${destinationRoot}/performanceTesting").apply {
         if (!exists()) {
@@ -150,7 +139,9 @@ fun performanceTestCheck() {
     }
     val destinationPath = "${destinationRoot}/performanceTesting/lib/"
     val performanceTestingFile = File("${destinationRoot}/performanceTesting/lib/performance-testing-242.23339.19.jar")
-    if (!performanceTestingFile.exists()) {
+    if (performanceTestingFile.exists()){
+        println("performanceTestCheck(): performanceTesting.jar dependency exists")
+    } else {
         println("performanceTestCheck(): performanceTesting.jar not dependency found")
         val webURL =
             "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/performanceTesting/performance-testing/242.23339.19/performance-testing-242.23339.19.jar"
