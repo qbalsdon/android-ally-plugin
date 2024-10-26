@@ -100,12 +100,17 @@ fun performanceTestCheck() {
         return
     }
     val homeDir = System.getProperty("user.home")
-
+    println("performanceTestCheck running in [${homeDir}]")
     // get the cache lib dir
-    val dirs = fileTree("$homeDir/.gradle/caches/transforms-3")
-    val targetCacheDir = dirs.filter {
+    val filteredDirs = fileTree("$homeDir/.gradle/caches/transforms-3").filter {
         it.path.contains("/transformed/") && it.path.contains("android-studio-2024.2.1.9")
-    }.map {
+    }
+
+    filteredDirs.forEach {
+        println("        [${it.path}]")
+    }
+
+    val targetCacheDir = filteredDirs.map {
         it.path
             .replace("$homeDir/.gradle/caches/transforms-3/", "")
             .substringBefore("/")
