@@ -105,10 +105,14 @@ fun performanceTestCheck() {
     val filteredDirs = fileTree("$homeDir/.gradle/caches/transforms-3").filter {
         it.path.contains("/transformed/") && it.path.contains("android-studio-2024.2.1.9")
     }
-
+    println("        ------------------------------------------------------------")
+    //5ceab852c3ae7b2e76b43964d277f777
+    fileTree("$homeDir/.gradle/caches/transforms-3").forEach { println("        [${it.path}]") }
+    println("        ------------------------------------------------------------")
     filteredDirs.forEach {
         println("        [${it.path}]")
     }
+    println("        ------------------------------------------------------------")
 
     val targetCacheDir = filteredDirs.map {
         it.path
