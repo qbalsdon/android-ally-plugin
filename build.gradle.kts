@@ -2,6 +2,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.extensions.intellijPlatform
+import org.jetbrains.kotlin.fir.expressions.builder.buildCatch
 import org.jetbrains.kotlin.incremental.createDirectory
 
 plugins {
@@ -132,7 +133,8 @@ fun performanceTestCheck() {
         .substringBefore("/")
 
 
-    val destinationRoot = "$homeDir/.gradle/caches/transforms-3/${targetCacheDir.first()}/transformed/${androidStudio}/plugins/"
+    val destinationRoot =
+        "$homeDir/.gradle/caches/transforms-3/${targetCacheDir.first()}/transformed/${androidStudio}/plugins/"
 
     File("${destinationRoot}/performanceTesting").apply {
         if (!exists()) {
@@ -148,7 +150,7 @@ fun performanceTestCheck() {
     }
     val destinationPath = "${destinationRoot}/performanceTesting/lib/"
     val performanceTestingFile = File("${destinationRoot}/performanceTesting/lib/performance-testing-242.23339.19.jar")
-    if (performanceTestingFile.exists()){
+    if (performanceTestingFile.exists()) {
         println("performanceTestCheck(): performanceTesting.jar dependency exists")
     } else {
         println("performanceTestCheck(): performanceTesting.jar not dependency found")
@@ -206,9 +208,13 @@ tasks {
                 apiVersion = projectApiVersion
             }
         }
-    }
-    build {
-        performanceTestCheck()
+        doLast {
+            this.state.failure
+            if (this.state.failure != null) {
+                println("Quintin added to a thing! Kotlin compilation failed with the following error:")
+                println(state.failure?.message)
+            }
+        }
     }
     runIde {
         jvmArgs = listOf("-Xmx4096m", "-XX:+UnlockDiagnosticVMOptions")
