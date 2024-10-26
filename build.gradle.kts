@@ -89,7 +89,7 @@ detekt {
     baseline = file("$projectDir/config/baseline.xml") // a way of suppressing issues before introducing detekt
 }
 
-fun download(url : String, path : String){
+fun download(url: String, path: String) {
     val destination = File(path)
     ant.invokeMethod("get", mapOf("src" to url, "dest" to destination))
 }
@@ -99,20 +99,51 @@ fun performanceTestCheck() {
         println("performanceTestCheck Fix not applied outside of LadyBug")
         return
     }
+    /*    for DIR in *; do; echo "I like ${DIR}"; done;
+    ffe8041e1f997e1cefbd7aed4acc0526
+    5ceab852c3ae7b2e76b43964d277f777
+
+    for DIR in *; do; if [ -d ${DIR}/transformed ]; then; echo "[${DIR}] has a transform folder"; fi; done;
+    for DIR in *; do; if [ -d ${DIR}/transformed ]; then; find ${DIR}/transformed -name "android-studio-2024.2.1.9*"; fi; done;
+     */
     val homeDir = System.getProperty("user.home")
-    val destinationRoot = "$homeDir/.gradle/caches/transforms-3/4297f39e97ad9447a15d9076b40348cc/transformed/android-studio-2024.2.1.9-mac_arm/plugins/"
+
+    // get the cache lib dir
+    val dirs = fileTree("$homeDir/.gradle/caches/transforms-3")
+    val target = dirs.filter {
+        it.path.contains("/transformed/") && it.path.contains("android-studio-2024.2.1.9")
+    }.map {
+        it.path
+            .replace("$homeDir/.gradle/caches/transforms-3/", "")
+            .substringBefore("/")
+    }.toSet()
+
+    if (target.size > 1) {
+        println("performanceTestCheck: Not sure what to do in this situation")
+        return
+    }
+
+    val androidStudio = fileTree("$homeDir/.gradle/caches/transforms-3/${target.first()}/transformed")
+        .first()
+        .path
+        .replace("$homeDir/.gradle/caches/transforms-3/${target.first()}/transformed/", "")
+        .substringBefore("/")
+
+
+    val destinationRoot =
+        "$homeDir/.gradle/caches/transforms-3/${target.first()}/transformed/${androidStudio}/plugins/"
     if (File(destinationRoot).exists()) {
         println("performanceTestCheck(): plugins dir exists")
     }
 
     File("${destinationRoot}/performanceTesting").apply {
-        if (!exists()){
+        if (!exists()) {
             println("performanceTestCheck(): creating directory performanceTesting")
             createDirectory()
         }
     }
     File("${destinationRoot}/performanceTesting/lib").apply {
-        if (!exists()){
+        if (!exists()) {
             println("performanceTestCheck(): creating directory performanceTesting/lib")
             createDirectory()
         }
@@ -120,9 +151,11 @@ fun performanceTestCheck() {
     val destinationPath = "${destinationRoot}/performanceTesting/lib/"
     val performanceTestingFile = File("${destinationRoot}/performanceTesting/lib/performance-testing-242.23339.19.jar")
     if (!performanceTestingFile.exists()) {
-        val webURL = "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/performanceTesting/performance-testing/242.23339.19/performance-testing-242.23339.19.jar"
-        download(webURL, destinationPath)
         println("performanceTestCheck(): performanceTesting.jar not dependency found")
+        val webURL =
+            "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/performanceTesting/performance-testing/242.23339.19/performance-testing-242.23339.19.jar"
+        download(webURL, destinationPath)
+        println("performanceTestCheck(): performanceTesting.jar downloaded")
     }
 }
 
