@@ -1,0 +1,18 @@
+<ivy-module version="2.0">
+  <info organisation="bundledPlugin" module="org.jetbrains.plugins.gradle" revision="242.23339.11.2422.12548333+151"/>
+  <configurations>
+    <conf name="default" visibility="public"/>
+  </configurations>
+  <publications>
+    <artifact name="/Users/quintinbalsdon/.gradle/caches/transforms-3/4089587e33567765741d27c3f48374c6/transformed/android-studio-2024.2.2.8-mac_arm/plugins/gradle-java" type="directory" conf="default"/>
+  </publications>
+  <dependencies>
+    <dependency org="bundledPlugin" name="com.intellij.java" rev="242.23339.11.2422.12548333+611"/>
+    <dependency org="bundledPlugin" name="com.intellij.gradle" rev="242.23339.11.2422.12548333+904"/>
+    <dependency org="bundledPlugin" name="Coverage" rev="242.23339.11.2422.12548333+166"/>
+    <dependency org="bundledPlugin" name="org.intellij.groovy" rev="242.23339.11.2422.12548333+535"/>
+    <dependency org="bundledPlugin" name="com.intellij.properties" rev="242.23339.11.2422.12548333+716"/>
+    <dependency org="bundledPlugin" name="org.toml.lang" rev="242.23339.11.2422.12548333+707"/>
+    <dependency org="bundledModule" name="com.jetbrains.performancePlugin" rev="242.23339.11.2422.12548333+893"/>
+  </dependencies>
+</ivy-module>

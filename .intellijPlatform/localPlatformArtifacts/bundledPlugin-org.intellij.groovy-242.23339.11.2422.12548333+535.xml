@@ -1,0 +1,18 @@
+<ivy-module version="2.0">
+  <info organisation="bundledPlugin" module="org.intellij.groovy" revision="242.23339.11.2422.12548333+535"/>
+  <configurations>
+    <conf name="default" visibility="public"/>
+  </configurations>
+  <publications>
+    <artifact name="/Users/quintinbalsdon/.gradle/caches/transforms-3/4089587e33567765741d27c3f48374c6/transformed/android-studio-2024.2.2.8-mac_arm/plugins/Groovy" type="directory" conf="default"/>
+  </publications>
+  <dependencies>
+    <dependency org="bundledPlugin" name="com.intellij.copyright" rev="242.23339.11.2422.12548333+474"/>
+    <dependency org="bundledPlugin" name="org.intellij.intelliLang" rev="242.23339.11.2422.12548333+760"/>
+    <dependency org="bundledPlugin" name="JUnit" rev="242.23339.11.2422.12548333+477"/>
+    <dependency org="bundledPlugin" name="com.intellij.properties" rev="242.23339.11.2422.12548333+716"/>
+    <dependency org="bundledPlugin" name="com.intellij.java" rev="242.23339.11.2422.12548333+611"/>
+    <dependency org="bundledPlugin" name="Git4Idea" rev="242.23339.11.2422.12548333+194"/>
+    <dependency org="bundledModule" name="intellij.java.unscramble" rev="242.23339.11.2422.12548333+893"/>
+  </dependencies>
+</ivy-module>

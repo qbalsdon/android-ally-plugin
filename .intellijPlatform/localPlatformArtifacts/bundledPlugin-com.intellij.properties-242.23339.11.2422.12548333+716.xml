@@ -1,0 +1,12 @@
+<ivy-module version="2.0">
+  <info organisation="bundledPlugin" module="com.intellij.properties" revision="242.23339.11.2422.12548333+716"/>
+  <configurations>
+    <conf name="default" visibility="public"/>
+  </configurations>
+  <publications>
+    <artifact name="/Users/quintinbalsdon/.gradle/caches/transforms-3/4089587e33567765741d27c3f48374c6/transformed/android-studio-2024.2.2.8-mac_arm/plugins/properties" type="directory" conf="default"/>
+  </publications>
+  <dependencies>
+    <dependency org="bundledPlugin" name="com.intellij.copyright" rev="242.23339.11.2422.12548333+474"/>
+  </dependencies>
+</ivy-module>

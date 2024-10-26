@@ -1,0 +1,15 @@
+<ivy-module version="2.0">
+  <info organisation="bundledPlugin" module="Coverage" revision="242.23339.11.2422.12548333+166"/>
+  <configurations>
+    <conf name="default" visibility="public"/>
+  </configurations>
+  <publications>
+    <artifact name="/Users/quintinbalsdon/.gradle/caches/transforms-3/4089587e33567765741d27c3f48374c6/transformed/android-studio-2024.2.2.8-mac_arm/plugins/java-coverage" type="directory" conf="default"/>
+  </publications>
+  <dependencies>
+    <dependency org="bundledPlugin" name="TestNG-J" rev="242.23339.11.2422.12548333+36"/>
+    <dependency org="bundledPlugin" name="JUnit" rev="242.23339.11.2422.12548333+477"/>
+    <dependency org="bundledPlugin" name="com.intellij.java" rev="242.23339.11.2422.12548333+611"/>
+    <dependency org="bundledModule" name="intellij.platform.coverage" rev="242.23339.11.2422.12548333+893"/>
+  </dependencies>
+</ivy-module>

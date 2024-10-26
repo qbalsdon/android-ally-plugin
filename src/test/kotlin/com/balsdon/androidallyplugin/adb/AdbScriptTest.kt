@@ -370,7 +370,7 @@ class AdbScriptTest {
 
     @Test
     fun can_open_screen() {
-        SettingsScreen.entries.forEach { screen ->
+        SettingsScreen.values().forEach { screen ->
             assertThat(
                 openScreen(screen).asScript()
             ).isEqualTo("am start -a ${screen.internalAndroidReference}")
