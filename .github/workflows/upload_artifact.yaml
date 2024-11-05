@@ -37,6 +37,19 @@ jobs:
           echo "GITHUB RUN NUMBER: ${{ github.run_number }}"
           echo "VERSION_NUMBER   : ${VERSION_NUMBER}"
 
+      - name: Missing performanceTesting jar hack fix
+        run: |
+          echo "see https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1738"
+          FOLDER=/home/runner/.gradle/caches/transforms-3/${HACK_PERFORMANCE_FOLDER}/transformed/android-studio-2024.2.1.10-linux/plugins
+          mkdir -p ${FOLDER}/performanceTesting
+          mkdir -p ${FOLDER}/performanceTesting/lib
+
+          FOLDER=${FOLDER}/performanceTesting/lib
+          FILE=performance-testing-242.23339.19.jar
+          URL=https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/performanceTesting/performance-testing/242.23339.19/${FILE}
+          wget -O ${FOLDER}/${FILE} ${URL}
+          ls -l ${FOLDER}
+
       - name: Setup and execute Gradle 'publishPlugin' task
         uses: gradle/gradle-build-action@v2
         with:

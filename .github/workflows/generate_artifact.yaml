@@ -12,6 +12,7 @@ jobs:
       CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
       PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
       OUTPUT_DIR: ./build/distributions/
+      HACK_PERFORMANCE_FOLDER: ${{ vars.HACK_PERFORMANCE_FOLDER }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
@@ -23,6 +24,19 @@ jobs:
           echo "INTERNAL VERSION : ${{ vars.VERSION_NUMBER }}"
           echo "GITHUB RUN NUMBER: ${{ github.run_number }}"
           echo "VERSION_NUMBER   : ${VERSION_NUMBER}"
+
+      - name: Missing performanceTesting jar hack fix
+        run: |
+          echo "see https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1738"
+          FOLDER=/home/runner/.gradle/caches/transforms-3/${HACK_PERFORMANCE_FOLDER}/transformed/android-studio-2024.2.1.10-linux/plugins
+          mkdir -p ${FOLDER}/performanceTesting
+          mkdir -p ${FOLDER}/performanceTesting/lib
+
+          FOLDER=${FOLDER}/performanceTesting/lib
+          FILE=performance-testing-242.23339.19.jar
+          URL=https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/performanceTesting/performance-testing/242.23339.19/${FILE}
+          wget -O ${FOLDER}/${FILE} ${URL}
+          ls -l ${FOLDER}
 
       - name: Setup and execute Gradle 'signPlugin' task
         uses: gradle/gradle-build-action@v2

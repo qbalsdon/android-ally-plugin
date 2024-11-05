@@ -5,6 +5,8 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    env:
+      HACK_PERFORMANCE_FOLDER: ${{ vars.HACK_PERFORMANCE_FOLDER }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
@@ -15,7 +17,7 @@ jobs:
       - name: Missing performanceTesting jar hack fix
         run: |
           echo "see https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1738"
-          FOLDER=/home/runner/.gradle/caches/transforms-3/e773a64bc76e36769f59d43df2c66fa6/transformed/android-studio-2024.2.1.10-linux/plugins
+          FOLDER=/home/runner/.gradle/caches/transforms-3/${HACK_PERFORMANCE_FOLDER}/transformed/android-studio-2024.2.1.10-linux/plugins
           mkdir -p ${FOLDER}/performanceTesting
           mkdir -p ${FOLDER}/performanceTesting/lib
 
