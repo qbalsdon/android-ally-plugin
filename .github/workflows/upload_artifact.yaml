@@ -47,7 +47,7 @@ jobs:
           FOLDER=${FOLDER}/performanceTesting/lib
           FILE=performance-testing-242.23339.19.jar
           URL=https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/performanceTesting/performance-testing/242.23339.19/${FILE}
-          wget -O ${FOLDER}/${FILE} ${URL}
+          wget -O ${FOLDER}/performance-testing.jar ${URL}
           ls -l ${FOLDER}
 
       - name: Setup and execute Gradle 'publishPlugin' task
