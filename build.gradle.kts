@@ -2,11 +2,9 @@ import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.extensions.intellijPlatform
-import org.jetbrains.kotlin.fir.expressions.builder.buildCatch
-import org.jetbrains.kotlin.incremental.createDirectory
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.9.24"
+    id("org.jetbrains.kotlin.jvm") version "2.0.21"
     id("org.jetbrains.intellij.platform") version "2.1.0"
     id("io.gitlab.arturbosch.detekt") version "1.23.5"
 }
@@ -21,6 +19,8 @@ repositories {
         defaultRepositories()
     }
 }
+
+configurations { create("externalLibs") }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -74,7 +74,6 @@ dependencies {
     // @see https://github.com/JetBrains/marketplace-zip-signer
     val zipSigner = "0.1.8"
     implementation(dependencyNotation = "org.jetbrains:marketplace-zip-signer:$zipSigner")
-
     // ----- Testing -----
     val googleTruth = "1.1.4"
     // Google truth
@@ -88,77 +87,6 @@ detekt {
     allRules = false // activate all available (even unstable) rules.
     config.setFrom("$projectDir/config/detekt.yaml") // point to your custom config defining rules to run, overwriting default behavior
     baseline = file("$projectDir/config/baseline.xml") // a way of suppressing issues before introducing detekt
-}
-
-fun download(url: String, path: String) {
-    val destination = File(path)
-    ant.invokeMethod("get", mapOf("src" to url, "dest" to destination))
-}
-
-fun performanceTestCheck() {
-    if (extra["ideVersion"] != "2024.2.1.9") {
-        println("performanceTestCheck Fix not applied outside of LadyBug")
-        return
-    }
-    val homeDir = System.getProperty("user.home")
-    println("performanceTestCheck running in [${homeDir}]")
-    // get the cache lib dir
-    val filteredDirs = fileTree("$homeDir/.gradle/caches/transforms-3").filter {
-        it.path.contains("/transformed/") && it.path.contains("android-studio-2024.2.1.9")
-    }
-    println("        ------------------------------------------------------------")
-    //5ceab852c3ae7b2e76b43964d277f777
-    fileTree("$homeDir/.gradle/caches/transforms-3").forEach { println("        [${it.path}]") }
-    println("        ------------------------------------------------------------")
-    filteredDirs.forEach {
-        println("        [${it.path}]")
-    }
-    println("        ------------------------------------------------------------")
-
-    val targetCacheDir = filteredDirs.map {
-        it.path
-            .replace("$homeDir/.gradle/caches/transforms-3/", "")
-            .substringBefore("/")
-    }.toSet()
-
-    if (targetCacheDir.isEmpty() || targetCacheDir.size > 1) {
-        println("performanceTestCheck: Not sure what to do in this situation [targetCacheDir.size=${targetCacheDir.size}]")
-        return
-    }
-
-    val androidStudio = fileTree("$homeDir/.gradle/caches/transforms-3/${targetCacheDir.first()}/transformed")
-        .first()
-        .path
-        .replace("$homeDir/.gradle/caches/transforms-3/${targetCacheDir.first()}/transformed/", "")
-        .substringBefore("/")
-
-
-    val destinationRoot =
-        "$homeDir/.gradle/caches/transforms-3/${targetCacheDir.first()}/transformed/${androidStudio}/plugins/"
-
-    File("${destinationRoot}/performanceTesting").apply {
-        if (!exists()) {
-            println("performanceTestCheck(): creating directory performanceTesting")
-            createDirectory()
-        }
-    }
-    File("${destinationRoot}/performanceTesting/lib").apply {
-        if (!exists()) {
-            println("performanceTestCheck(): creating directory performanceTesting/lib")
-            createDirectory()
-        }
-    }
-    val destinationPath = "${destinationRoot}/performanceTesting/lib/"
-    val performanceTestingFile = File("${destinationRoot}/performanceTesting/lib/performance-testing-242.23339.19.jar")
-    if (performanceTestingFile.exists()) {
-        println("performanceTestCheck(): performanceTesting.jar dependency exists")
-    } else {
-        println("performanceTestCheck(): performanceTesting.jar not dependency found")
-        val webURL =
-            "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/performanceTesting/performance-testing/242.23339.19/performance-testing-242.23339.19.jar"
-        download(webURL, destinationPath)
-        println("performanceTestCheck(): performanceTesting.jar downloaded")
-    }
 }
 
 tasks {
@@ -206,13 +134,6 @@ tasks {
             kotlinOptions {
                 jvmTarget = jvmTarget
                 apiVersion = projectApiVersion
-            }
-        }
-        doLast {
-            this.state.failure
-            if (this.state.failure != null) {
-                println("Quintin added to a thing! Kotlin compilation failed with the following error:")
-                println(state.failure?.message)
             }
         }
     }

@@ -48,3 +48,5 @@ bin/
 cert/
 
 .intellijPlatform/
+
+*.hprof
