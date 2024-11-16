@@ -18,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.jetbrains.kotlin.util.classNameAndMessage
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -87,7 +86,7 @@ class AndroidDevice(private val rawDevice: IDevice) {
             com.android.ddmlib.AdbCommandRejectedException::class,
             java.net.SocketException::class
         ) {
-            log(it.classNameAndMessage)
+            log("${it.javaClass.name} ${it.message}")
             fn(emptyList())
         }
     }

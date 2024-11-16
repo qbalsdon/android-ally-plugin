@@ -1,6 +1,5 @@
 package com.balsdon.androidallyplugin.utils
 
-import org.jetbrains.kotlin.util.classNameAndMessage
 
 // TODO: Fix this: Logger.isDebugEnabled always returns false
 fun log(message: String) {
@@ -12,7 +11,7 @@ fun log(message: String) {
 fun log(exception: Exception) {
 //    if (Logger.isDebugEnabled) {
         println("!! EXCEPTION [${exception::class.java.simpleName}] !!")
-        println(exception.classNameAndMessage)
+        println("${exception.javaClass.name} ${exception.message}")
         println(exception.stackTrace)
         println("---------------------")
 //    }

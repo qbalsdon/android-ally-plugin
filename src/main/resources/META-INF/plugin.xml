@@ -32,6 +32,7 @@
      -->
     <depends>org.jetbrains.android</depends> <!-- Required for ADB libraries -->
     <depends>com.intellij.modules.androidstudio</depends>
+    <depends>com.intellij.modules.platform</depends>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
@@ -53,9 +54,13 @@
             <li>[0.0.7] Added WearOS support <a href="https://trello.com/c/HBTuwZWE">Trello issue link</a></li>
             <li>[0.0.6] Added reset font scale button <a href="https://trello.com/c/PHGrQq5V">Trello issue link</a></li>
         </ul>
+        <h2>Version updates</h2>
+        <ul>
+            <li>[1.0.2] Updating to Meerkat <a href="https://trello.com/c/9IOVWCgU">Trello issue link</a></li>
+            <li>[1.0.0] Fix for Jellyfish patch 1 compatibility <a href="https://trello.com/c/gJ2dgyT6">Trello issue link</a></li>
+        </ul>
         <h2>Bug fixes</h2>
         <ul>
-            <li>[1.0.0] Fix for Jellyfish patch 1 compatibility <a href="https://trello.com/c/gJ2dgyT6">Trello issue link</a></li>
             <li>[1.0.0] No devices selected warning <a href="https://trello.com/c/iGB442Ik">Trello issue link</a></li>
             <li>[0.0.7] Removed duplicated word in heading <a href="https://github.com/qbalsdon/android-ally-plugin/pull/30">Pull request</a></li>
             <li>[0.0.7] Added detekt for code linting <a href="https://trello.com/c/Uf7KogQC">Trello issue link</a></li>
