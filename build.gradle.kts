@@ -50,9 +50,17 @@ intellijPlatform {
 
 dependencies {
     intellijPlatform {
-        bundledPlugin("org.jetbrains.android")
+        bundledPlugins(
+            "com.intellij.java",
+            "org.intellij.plugins.markdown",
+            "org.jetbrains.plugins.terminal",
+            "org.jetbrains.kotlin",
+            "org.jetbrains.android"
+        )
+        plugin("org.jetbrains.android", "242.23339.11")
         instrumentationTools()
         testFramework(TestFrameworkType.Platform)
+        testFramework(TestFrameworkType.Plugin.Java)
         zipSigner()
         if (project.hasProperty("localIdeOverride")) {
             local(property("localIdeOverride").toString())
