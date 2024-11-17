@@ -1,9 +1,11 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.extensions.intellijPlatform
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.9.0"
-    id("org.jetbrains.intellij") version "1.16.1"
+    id("org.jetbrains.kotlin.jvm") version "2.0.21"
+    id("org.jetbrains.intellij.platform") version "2.1.0"
     id("io.gitlab.arturbosch.detekt") version "1.23.5"
 }
 
@@ -12,33 +14,53 @@ version = System.getenv("VERSION_NUMBER")
 
 repositories {
     mavenCentral()
+
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
+
+configurations { create("externalLibs") }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    /**
-     * intellijVersion must be from the build list
-     * @see [https://plugins.jetbrains.com/docs/intellij/android-studio-releases-list.html#2023]
-     *
-     * requires plugins:
-     *    - "android" for access to ADB functions
-     *
-     * WIP: Jewel
-     * @see [https://packages.jetbrains.team/maven/p/kpm/public/org/jetbrains/jewel/jewel-ide-laf-bridge-platform-specific/]
-     */
+intellijPlatform {
+    pluginConfiguration {
+        name = "android_ally"
+        group = "com.balsdon.android-ally-plugin"
+        ideaVersion.sinceBuild.set(project.property("sinceBuild").toString())
+        ideaVersion.untilBuild.set(provider { null })
+    }
+    buildSearchableOptions.set(false)
+    instrumentCode = true
 
-    version.set(project.property("ideVersion").toString())
-    type.set("AI") // Target Android Studio IDE Platform
-    plugins.set(listOf("android"))
-    updateSinceUntilBuild = false
+    signing {
+        privateKey = System.getenv("PRIVATE_KEY")
+        password = System.getenv("PRIVATE_KEY_PASSWORD")
+        certificateChain = System.getenv("CERTIFICATE_CHAIN")
+    }
+
+    publishing {
+        token = System.getenv("PUBLISH_TOKEN")
+    }
 }
 
 dependencies {
+    intellijPlatform {
+        bundledPlugin("org.jetbrains.android")
+        instrumentationTools()
+        testFramework(TestFrameworkType.Platform)
+        zipSigner()
+        if (project.hasProperty("localIdeOverride")) {
+            local(property("localIdeOverride").toString())
+        } else {
+            androidStudio(property("ideVersion").toString())
+        }
+    }
+
     // ----- Production dependencies -----
     val rxJava = "3.1.8"
     // RxJava
@@ -48,10 +70,16 @@ dependencies {
     // The platform version is a supported major IJP version (e.g., 232 or 233 for 2023.2 and 2023.3 respectively)
     // implementation("org.jetbrains.jewel:jewel-ide-laf-bridge-platform-specific:$jewelVersion-ij-${platformVersion}")
 
+    // ----- Signing -----
+    // @see https://github.com/JetBrains/marketplace-zip-signer
+    val zipSigner = "0.1.8"
+    implementation(dependencyNotation = "org.jetbrains:marketplace-zip-signer:$zipSigner")
     // ----- Testing -----
     val googleTruth = "1.1.4"
     // Google truth
     testImplementation("com.google.truth:truth:$googleTruth")
+
+    testImplementation("junit:junit:4.13.2")
 }
 
 detekt {
@@ -63,7 +91,8 @@ detekt {
 
 tasks {
     // Set the JVM compatibility versions
-    val jvm = "17"
+    val projectJvmTarget = "17"
+    val projectApiVersion = "1.8"
 
     withType<Detekt>().configureEach {
         reports {
@@ -87,38 +116,28 @@ tasks {
     }
 
     compileKotlin {
-        kotlinOptions.jvmTarget = jvm
+        kotlinOptions.jvmTarget = projectJvmTarget
     }
 
     compileTestKotlin {
-        kotlinOptions.jvmTarget = jvm
+        kotlinOptions.jvmTarget = projectJvmTarget
     }
 
     withType<JavaCompile> {
-        sourceCompatibility = jvm
-        targetCompatibility = jvm
+        sourceCompatibility = projectJvmTarget
+        targetCompatibility = projectJvmTarget
     }
+
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = jvm
+        kotlinOptions.jvmTarget = projectJvmTarget
+        all {
+            kotlinOptions {
+                jvmTarget = jvmTarget
+                apiVersion = projectApiVersion
+            }
+        }
     }
-
-    patchPluginXml {
-        sinceBuild.set(project.property("sinceBuild").toString())
+    runIde {
+        jvmArgs = listOf("-Xmx4096m", "-XX:+UnlockDiagnosticVMOptions")
     }
-
-    signPlugin {
-        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-        privateKey.set(System.getenv("PRIVATE_KEY"))
-        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
-    }
-
-    publishPlugin {
-        token.set(System.getenv("PUBLISH_TOKEN"))
-    }
-
-//    runIde {
-//        // Absolute path to installed target 3.5 Android Studio to use as
-//        // IDE Development Instance (the "Contents" directory is macOS specific):
-//        ideDir.set(file("/Applications/Android Studio.app/Contents"))
-//    }
 }

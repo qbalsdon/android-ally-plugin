@@ -55,14 +55,14 @@ class DebugPanel(private val controller: Controller) : ControllerPanel(controlle
     private val switchAccessOffButtonText = localize("panel.debug.button.switch_access.off")
 
     private val openScreenLabelString = localize("panel.debug.label.screen")
-    private val openScreenOptions = SettingsScreen.entries.map { it.reference }
+    private val openScreenOptions = SettingsScreen.values().map { it.reference }
 
     override fun buildComponent() = JPanel().apply {
 
         layout = GridBagLayout()
         // open screen
         addOpenScreenComponent(whichRow = 0) { option ->
-            val screen = SettingsScreen.entries.first { it.reference == option }
+            val screen = SettingsScreen.values().first { it.reference == option }
             openScreen(screen).run()
         }
         // layout bounds

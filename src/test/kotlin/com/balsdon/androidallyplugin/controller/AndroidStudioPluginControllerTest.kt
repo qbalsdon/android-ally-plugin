@@ -15,7 +15,6 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.messages.MessageBus
 import io.reactivex.rxjava3.schedulers.TestScheduler
-import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.kotlin.backend.common.push
 import org.junit.Assert
 import org.junit.Test
@@ -451,11 +450,6 @@ class AndroidStudioPluginControllerTest {
         }
 
         override fun isInitialized(): Boolean {
-            TODO("Not yet implemented")
-        }
-
-        @Deprecated("Deprecated in Java")
-        override fun getCoroutineScope(): CoroutineScope {
             TODO("Not yet implemented")
         }
     }
