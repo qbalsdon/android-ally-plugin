@@ -1,6 +1,5 @@
 package com.balsdon.androidallyplugin.model
 
-import android.databinding.tool.ext.capitalizeUS
 import com.android.ddmlib.IDevice
 import com.android.ddmlib.IShellOutputReceiver
 import com.android.ddmlib.InstallException
@@ -24,6 +23,7 @@ import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import java.util.*
 
 class AndroidDevice(private val rawDevice: IDevice) {
 
@@ -56,7 +56,7 @@ class AndroidDevice(private val rawDevice: IDevice) {
                         "$brand $model"
                     }.trim()
                         .split(" ")
-                        .joinToString(" ") { t -> t.capitalizeUS() }
+                        .joinToString(" ") { t -> t.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() } }
                     name.ifBlank {
                         unknownDeviceLabel
                     }

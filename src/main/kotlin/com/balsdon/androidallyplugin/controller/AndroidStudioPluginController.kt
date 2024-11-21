@@ -1,6 +1,6 @@
 package com.balsdon.androidallyplugin.controller
 
-import com.android.ddmlib.AndroidDebugBridge.IDeviceChangeListener
+import com.android.ddmlib.AndroidDebugBridge
 import com.android.ddmlib.IDevice
 import com.balsdon.androidallyplugin.TB4DInstallHelpWebPage
 import com.balsdon.androidallyplugin.TB4DWebPage
@@ -36,7 +36,7 @@ class AndroidStudioPluginController(
          * However, this is core functionality
         */
     init {
-        adbProvider.addDeviceChangeListener(object : IDeviceChangeListener {
+        adbProvider.addDeviceChangeListener(object : AndroidDebugBridge.IDeviceChangeListener {
             private fun updateDeviceList(device: IDevice, updateDevice: Boolean = true) {
                 connectedDeviceList.removeIf { it.serial == device.serialNumber }
                 if (updateDevice) {

@@ -23,8 +23,8 @@ repositories {
 configurations { create("externalLibs") }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 intellijPlatform {
@@ -50,9 +50,11 @@ intellijPlatform {
 
 dependencies {
     intellijPlatform {
+        androidStudio("2024.3.1.2")
         bundledPlugin("org.jetbrains.android")
         instrumentationTools()
         testFramework(TestFrameworkType.Platform)
+        testFramework(TestFrameworkType.Plugin.Java)
         zipSigner()
         if (project.hasProperty("localIdeOverride")) {
             local(property("localIdeOverride").toString())
@@ -92,7 +94,6 @@ detekt {
 tasks {
     // Set the JVM compatibility versions
     val projectJvmTarget = "17"
-    val projectApiVersion = "1.8"
 
     withType<Detekt>().configureEach {
         reports {
@@ -115,28 +116,11 @@ tasks {
         enabled = false
     }
 
-    compileKotlin {
-        kotlinOptions.jvmTarget = projectJvmTarget
-    }
-
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = projectJvmTarget
-    }
-
     withType<JavaCompile> {
         sourceCompatibility = projectJvmTarget
         targetCompatibility = projectJvmTarget
     }
 
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = projectJvmTarget
-        all {
-            kotlinOptions {
-                jvmTarget = jvmTarget
-                apiVersion = projectApiVersion
-            }
-        }
-    }
     runIde {
         jvmArgs = listOf("-Xmx4096m", "-XX:+UnlockDiagnosticVMOptions")
     }
