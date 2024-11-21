@@ -1,6 +1,5 @@
 package com.balsdon.androidallyplugin.ui.panel
 
-import com.android.tools.idea.nav.safeargs.psi.java.toCamelCase
 import com.balsdon.androidallyplugin.adb.AdbScript
 import com.balsdon.androidallyplugin.adb.parameters.AdbKeyCode
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackAction
@@ -20,6 +19,7 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
+import java.util.*
 
 
 /**
@@ -72,7 +72,8 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
         addTalkBackToggleComponent(0)
         addGranularityCombo(1) { option ->
             selectedGranularity = TalkBackGranularity.valueOf(
-                option.replace("panel.talkback.label.granularity.", "").toCamelCase()
+                option.replace("panel.talkback.label.granularity.", "")
+                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
             )
         }
         addBasicControls(whichRow = 2)
