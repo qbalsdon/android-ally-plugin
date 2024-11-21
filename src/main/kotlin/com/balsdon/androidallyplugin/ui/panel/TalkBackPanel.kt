@@ -1,6 +1,6 @@
 package com.balsdon.androidallyplugin.ui.panel
 
-import android.databinding.tool.ext.toCamelCase
+import com.android.tools.idea.nav.safeargs.psi.java.toCamelCase
 import com.balsdon.androidallyplugin.adb.AdbScript
 import com.balsdon.androidallyplugin.adb.parameters.AdbKeyCode
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackAction

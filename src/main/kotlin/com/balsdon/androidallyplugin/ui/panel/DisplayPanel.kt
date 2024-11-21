@@ -1,6 +1,5 @@
 package com.balsdon.androidallyplugin.ui.panel
 
-import com.android.tools.lint.detector.api.isNumberString
 import com.balsdon.androidallyplugin.adb.animations
 import com.balsdon.androidallyplugin.adb.colorCorrection
 import com.balsdon.androidallyplugin.adb.colorInversion
@@ -10,6 +9,7 @@ import com.balsdon.androidallyplugin.adb.parameters.ColorCorrectionType
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.createToggleRow
+import com.balsdon.androidallyplugin.utils.isNumeric
 import com.balsdon.androidallyplugin.utils.placeComponent
 import com.balsdon.androidallyplugin.utils.setMaxComponentSize
 import com.intellij.openapi.ui.ComboBox
@@ -50,13 +50,12 @@ class DisplayPanel(controller: Controller) : ControllerPanel(controller) {
         "panel.display.label.correction.protanomaly"
     )
 
-
     override fun buildComponent() =
         JPanel().apply {
             layout = GridBagLayout()
             // display size secure display_density_forced [, 356, 540, 500, 460]
             addDisplayDensityComponent(whichRow = 0) { density ->
-                displayDensity(if (isNumberString(density)) density.toInt() else -1).run()
+                displayDensity(if (density.isNumeric()) density.toInt() else -1).run()
             }
             // dark mode
             addDarkModeToggleComponent(whichRow = 1)
@@ -82,7 +81,7 @@ class DisplayPanel(controller: Controller) : ControllerPanel(controller) {
                 JButton(label).apply {
                     addActionListener {
                         onDensitySelected(
-                            if (isNumberString(label)) {
+                            if (label.isNumeric()) {
                                 label
                             } else {
                                 ""
