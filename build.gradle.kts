@@ -5,7 +5,7 @@ import org.jetbrains.intellij.platform.gradle.extensions.intellijPlatform
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.0.21"
-    id("org.jetbrains.intellij.platform") version "2.1.0"
+    id("org.jetbrains.intellij.platform") version "2.3.0"
     id("io.gitlab.arturbosch.detekt") version "1.23.5"
 }
 
@@ -51,7 +51,6 @@ intellijPlatform {
 dependencies {
     intellijPlatform {
         bundledPlugin("org.jetbrains.android")
-        instrumentationTools()
         testFramework(TestFrameworkType.Platform)
         zipSigner()
         if (project.hasProperty("localIdeOverride")) {
@@ -92,7 +91,6 @@ detekt {
 tasks {
     // Set the JVM compatibility versions
     val projectJvmTarget = "17"
-    val projectApiVersion = "1.8"
 
     withType<Detekt>().configureEach {
         reports {
@@ -115,28 +113,11 @@ tasks {
         enabled = false
     }
 
-    compileKotlin {
-        kotlinOptions.jvmTarget = projectJvmTarget
-    }
-
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = projectJvmTarget
-    }
-
     withType<JavaCompile> {
         sourceCompatibility = projectJvmTarget
         targetCompatibility = projectJvmTarget
     }
 
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = projectJvmTarget
-        all {
-            kotlinOptions {
-                jvmTarget = jvmTarget
-                apiVersion = projectApiVersion
-            }
-        }
-    }
     runIde {
         jvmArgs = listOf("-Xmx4096m", "-XX:+UnlockDiagnosticVMOptions")
     }
