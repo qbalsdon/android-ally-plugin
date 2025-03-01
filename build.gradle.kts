@@ -5,7 +5,7 @@ import org.jetbrains.intellij.platform.gradle.extensions.intellijPlatform
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.0.21"
-    id("org.jetbrains.intellij.platform") version "2.1.0"
+    id("org.jetbrains.intellij.platform") version "2.3.0"
     id("io.gitlab.arturbosch.detekt") version "1.23.5"
 }
 
@@ -128,15 +128,6 @@ tasks {
         targetCompatibility = projectJvmTarget
     }
 
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = projectJvmTarget
-        all {
-            kotlinOptions {
-                jvmTarget = jvmTarget
-                apiVersion = projectApiVersion
-            }
-        }
-    }
     runIde {
         jvmArgs = listOf("-Xmx4096m", "-XX:+UnlockDiagnosticVMOptions")
     }
