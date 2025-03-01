@@ -131,6 +131,102 @@ class AndroidStudioPluginControllerTest {
     }
 
     @Test
+    fun function_run_when_no_devices_selected_one_device_connected() {
+        // given a controller
+        val testSubject = AndroidStudioPluginController(
+            projectFake,
+            adbProviderFake
+        )
+
+        //    with connected devices
+        val testDevice1 = AndroidDeviceTestFake(serial = "1111")
+        adbProviderFake.testDeviceConnected(testDevice1.rawIDevice)
+        //    and no devices selected
+        testSubject.selectedDeviceSerialList.clear()
+
+        // when
+        //    runOnAllValidSelectedDevices called
+        var deviceCount = 0
+        try {
+            testSubject.runOnAllValidSelectedDevices { _ -> deviceCount += 1 }
+        } catch (e: NullPointerException) {
+            assertThat(e.stackTrace.count { element -> element.methodName == "showNoSelectedDevicesNotification" }).isEqualTo(
+                1
+            )
+        }
+        // then the resulting devices acted on is 0
+        assertThat(deviceCount).isEqualTo(1)
+    }
+
+    @Test
+    fun function_run_when_no_connected_devices_selected_other_device_connected() {
+        // given a controller
+        val testSubject = AndroidStudioPluginController(
+            projectFake,
+            adbProviderFake
+        )
+
+        //    with connected devices
+        val testDevice1 = AndroidDeviceTestFake(serial = "1111")
+        val testDevice2 = AndroidDeviceTestFake(serial = "2222")
+        adbProviderFake.testDeviceConnected(testDevice1.rawIDevice)
+        adbProviderFake.testDeviceConnected(testDevice2.rawIDevice)
+        //    and one devices selected
+        testSubject.selectedDeviceSerialList.clear()
+        testSubject.selectedDeviceSerialList.add("2222")
+        //    and then the second disconnected
+        adbProviderFake.testDeviceDisconnected(testDevice2.rawIDevice)
+        // when
+        //    runOnAllValidSelectedDevices called
+        val executionCounter = mutableMapOf<String, Int>()
+
+        try {
+            testSubject.runOnAllValidSelectedDevices { device ->
+                executionCounter[device.serial] = (executionCounter[device.serial] ?: 0) + 1
+            }
+        } catch (e: NullPointerException) {
+            assertThat(e.stackTrace.count { element -> element.methodName == "showNoSelectedDevicesNotification" }).isEqualTo(
+                1
+            )
+        }
+        // then the resulting devices acted on is 0
+        assertThat(executionCounter.size).isEqualTo(1)
+        assertThat(executionCounter.containsKey("1111")).isTrue()
+        assertThat(executionCounter.containsKey("2222")).isFalse()
+        assertThat(executionCounter["1111"]).isEqualTo(1)
+    }
+
+    @Test
+    fun function_not_run_when_no_devices_selected_two_device_connected() {
+        // given a controller
+        val testSubject = AndroidStudioPluginController(
+            projectFake,
+            adbProviderFake
+        )
+
+        //    with connected devices
+        val testDevice1 = AndroidDeviceTestFake(serial = "1111")
+        val testDevice2 = AndroidDeviceTestFake(serial = "2222")
+        adbProviderFake.testDeviceConnected(testDevice1.rawIDevice)
+        adbProviderFake.testDeviceConnected(testDevice2.rawIDevice)
+        //    and no devices selected
+        testSubject.selectedDeviceSerialList.clear()
+
+        // when
+        //    runOnAllValidSelectedDevices called
+        var deviceCount = 0
+        try {
+            testSubject.runOnAllValidSelectedDevices { _ -> deviceCount += 1 }
+        } catch (e: NullPointerException) {
+            assertThat(e.stackTrace.count { element -> element.methodName == "showNoSelectedDevicesNotification" }).isEqualTo(
+                1
+            )
+        }
+        // then the resulting devices acted on is 0
+        assertThat(deviceCount).isEqualTo(0)
+    }
+
+    @Test
     fun function_not_run_when_no_devices_selected() {
         // given a controller
         val testSubject = AndroidStudioPluginController(
@@ -152,7 +248,9 @@ class AndroidStudioPluginControllerTest {
         try {
             testSubject.runOnAllValidSelectedDevices { _ -> deviceCount += 1 }
         } catch (e: NullPointerException) {
-            assertThat(e.stackTrace.count { element -> element.methodName == "showNoSelectedDevicesNotification" }).isEqualTo(1)
+            assertThat(e.stackTrace.count { element -> element.methodName == "showNoSelectedDevicesNotification" }).isEqualTo(
+                1
+            )
         }
         // then the resulting devices acted on is 0
         assertThat(deviceCount).isEqualTo(0)
@@ -283,26 +381,30 @@ class AndroidStudioPluginControllerTest {
         }
 
         testObserver.values()[2].forEachIndexed { index, value ->
-            assertThat(value.serial).isEqualTo(when (index) {
-                0 -> "1111"
-                1 -> "2222"
-                2 -> "3333"
-                else -> Assert.fail()
-            })
+            assertThat(value.serial).isEqualTo(
+                when (index) {
+                    0 -> "1111"
+                    1 -> "2222"
+                    2 -> "3333"
+                    else -> Assert.fail()
+                }
+            )
         }
 
         testObserver.values()[3].forEachIndexed { index, value ->
-            assertThat(value.serial).isEqualTo(when (index) {
-                0 -> "1111"
-                1 -> "3333"
-                else -> Assert.fail()
-            })
+            assertThat(value.serial).isEqualTo(
+                when (index) {
+                    0 -> "1111"
+                    1 -> "3333"
+                    else -> Assert.fail()
+                }
+            )
         }
 
         testObserver.onComplete()
     }
 
-    private val adbProviderFake = object: AdbProvider {
+    private val adbProviderFake = object : AdbProvider {
         private val listeners = mutableListOf<AndroidDebugBridge.IDeviceChangeListener>()
         override fun addDeviceChangeListener(listener: AndroidDebugBridge.IDeviceChangeListener) {
             listeners.add(listener)
@@ -330,7 +432,7 @@ class AndroidStudioPluginControllerTest {
     }
 
     @Suppress("UnstableApiUsage")
-    private val projectFake = object: Project {
+    private val projectFake = object : Project {
         override fun <T : Any?> getUserData(p0: Key<T>): T? {
             TODO("Not yet implemented")
         }

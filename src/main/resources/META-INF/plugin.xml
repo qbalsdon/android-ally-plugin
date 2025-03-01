@@ -49,6 +49,7 @@
     <change-notes><![CDATA[
         <h2>Whats new</h2>
         <ul>
+            <li>[1.0.3] When only one device is connected, don't require selection <a href="https://trello.com/c/XcN0iJdC">Trello issue link</a></li>
             <li>[1.0.2] Updated to TalkBack4Devs 0.0.3 (TalkBack 15) <a href="https://trello.com/c/VAUWR2ph">Trello issue link</a></li>
             <li>[1.0.0] Added a check list panel <a href="https://trello.com/c/tMwlnp0j">Trello issue link</a></li>
             <li>[1.0.0] Added a home button <a href="https://trello.com/c/NrhyxaIk">Trello issue link</a></li>

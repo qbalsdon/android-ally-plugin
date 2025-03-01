@@ -139,10 +139,14 @@ class AndroidStudioPluginController(
     }
 
     override fun runOnAllValidSelectedDevices(fn: (AndroidDevice) -> Unit) {
-        connectedDeviceList
-            .filter { it.serial in selectedDeviceSerialList }
-            .map { fn(it) }
-            .ifEmpty { showNoSelectedDevicesNotification() }
+        if (connectedDeviceList.size == 1) {
+            fn(connectedDeviceList[0])
+        } else {
+            connectedDeviceList
+                .filter { it.serial in selectedDeviceSerialList }
+                .map { fn(it) }
+                .ifEmpty { showNoSelectedDevicesNotification() }
+        }
     }
 
     override fun refreshAdb() = adbProvider.refreshAdb()
