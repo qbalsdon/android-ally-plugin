@@ -1,7 +1,6 @@
 package com.balsdon.androidallyplugin.ui
 
 import com.google.common.truth.Truth.assertThat
-import com.intellij.lang.properties.ResourceBundle
 import org.junit.Test
 import java.io.File
 
