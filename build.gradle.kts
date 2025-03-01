@@ -51,7 +51,6 @@ intellijPlatform {
 dependencies {
     intellijPlatform {
         bundledPlugin("org.jetbrains.android")
-        instrumentationTools()
         testFramework(TestFrameworkType.Platform)
         zipSigner()
         if (project.hasProperty("localIdeOverride")) {
@@ -92,7 +91,6 @@ detekt {
 tasks {
     // Set the JVM compatibility versions
     val projectJvmTarget = "17"
-    val projectApiVersion = "1.8"
 
     withType<Detekt>().configureEach {
         reports {
@@ -113,14 +111,6 @@ tasks {
 
     buildSearchableOptions {
         enabled = false
-    }
-
-    compileKotlin {
-        kotlinOptions.jvmTarget = projectJvmTarget
-    }
-
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = projectJvmTarget
     }
 
     withType<JavaCompile> {

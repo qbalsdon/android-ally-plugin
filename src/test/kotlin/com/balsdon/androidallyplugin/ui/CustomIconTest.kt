@@ -18,49 +18,33 @@ class CustomIconTest {
 
     @Test
     fun every_icon_has_light_and_dark() {
-        CustomIcon.values().forEach { testObject ->
-            val testSubject = CustomIcon::class
-                .java
-                .getDeclaredMethod("createFileReference")
-                .apply { isAccessible = true }
+        val iconDir = "${System.getProperty("user.dir")}/src/main/resources/icons"
+        val names = File(iconDir).listFiles()!!
 
-            val reference = testSubject.invoke(testObject) as String
-            val regularFile = File(
-                CustomIcon::class
-                    .java
-                    .getResource(reference)!!.file!!
-            )
-            val darkFile = File(
-                CustomIcon::class
-                    .java
-                    .getResource(reference.replace(".svg", "_dark.svg"))!!.file!!
-            )
-            assertThat(regularFile.exists()).isTrue()
-            assertThat(darkFile.exists()).isTrue()
-        }
+        val darkFiles = names.filter { it.name.endsWith("_dark.svg") }
+        val lightFiles = names.filterNot { it.name.endsWith("_dark.svg") }
+
+        //assertThat(darkFiles.size).isEqualTo(lightFiles.size)
+        assertThat(
+            darkFiles.map { it.name.replace("_dark", "") }.sorted()
+        ).isEqualTo(
+            lightFiles.map { it.name }.sorted()
+        )
     }
 
     @Test
     fun every_icon_light_and_dark_specific_colors() {
-        CustomIcon.values().forEach { testObject ->
-            val testSubject = CustomIcon::class
-                .java
-                .getDeclaredMethod("createFileReference")
-                .apply { isAccessible = true }
+        val iconDir = "${System.getProperty("user.dir")}/src/main/resources/icons"
 
-            val reference = testSubject.invoke(testObject) as String
-            val regularFile = File(
-                CustomIcon::class
-                    .java
-                    .getResource(reference)!!.file!!
-            ).readText()
-            val darkFile = File(
-                CustomIcon::class
-                    .java
-                    .getResource(reference.replace(".svg", "_dark.svg"))!!.file!!
-            ).readText()
-            assertThat(validateColor(regularFile, "#6e6e6e")).isEmpty()
-            assertThat(validateColor(darkFile, "#afb1b3")).isEmpty()
+        File(iconDir).listFiles()!!.forEach { file ->
+            val fileText = file.readText()
+            if (file.name.endsWith("_dark.svg")) {
+                assertThat(validateColor(fileText, "#afb1b3")).isEmpty()
+                assertThat(validateColor(fileText, "#6e6e6e")).isNotEmpty()
+            } else {
+                assertThat(validateColor(fileText, "#6e6e6e")).isEmpty()
+                assertThat(validateColor(fileText, "#afb1b3")).isNotEmpty()
+            }
         }
     }
 

@@ -58,11 +58,13 @@
         </ul>
         <h2>Version updates</h2>
         <ul>
+            <li>[1.0.3] Updating to Meerkat Canary 7 <a href="https://trello.com/c/CoYo9sfg">Trello issue link</a></li>
             <li>[1.0.2] Updating to Meerkat <a href="https://trello.com/c/9IOVWCgU">Trello issue link</a></li>
             <li>[1.0.0] Fix for Jellyfish patch 1 compatibility <a href="https://trello.com/c/gJ2dgyT6">Trello issue link</a></li>
         </ul>
         <h2>Bug fixes</h2>
         <ul>
+            <li>[1.0.3] Fixing icon tests as a result of new build <a href="https://trello.com/c/CoYo9sfg">Trello issue link</a></li>
             <li>[1.0.0] No devices selected warning <a href="https://trello.com/c/iGB442Ik">Trello issue link</a></li>
             <li>[0.0.7] Removed duplicated word in heading <a href="https://github.com/qbalsdon/android-ally-plugin/pull/30">Pull request</a></li>
             <li>[0.0.7] Added detekt for code linting <a href="https://trello.com/c/Uf7KogQC">Trello issue link</a></li>
