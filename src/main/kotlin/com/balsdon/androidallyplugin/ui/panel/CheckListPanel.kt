@@ -9,6 +9,7 @@ import com.balsdon.androidallyplugin.model.AssistiveTechnologyType
 import com.balsdon.androidallyplugin.model.CheckListItem
 import com.balsdon.androidallyplugin.model.MarkDownConverter
 import com.balsdon.androidallyplugin.ui.CustomIcon
+import com.balsdon.androidallyplugin.utils.addKeyAndActionListener
 import com.balsdon.androidallyplugin.utils.placeComponent
 import com.balsdon.androidallyplugin.utils.setMaxComponentSize
 import com.intellij.ide.BrowserUtil
@@ -98,7 +99,7 @@ class CheckListPanel(private val controller: Controller) {
             component = JPanel().apply {
                 layout = FlowLayout(FlowLayout.LEADING)
                 add(JButton(markdownButtonText).apply {
-                    addActionListener {
+                    addKeyAndActionListener {
                         Toolkit
                             .getDefaultToolkit()
                             .systemClipboard
@@ -118,7 +119,7 @@ class CheckListPanel(private val controller: Controller) {
                     }
                 })
                 add(JButton(resetButtonText).apply {
-                    addActionListener { resetPanel() }
+                    addKeyAndActionListener { resetPanel() }
                 })
             },
             x = 0,
@@ -172,7 +173,7 @@ class CheckListPanel(private val controller: Controller) {
         ).apply {
             border = BorderFactory.createEmptyBorder()
             preferredSize = Dimension(elementMaxHeight, elementMaxHeight)
-            addActionListener {
+            addKeyAndActionListener {
                 BrowserUtil.browse(localize(option.accessibilityPrinciple.webReferenceId))
             }
         }
@@ -209,7 +210,7 @@ class CheckListPanel(private val controller: Controller) {
             localize(option.linkId).split(",").forEach { linkString ->
                 add(
                     JButton(CustomIcon.LINK.create()).apply {
-                        addActionListener {
+                        addKeyAndActionListener {
                             BrowserUtil.browse(linkString.split("|")[1])
                         }
                     }
@@ -217,7 +218,7 @@ class CheckListPanel(private val controller: Controller) {
             }
             add(
                 JButton(CustomIcon.NOT_APPLICABLE.create()).apply {
-                    addActionListener {
+                    addKeyAndActionListener {
                         selectionState[option.id]!!.right = !selectionState[option.id]!!.right
                         nameLabel.apply {
                             text = if (selectionState[option.id]!!.right) {

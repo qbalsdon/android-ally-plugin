@@ -9,6 +9,7 @@ import com.balsdon.androidallyplugin.adb.displayDensity
 import com.balsdon.androidallyplugin.adb.parameters.ColorCorrectionType
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
+import com.balsdon.androidallyplugin.utils.addKeyAndActionListener
 import com.balsdon.androidallyplugin.utils.createToggleRow
 import com.balsdon.androidallyplugin.utils.placeComponent
 import com.balsdon.androidallyplugin.utils.setMaxComponentSize
@@ -80,7 +81,7 @@ class DisplayPanel(controller: Controller) : ControllerPanel(controller) {
         listOf("356", displayDensityDefaultString, "460", "540", "500").forEachIndexed { index, label ->
             placeComponent(
                 JButton(label).apply {
-                    addActionListener {
+                    addKeyAndActionListener {
                         onDensitySelected(
                             if (isNumberString(label)) {
                                 label

@@ -8,6 +8,7 @@ import com.balsdon.androidallyplugin.adb.highTextContrast
 import com.balsdon.androidallyplugin.adb.timeToReact
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
+import com.balsdon.androidallyplugin.utils.addKeyAndActionListener
 import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
 import com.balsdon.androidallyplugin.utils.placeComponent
@@ -131,7 +132,7 @@ class SettingsPanel(controller: Controller) : ControllerPanel(controller) {
         }
         val resetButton = JButton(layoutFontScaleResetString).apply {
             setMaxComponentSize()
-            addActionListener { slider.value = defaultFontScale }
+            addKeyAndActionListener { slider.value = defaultFontScale }
         }
 
         placeComponent(
