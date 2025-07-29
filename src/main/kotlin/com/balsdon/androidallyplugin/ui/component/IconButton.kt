@@ -1,6 +1,7 @@
 package com.balsdon.androidallyplugin.ui.component
 
 import com.balsdon.androidallyplugin.ui.CustomIcon
+import com.balsdon.androidallyplugin.utils.addKeyAndActionListener
 import com.intellij.util.ui.JBUI
 import javax.swing.JButton
 import javax.swing.SwingConstants
@@ -32,8 +33,7 @@ class IconButton(
             toolTipText = tooltip
             name = buttonText
             text = buttonText
-            addActionListener {
-                onClick()
-            }
+
+            addKeyAndActionListener(onClick)
         }
 }

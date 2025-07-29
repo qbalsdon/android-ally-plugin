@@ -11,6 +11,8 @@ import javax.swing.JPanel
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridBagConstraints
+import java.awt.event.KeyAdapter
+import java.awt.event.KeyEvent
 
 @Suppress("LongParameterList")
 fun JPanel.placeComponent(
@@ -56,15 +58,11 @@ fun JPanel.createToggleRow(
     )
     placeComponent(JButton(positiveLabel).apply {
         setMaxComponentSize()
-        addActionListener {
-            positiveAction()
-        }
+        addKeyAndActionListener(positiveAction)
     }, colStart, w = colSpan, y = whichRow)
     placeComponent(JButton(negativeLabel).apply {
         setMaxComponentSize()
-        addActionListener {
-            negativeAction()
-        }
+        addKeyAndActionListener(negativeAction)
     }, colStart + colSpan, w = colSpan, y = whichRow)
 }
 
@@ -110,5 +108,19 @@ fun JPanel.addFiller(index: Int = -1) {
             ),
             index
         )
+    }
+}
+
+fun JButton.addKeyAndActionListener(onClick: () -> Unit) {
+    addKeyListener(object : KeyAdapter() {
+        override fun keyPressed(e: KeyEvent) {
+            if (e.keyCode == KeyEvent.VK_ENTER || e.keyCode == KeyEvent.VK_SPACE) {
+                onClick()
+            }
+        }
+    })
+
+    addActionListener {
+        onClick()
     }
 }

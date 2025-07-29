@@ -7,6 +7,7 @@ import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.model.AndroidDevice
 import com.balsdon.androidallyplugin.ui.CustomIcon
 import com.balsdon.androidallyplugin.utils.addFiller
+import com.balsdon.androidallyplugin.utils.addKeyAndActionListener
 import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.setMaxComponentSize
 import com.intellij.ide.BrowserUtil
@@ -134,7 +135,7 @@ class AndroidDevicePanel(private val controller: Controller) {
             val tb4dPanel = JPanel().apply { layout = FlowLayout(FlowLayout.TRAILING) }
             parentPanel.add(tb4dPanel.apply {
                 add(JButton(localize("panel.device.label.install.tb4d")).apply {
-                    addActionListener {
+                    addKeyAndActionListener {
                         this.isEnabled = false
                         device
                             .installTalkBackForDevelopers()
@@ -151,7 +152,7 @@ class AndroidDevicePanel(private val controller: Controller) {
                     }
                 })
                 add(JButton(CustomIcon.INFO.create()).apply {
-                    addActionListener {
+                    addKeyAndActionListener {
                         BrowserUtil.browse(TB4DWebPage)
                     }
                 })
@@ -173,7 +174,7 @@ class AndroidDevicePanel(private val controller: Controller) {
             add(JButton(localize("panel.device.refresh")).apply {
                 setMaxComponentSize()
                 icon = CustomIcon.REFRESH.create()
-                addActionListener {
+                addKeyAndActionListener {
                     deviceListPanel.let {
                         it.removeAll()
                         it.add(JLabel(localize("panel.device.wait")).apply {
