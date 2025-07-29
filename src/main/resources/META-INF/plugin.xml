@@ -64,6 +64,7 @@
         </ul>
         <h2>Bug fixes</h2>
         <ul>
+            <li>[1.0.4] Fix: Panel buttons not responding to key presses <a href="https://github.com/qbalsdon/android-ally-plugin/issues/49">Github issue link</a></li>
             <li>[1.0.3] Fixing icon tests as a result of new build <a href="https://trello.com/c/CoYo9sfg">Trello issue link</a></li>
             <li>[1.0.0] No devices selected warning <a href="https://trello.com/c/iGB442Ik">Trello issue link</a></li>
             <li>[0.0.7] Removed duplicated word in heading <a href="https://github.com/qbalsdon/android-ally-plugin/pull/30">Pull request</a></li>
