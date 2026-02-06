@@ -19,16 +19,16 @@ fun JPanel.placeComponent(
     component: Component,
     x: Int,
     y: Int,
-    w: Int = 1,
-    h: Int = 1,
+    width: Int = 1,
+    height: Int = 1,
     fillType: Int = GridBagConstraints.HORIZONTAL,
     anchorType: Int = GridBagConstraints.NORTHWEST
 ) {
     add(component, GridBagConstraints().apply {
         gridx = x
         gridy = y
-        gridwidth = w
-        gridheight = h
+        gridwidth = width
+        gridheight = height
         anchor = anchorType
         weightx = 1.0
         fill = fillType
@@ -44,6 +44,7 @@ fun JPanel.createToggleRow(
     negativeLabel: String,
     colStart: Int = 3,
     colSpan: Int = 2,
+    secondColSpan: Int? = null,
     positiveAction: () -> Unit,
     negativeAction: () -> Unit
 ) {
@@ -53,30 +54,31 @@ fun JPanel.createToggleRow(
         },
         x = 0,
         y = whichRow,
-        w = 2,
+        width = 2,
         anchorType = GridBagConstraints.CENTER
     )
     placeComponent(JButton(positiveLabel).apply {
         setMaxComponentSize()
         addKeyAndActionListener(positiveAction)
-    }, colStart, w = colSpan, y = whichRow)
+    }, colStart, width = colSpan, y = whichRow)
     placeComponent(JButton(negativeLabel).apply {
         setMaxComponentSize()
         addKeyAndActionListener(negativeAction)
-    }, colStart + colSpan, w = colSpan, y = whichRow)
+    }, colStart + colSpan, width = secondColSpan ?: colSpan, y = whichRow)
 }
 
 fun JPanel.createDropDownMenu(
     label: String,
     whichRow: Int,
     options: List<String>,
+    width: Int = 4,
     onSelectionChanged: (String) -> Unit
 ) {
     placeComponent(
         JLabel(label).apply { setMaxComponentSize() },
         x = 0,
         y = whichRow,
-        w = 2,
+        width = 2,
         anchorType = GridBagConstraints.CENTER
     )
 
@@ -87,7 +89,16 @@ fun JPanel.createDropDownMenu(
         addActionListener {
             onSelectionChanged(options[this.selectedIndex])
         }
-    }, x = 3, y = whichRow, w = 4)
+    }, x = 3, y = whichRow, width = width)
+}
+
+fun JPanel.createDropDownMenu(
+    label: String,
+    whichRow: Int,
+    options: List<String>,
+    onSelectionChanged: (String) -> Unit
+) {
+    createDropDownMenu(label, whichRow, options, width = 4, onSelectionChanged)
 }
 
 fun JPanel.addFiller(index: Int = -1) {

@@ -124,7 +124,7 @@ class CheckListPanel(private val controller: Controller) {
             },
             x = 0,
             y = whichRow,
-            w = 2,
+            width = 2,
             anchorType = GridBagConstraints.CENTER
         )
     }
@@ -144,7 +144,7 @@ class CheckListPanel(private val controller: Controller) {
             },
             x = 0,
             y = whichRow,
-            w = 2,
+            width = 2,
             anchorType = GridBagConstraints.CENTER
         )
     }
@@ -253,7 +253,7 @@ class CheckListPanel(private val controller: Controller) {
             },
             x = 0,
             y = whichRow,
-            w = 2,
+            width = 2,
             anchorType = GridBagConstraints.CENTER
         )
     }

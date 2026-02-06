@@ -75,7 +75,7 @@ class DisplayPanel(controller: Controller) : ControllerPanel(controller) {
     private fun JPanel.addDisplayDensityComponent(whichRow: Int, onDensitySelected: (String) -> Unit) {
         placeComponent(
             JLabel(displayDensityLabelString).apply { setMaxComponentSize() },
-            x = 0, y = whichRow, w = 1, anchorType = GridBagConstraints.CENTER
+            x = 0, y = whichRow, width = 1, anchorType = GridBagConstraints.CENTER
         )
         val startIndex = 2
         listOf("356", displayDensityDefaultString, "460", "540", "500").forEachIndexed { index, label ->
@@ -134,7 +134,7 @@ class DisplayPanel(controller: Controller) : ControllerPanel(controller) {
             JLabel(colorCorrectionLabelString).apply { setMaxComponentSize() },
             x = 0,
             y = whichRow,
-            w = 2,
+            width = 2,
             anchorType = GridBagConstraints.CENTER
         )
 
@@ -146,6 +146,6 @@ class DisplayPanel(controller: Controller) : ControllerPanel(controller) {
             addActionListener {
                 onOption(colorCorrectionOptions[this.selectedIndex])
             }
-        }, x = 3, y = whichRow, w = 4)
+        }, x = 3, y = whichRow, width = 4)
     }
 }

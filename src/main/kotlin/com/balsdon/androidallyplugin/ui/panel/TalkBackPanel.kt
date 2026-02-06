@@ -43,6 +43,8 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
     private val navigationLabelString = localize("panel.talkback.label.talkback.navigation")
     private val previousButtonText = localize("panel.talkback.button.previous")
     private val nextButtonText = localize("panel.talkback.button.next")
+    private val swipeUpButtonText = localize("panel.talkback.button.swipe_up")
+    private val swipeDownButtonText = localize("panel.talkback.button.swipe_down")
     private val tapButtonText = localize("panel.talkback.button.tap")
     private val longTapButtonText = localize("panel.talkback.button.longTap")
     private val homeButtonText = localize("panel.talkback.button.home")
@@ -89,6 +91,8 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             whichRow,
             talkBackOnButtonText,
             talkBackOffButtonText,
+            colSpan = 2,
+            secondColSpan = 3,
             positiveAction = { talkBackService(true).run() },
             negativeAction = { talkBackService(false).run() }
         )
@@ -100,6 +104,8 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             whichRow,
             talkBackSpeechOutputOnButtonText,
             talkBackSpeechOutputOffButtonText,
+            colSpan = 2,
+            secondColSpan = 3,
             positiveAction = {
                 AdbScript.TalkBackChangeSetting(TalkBackSetting.TOGGLE_SPEECH_OUTPUT, true).run()
             },
@@ -115,6 +121,8 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             whichRow,
             talkBackVolumeMediumButtonText,
             talkBackVolumeLowButtonText,
+            colSpan = 2,
+            secondColSpan = 3,
             positiveAction = {
                 AdbScript.TalkBackSetVolume(TalkBackVolumeSetting.VOLUME_HALF).run()
             },
@@ -125,7 +133,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
     }
 
     private fun JPanel.addGranularityCombo(whichRow: Int, onOption: (String) -> Unit) {
-        createDropDownMenu(granularityLabelString, whichRow, granularityOptions, onOption)
+        createDropDownMenu(granularityLabelString, whichRow, granularityOptions, width = 5, onOption)
     }
 
     private fun JPanel.addBlockOutComponent(whichRow: Int) {
@@ -134,6 +142,8 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             whichRow,
             talkBackBlockOutOnText,
             talkBackBlockOutOffText,
+            colSpan = 2,
+            secondColSpan = 3,
             positiveAction = {
                 AdbScript.TalkBackChangeSetting(TalkBackSetting.BLOCK_OUT, true).run()
             },
@@ -186,6 +196,16 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             ) { AdbScript.TalkBackUserAction(TalkBackAction.PERFORM_LONG_CLICK_ACTION).run() }.create(),
             x = 6, y = whichRow, fillType = GridBagConstraints.BOTH
         )
+        placeComponent(
+            IconButton(
+                CustomIcon.A11Y_SWIPE_UP,
+                swipeUpButtonText,
+                ""
+            ) {
+                AdbScript.TalkBackUserAction(TalkBackAction.SCROLL_UP).run()
+            }.create(),
+            x = 7, y = whichRow, fillType = GridBagConstraints.BOTH
+        )
     }
 
     private fun JPanel.addAdvancedControls(whichRow: Int) {
@@ -220,6 +240,16 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 ""
             ) { AdbScript.TalkBackUserAction(TalkBackAction.SHOW_CUSTOM_ACTIONS).run() }.create(),
             x = 6, y = whichRow, fillType = GridBagConstraints.BOTH
+        )
+        placeComponent(
+            IconButton(
+                CustomIcon.A11Y_SWIPE_DOWN,
+                swipeDownButtonText,
+                ""
+            ) {
+                AdbScript.TalkBackUserAction(TalkBackAction.SCROLL_DOWN).run()
+            }.create(),
+            x = 7, y = whichRow, fillType = GridBagConstraints.BOTH
         )
     }
 }
