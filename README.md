@@ -1,8 +1,10 @@
 # Android Ally Plugin (AAP) for Android Studio
 
-The [Trello Board][4] will show you the project roadmap, any issues in the GitHub tracker should also be there.
+The [Trello Board][4] (deprecated) will show you the project roadmap, any issues in the GitHub tracker should also be there.
 
-This plugin will only ever support [TalkBack for Developers][9] and not any other screen reader without ADB-friendly controls. [The code is open source][8]. This includes Google's TalkBack, Samsung's TalkBack, Amazon VoiceView and CSR - unless they add ADB features, in which case they will be given a separate tab. Separation of concerns is the highest priority in this code.
+This plugin will only ever support [TalkBack for Developers][9] and not any other screen reader without ADB-friendly commands or can receive ADB input commands (`adb shell input keyevent ...` and `adb shell input keycombination`) [while there is still a bug on the Android operating system][12], this is impossible.
+
+[The code is open source][8]. This includes Google's TalkBack, Samsung's TalkBack, Amazon VoiceView and CSR - unless they add ADB features, in which case they will be given a separate tab. Separation of concerns is the highest priority in this code.
 
 ## This is in Swing, ew!
 Yes it's written in Swing, you are more than welcome to create a [Jewel][5] version if you like. The main reasons the project is not using Jetpack Compose yet are:
@@ -77,3 +79,4 @@ Using this method you will not be able to upload to the store, but this is how y
 [9]: https://ally-keys.com/tb4d.html
 [10]: https://plugins.jetbrains.com/docs/intellij/plugin-signing.html#signing-methods
 [11]: https://plugins.jetbrains.com/docs/intellij/plugin-signing.html#provide-secrets-to-ide
+[12]: https://issuetracker.google.com/issues/188719933

@@ -3,6 +3,7 @@ package com.balsdon.androidallyplugin.ui.panel
 import android.databinding.tool.ext.toCamelCase
 import com.balsdon.androidallyplugin.adb.AdbScript
 import com.balsdon.androidallyplugin.adb.parameters.AdbKeyCode
+import com.balsdon.androidallyplugin.adb.parameters.SliderMode
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackAction
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackGranularity
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackSetting
@@ -12,10 +13,12 @@ import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.ui.CustomIcon
 import com.balsdon.androidallyplugin.ui.component.IconButton
+import com.balsdon.androidallyplugin.utils.addKeyAndActionListener
 import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
 import com.balsdon.androidallyplugin.utils.placeComponent
 import com.balsdon.androidallyplugin.utils.setMaxComponentSize
+import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
 import java.awt.GridBagConstraints
@@ -40,6 +43,12 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
     private val talkBackVolumeMediumButtonText = localize("panel.talkback.button.talkback.volume.medium")
     private val talkBackVolumeLowButtonText = localize("panel.talkback.button.talkback.volume.low")
 
+    private val sliderControlsLabelString = localize("panel.talkback.label.slider.controls")
+    private val sliderMinButtonText = localize("panel.talkback.button.slider.min")
+    private val sliderDownButtonText = localize("panel.talkback.button.slider.down")
+    private val sliderCenterButtonText = localize("panel.talkback.button.slider.middle")
+    private val sliderUpButtonText = localize("panel.talkback.button.slider.up")
+    private val sliderMaxButtonText = localize("panel.talkback.button.slider.max")
     private val navigationLabelString = localize("panel.talkback.label.talkback.navigation")
     private val previousButtonText = localize("panel.talkback.button.previous")
     private val nextButtonText = localize("panel.talkback.button.next")
@@ -79,9 +88,10 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
         }
         addBasicControls(whichRow = 2)
         addAdvancedControls(whichRow = 3)
-        addVolumeToggleComponent(whichRow = 4)
-        addSpeechOutputToggleComponent(whichRow = 5)
-        addBlockOutComponent(whichRow = 6)
+        addSliderControlsComponent(whichRow = 4)
+        addVolumeToggleComponent(whichRow = 5)
+        addSpeechOutputToggleComponent(whichRow = 6)
+        addBlockOutComponent(whichRow = 7)
     }
 
 
@@ -113,6 +123,29 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 AdbScript.TalkBackChangeSetting(TalkBackSetting.TOGGLE_SPEECH_OUTPUT, false).run()
             }
         )
+    }
+
+    @Suppress("MagicNumber")
+    private fun JPanel.addSliderControlsComponent(whichRow: Int) {
+        placeComponent(
+            JLabel(sliderControlsLabelString).apply { setMaxComponentSize() },
+            x = 0, y = whichRow, 2, anchorType = GridBagConstraints.CENTER
+        )
+        val startIndex = 3
+        listOf(
+            sliderMinButtonText to { AdbScript.TalkBackSlider(SliderMode.MIN).run() },
+            sliderDownButtonText to { AdbScript.TalkBackSlider(SliderMode.DECREASE).run() },
+            sliderCenterButtonText to { AdbScript.TalkBackSlider(SliderMode.MID).run() },
+            sliderUpButtonText to { AdbScript.TalkBackSlider(SliderMode.INCREASE).run() },
+            sliderMaxButtonText to { AdbScript.TalkBackSlider(SliderMode.MAX).run() }
+        ).forEachIndexed { index, (label, action) ->
+            placeComponent(
+                JButton(label).apply {
+                    addKeyAndActionListener(action)
+                },
+                x = startIndex + index, y = whichRow,  1
+            )
+        }
     }
 
     private fun JPanel.addVolumeToggleComponent(whichRow: Int) {

@@ -8,6 +8,7 @@ import com.android.ddmlib.InstallReceiver
 import com.android.ddmlib.NullOutputReceiver
 import com.balsdon.androidallyplugin.LatestPhoneApkFileName
 import com.balsdon.androidallyplugin.LatestWearApkFileName
+import com.balsdon.androidallyplugin.TB4DPackageName
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.onException
@@ -91,6 +92,32 @@ class AndroidDevice(private val rawDevice: IDevice) {
         }
     }
 
+    private fun getTb4dVersion(fn: (String) -> Unit) {
+        val builder = StringBuilder()
+        runCatching {
+            rawDevice.executeShellCommand("dumpsys package $TB4DPackageName", object : IShellOutputReceiver {
+                override fun addOutput(data: ByteArray, offset: Int, length: Int) {
+                    builder.append(String(data, offset, length, StandardCharsets.UTF_8))
+                }
+
+                override fun flush() {
+                    val versionNamePrefix = "versionName="
+                    val line = builder.split("\n").firstOrNull { it.contains(versionNamePrefix) }
+                    val version = line?.substringAfter(versionNamePrefix)?.trim()?.takeIf { it.isNotBlank() }
+                    fn(version ?: "none")
+                }
+
+                override fun isCancelled(): Boolean = false
+            })
+        }.onException(
+            com.android.ddmlib.AdbCommandRejectedException::class,
+            java.net.SocketException::class
+        ) {
+            log("${it.javaClass.name} ${it.message}")
+            fn("none")
+        }
+    }
+
     /**
      * Opportunity for improvement here!!
      *
@@ -125,13 +152,32 @@ class AndroidDevice(private val rawDevice: IDevice) {
                 sdk = sdkLevel
             }
 
-            getPackageList { list -> subject.onNext(BasicDeviceInfo(name, api, sdk, isWatch, list)) }
+            getPackageList { list ->
+                val hasTb4d = list.any { it.contains(TB4DPackageName) }
+                if (hasTb4d) {
+                    getTb4dVersion { version ->
+                        subject.onNext(BasicDeviceInfo(name, api, sdk, isWatch, list, version))
+                    }
+                } else {
+                    subject.onNext(BasicDeviceInfo(name, api, sdk, isWatch, list, "none"))
+                }
+            }
         }
         return subject
     }
 
     fun installTalkBackForDevelopers() =
         installAPK(if (isWatch) LatestWearApkFileName else LatestPhoneApkFileName)
+
+    fun uninstallTalkBack4d(): Observable<Boolean> {
+        val subject = BehaviorSubject.create<Boolean>()
+        CoroutineScope(Job() + Dispatchers.IO).launch {
+            val result = runCatching { rawDevice.uninstallPackage(TB4DPackageName) }.getOrNull()
+            val success = result.isNullOrBlank() || result.equals("Success", ignoreCase = true)
+            subject.onNext(success)
+        }
+        return subject
+    }
 
     fun executeScript(scriptString: String) {
         rawDevice.executeShellCommand(

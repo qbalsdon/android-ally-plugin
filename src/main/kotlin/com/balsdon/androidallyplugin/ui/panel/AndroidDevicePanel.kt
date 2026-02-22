@@ -2,9 +2,11 @@ package com.balsdon.androidallyplugin.ui.panel
 
 import com.balsdon.androidallyplugin.TB4DPackageName
 import com.balsdon.androidallyplugin.TB4DWebPage
+import com.balsdon.androidallyplugin.isTb4dVersionMatching
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.model.AndroidDevice
+import com.balsdon.androidallyplugin.model.BasicDeviceInfo
 import com.balsdon.androidallyplugin.ui.CustomIcon
 import com.balsdon.androidallyplugin.utils.addFiller
 import com.balsdon.androidallyplugin.utils.addKeyAndActionListener
@@ -124,11 +126,12 @@ class AndroidDevicePanel(private val controller: Controller) {
                         CustomIcon.PHONE.create()
                     }
                 }
-                tb4dInstallPanel(this, device, deviceInfo.packageList)
+                tb4dInstallPanel(this, device, deviceInfo)
             }
     }
 
-    private fun tb4dInstallPanel(parentPanel: JPanel, device: AndroidDevice, services: List<String>) {
+    private fun tb4dInstallPanel(parentPanel: JPanel, device: AndroidDevice, deviceInfo: BasicDeviceInfo) {
+        val services = deviceInfo.packageList
         val index = services.indexOfFirst { it.contains(TB4DPackageName) }
 
         if (index == -1) {
@@ -154,6 +157,31 @@ class AndroidDevicePanel(private val controller: Controller) {
                 add(JButton(CustomIcon.INFO.create()).apply {
                     addKeyAndActionListener {
                         BrowserUtil.browse(TB4DWebPage)
+                    }
+                })
+            }, BorderLayout.EAST)
+        } else if (!isTb4dVersionMatching(deviceInfo.tb4dVersion)) {
+            val tb4dPanel = JPanel().apply { layout = FlowLayout(FlowLayout.TRAILING) }
+            parentPanel.add(tb4dPanel.apply {
+                add(JButton(localize("panel.device.label.update.tb4d")).apply {
+                    addKeyAndActionListener {
+                        this.isEnabled = false
+                        device.uninstallTalkBack4d().take(1).subscribe { uninstallOk ->
+                            if (uninstallOk) {
+                                device.installTalkBackForDevelopers().take(1).subscribe { installOk ->
+                                    this.isEnabled = true
+                                    if (installOk) {
+                                        controller.showInstallTB4DSuccessNotification(device)
+                                        parentPanel.remove(tb4dPanel)
+                                    } else {
+                                        controller.showInstallTB4DErrorNotification(device)
+                                    }
+                                }
+                            } else {
+                                this.isEnabled = true
+                                controller.showInstallTB4DErrorNotification(device)
+                            }
+                        }
                     }
                 })
             }, BorderLayout.EAST)

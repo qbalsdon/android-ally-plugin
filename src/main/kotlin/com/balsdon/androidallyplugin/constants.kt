@@ -7,5 +7,9 @@ const val TB4DWebPage = "https://ally-keys.com/tb4d.html"
 const val TB4DWebPageNeedHelp = "https://ally-keys.com/need_help.html"
 const val TB4DInstallHelpWebPage = "$TB4DWebPage#installation-help"
 const val TB4DPackageName = "com.android.talkback4d"
-const val LatestPhoneApkFileName = "talkback-phone-release-signed-82.apk"
-const val LatestWearApkFileName = "talkback-wear-release-signed-82.apk"
+const val TB4DExpectedVersion = "TfPu_release_14_1-2026_02_22_1447-TB4D_0_0_4"
+const val LatestPhoneApkFileName = "talkback-phone-release-signed-95.apk"
+const val LatestWearApkFileName = "talkback-wear-release-signed-95.apk"
+
+fun isTb4dVersionMatching(installedVersion: String?): Boolean =
+    installedVersion == TB4DExpectedVersion
