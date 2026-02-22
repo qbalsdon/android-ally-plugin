@@ -92,7 +92,7 @@ class AndroidDevice(private val rawDevice: IDevice) {
         }
     }
 
-    private fun getTb4dVersion(fn: (String?) -> Unit) {
+    private fun getTb4dVersion(fn: (String) -> Unit) {
         val builder = StringBuilder()
         runCatching {
             rawDevice.executeShellCommand("dumpsys package $TB4DPackageName", object : IShellOutputReceiver {
@@ -104,7 +104,7 @@ class AndroidDevice(private val rawDevice: IDevice) {
                     val versionNamePrefix = "versionName="
                     val line = builder.split("\n").firstOrNull { it.contains(versionNamePrefix) }
                     val version = line?.substringAfter(versionNamePrefix)?.trim()?.takeIf { it.isNotBlank() }
-                    fn(version)
+                    fn(version ?: "none")
                 }
 
                 override fun isCancelled(): Boolean = false
@@ -114,7 +114,7 @@ class AndroidDevice(private val rawDevice: IDevice) {
             java.net.SocketException::class
         ) {
             log("${it.javaClass.name} ${it.message}")
-            fn(null)
+            fn("none")
         }
     }
 
@@ -156,10 +156,11 @@ class AndroidDevice(private val rawDevice: IDevice) {
                 val hasTb4d = list.any { it.contains(TB4DPackageName) }
                 if (hasTb4d) {
                     getTb4dVersion { version ->
+                        log("Quintin: $version")
                         subject.onNext(BasicDeviceInfo(name, api, sdk, isWatch, list, version))
                     }
                 } else {
-                    subject.onNext(BasicDeviceInfo(name, api, sdk, isWatch, list, null))
+                    subject.onNext(BasicDeviceInfo(name, api, sdk, isWatch, list, "none"))
                 }
             }
         }
@@ -173,7 +174,7 @@ class AndroidDevice(private val rawDevice: IDevice) {
         val subject = BehaviorSubject.create<Boolean>()
         CoroutineScope(Job() + Dispatchers.IO).launch {
             val result = runCatching { rawDevice.uninstallPackage(TB4DPackageName) }.getOrNull()
-            val success = result == null || result.isBlank() || result.equals("Success", ignoreCase = true)
+            val success = result.isNullOrBlank() || result.equals("Success", ignoreCase = true)
             subject.onNext(success)
         }
         return subject
