@@ -14,6 +14,8 @@ enum class CustomIcon(private val fileReference: String) {
     A11Y_ACTIONS("actions"),
     A11Y_SWIPE_LEFT("swipe_left"),
     A11Y_SWIPE_RIGHT("swipe_right"),
+    A11Y_SWIPE_UP("swipe_up"),
+    A11Y_SWIPE_DOWN("swipe_down"),
     A11Y_TAP("tap"),
     A11Y_TAP_LONG("tap_long"),
     INFO("info"),

@@ -137,15 +137,15 @@ class SettingsPanel(controller: Controller) : ControllerPanel(controller) {
 
         placeComponent(
             label,
-            x = 0, y = whichRow, w = 1, anchorType = GridBagConstraints.CENTER
+            x = 0, y = whichRow, width = 1, anchorType = GridBagConstraints.CENTER
         )
         placeComponent(
             resetButton,
-            x = 1, y = whichRow, w = 1, anchorType = GridBagConstraints.CENTER
+            x = 1, y = whichRow, width = 1, anchorType = GridBagConstraints.CENTER
         )
         placeComponent(
             slider,
-            x = 3, y = whichRow, w = 4
+            x = 3, y = whichRow, width = 4
         )
     }
 
