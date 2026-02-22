@@ -66,11 +66,13 @@ fun JPanel.createToggleRow(
     }, colStart + colSpan, w = colSpan, y = whichRow)
 }
 
+@Suppress("LongParameterList")
 fun JPanel.createDropDownMenu(
     label: String,
     whichRow: Int,
     options: List<String>,
-    onSelectionChanged: (String) -> Unit
+    onSelectionChanged: (String) -> Unit,
+    colStart: Int = 3
 ) {
     placeComponent(
         JLabel(label).apply { setMaxComponentSize() },
@@ -87,7 +89,7 @@ fun JPanel.createDropDownMenu(
         addActionListener {
             onSelectionChanged(options[this.selectedIndex])
         }
-    }, x = 3, y = whichRow, w = 4)
+    }, x = colStart, y = whichRow, w = 4)
 }
 
 fun JPanel.addFiller(index: Int = -1) {

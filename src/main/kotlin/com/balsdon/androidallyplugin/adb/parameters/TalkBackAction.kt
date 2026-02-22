@@ -57,5 +57,6 @@ enum class TalkBackAction {
     BRAILLE_KEYBOARD,
     TUTORIAL,
     GESTURE_DEBUG,
-    PRACTICE_GESTURES;
+    PRACTICE_GESTURES,
+    SLIDER;
 }

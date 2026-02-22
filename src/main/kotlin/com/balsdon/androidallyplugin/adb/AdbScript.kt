@@ -30,6 +30,7 @@ import com.balsdon.androidallyplugin.adb.parameters.InternalSettingType
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackAction
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackGranularity
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackSetting
+import com.balsdon.androidallyplugin.adb.parameters.SliderMode
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackVolumeSetting
 import java.io.BufferedReader
 import java.io.File
@@ -85,6 +86,10 @@ sealed class AdbScript {
         val level: TalkBackVolumeSetting
     ) : AdbScript()
 
+    data class TalkBackSlider(
+        val mode: SliderMode
+    ) : AdbScript()
+
     data class TalkBackChangeSetting(
         val setting: TalkBackSetting,
         val enabled: Boolean
@@ -112,6 +117,7 @@ sealed class AdbScript {
             is FileScript -> createScriptFromFile()
             is TalkBackUserAction -> createTalkBackAdbScript()
             is TalkBackSetVolume -> createVolumeChangeScript()
+            is TalkBackSlider -> createSliderScript()
             is TalkBackChangeSetting -> createTalkBackChangeSettingScript()
             is PressKeyAdb -> createKeyPressScript()
             is InternalSetting<*> -> createInternalSettingScript()
@@ -170,6 +176,21 @@ sealed class AdbScript {
             append(adbTB4DBroadcastPackage)
             append(".")
             append(level.name.lowercase())
+        }.toString()
+    }
+
+    private fun createSliderScript(): String {
+        require(this is TalkBackSlider)
+        return StringBuilder().apply {
+            append(adbBroadcast)
+            append(" ")
+            append(adbTB4DBroadcastPackage)
+            append(".")
+            append(TalkBackAction.SLIDER.name.lowercase())
+            append(" ")
+            append(adbBroadcastParam)
+            append(" ")
+            append(mode.name.lowercase())
         }.toString()
     }
 

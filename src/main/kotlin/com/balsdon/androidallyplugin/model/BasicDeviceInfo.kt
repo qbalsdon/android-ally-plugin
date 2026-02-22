@@ -5,4 +5,6 @@ data class BasicDeviceInfo(
     val api: String,
     val sdk: String,
     val isWatch: Boolean,
-    val packageList: List<String>)
+    val packageList: List<String>,
+    val tb4dVersion: String? = null
+)

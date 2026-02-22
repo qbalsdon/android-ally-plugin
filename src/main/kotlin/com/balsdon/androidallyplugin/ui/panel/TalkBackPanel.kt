@@ -3,6 +3,7 @@ package com.balsdon.androidallyplugin.ui.panel
 import android.databinding.tool.ext.toCamelCase
 import com.balsdon.androidallyplugin.adb.AdbScript
 import com.balsdon.androidallyplugin.adb.parameters.AdbKeyCode
+import com.balsdon.androidallyplugin.adb.parameters.SliderMode
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackAction
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackGranularity
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackSetting
@@ -12,10 +13,12 @@ import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.ui.CustomIcon
 import com.balsdon.androidallyplugin.ui.component.IconButton
+import com.balsdon.androidallyplugin.utils.addKeyAndActionListener
 import com.balsdon.androidallyplugin.utils.createDropDownMenu
 import com.balsdon.androidallyplugin.utils.createToggleRow
 import com.balsdon.androidallyplugin.utils.placeComponent
 import com.balsdon.androidallyplugin.utils.setMaxComponentSize
+import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
 import java.awt.GridBagConstraints
@@ -40,6 +43,11 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
     private val talkBackVolumeMediumButtonText = localize("panel.talkback.button.talkback.volume.medium")
     private val talkBackVolumeLowButtonText = localize("panel.talkback.button.talkback.volume.low")
 
+    private val sliderControlsLabelString = localize("panel.talkback.label.slider.controls")
+    private val sliderMinButtonText = localize("panel.talkback.button.slider.min")
+    private val sliderDownButtonText = localize("panel.talkback.button.slider.down")
+    private val sliderUpButtonText = localize("panel.talkback.button.slider.up")
+    private val sliderMaxButtonText = localize("panel.talkback.button.slider.max")
     private val navigationLabelString = localize("panel.talkback.label.talkback.navigation")
     private val previousButtonText = localize("panel.talkback.button.previous")
     private val nextButtonText = localize("panel.talkback.button.next")
@@ -77,9 +85,10 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
         }
         addBasicControls(whichRow = 2)
         addAdvancedControls(whichRow = 3)
-        addVolumeToggleComponent(whichRow = 4)
-        addSpeechOutputToggleComponent(whichRow = 5)
-        addBlockOutComponent(whichRow = 6)
+        addSliderControlsComponent(whichRow = 4)
+        addVolumeToggleComponent(whichRow = 5)
+        addSpeechOutputToggleComponent(whichRow = 6)
+        addBlockOutComponent(whichRow = 7)
     }
 
 
@@ -89,6 +98,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             whichRow,
             talkBackOnButtonText,
             talkBackOffButtonText,
+            colStart = 2,
             positiveAction = { talkBackService(true).run() },
             negativeAction = { talkBackService(false).run() }
         )
@@ -100,6 +110,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             whichRow,
             talkBackSpeechOutputOnButtonText,
             talkBackSpeechOutputOffButtonText,
+            colStart = 2,
             positiveAction = {
                 AdbScript.TalkBackChangeSetting(TalkBackSetting.TOGGLE_SPEECH_OUTPUT, true).run()
             },
@@ -109,12 +120,35 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
         )
     }
 
+    @Suppress("MagicNumber")
+    private fun JPanel.addSliderControlsComponent(whichRow: Int) {
+        placeComponent(
+            JLabel(sliderControlsLabelString).apply { setMaxComponentSize() },
+            x = 0, y = whichRow, w = 2, anchorType = GridBagConstraints.CENTER
+        )
+        val startIndex = 2
+        listOf(
+            sliderMinButtonText to { AdbScript.TalkBackSlider(SliderMode.MIN).run() },
+            sliderDownButtonText to { AdbScript.TalkBackSlider(SliderMode.DECREASE).run() },
+            sliderUpButtonText to { AdbScript.TalkBackSlider(SliderMode.INCREASE).run() },
+            sliderMaxButtonText to { AdbScript.TalkBackSlider(SliderMode.MAX).run() }
+        ).forEachIndexed { index, (label, action) ->
+            placeComponent(
+                JButton(label).apply {
+                    addKeyAndActionListener(action)
+                },
+                x = startIndex + index, y = whichRow, w = 1
+            )
+        }
+    }
+
     private fun JPanel.addVolumeToggleComponent(whichRow: Int) {
         createToggleRow(
             talkBackVolumeLabelString,
             whichRow,
             talkBackVolumeMediumButtonText,
             talkBackVolumeLowButtonText,
+            colStart = 2,
             positiveAction = {
                 AdbScript.TalkBackSetVolume(TalkBackVolumeSetting.VOLUME_HALF).run()
             },
@@ -125,7 +159,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
     }
 
     private fun JPanel.addGranularityCombo(whichRow: Int, onOption: (String) -> Unit) {
-        createDropDownMenu(granularityLabelString, whichRow, granularityOptions, onOption)
+        createDropDownMenu(granularityLabelString, whichRow, granularityOptions, onOption, colStart = 2)
     }
 
     private fun JPanel.addBlockOutComponent(whichRow: Int) {
@@ -134,6 +168,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             whichRow,
             talkBackBlockOutOnText,
             talkBackBlockOutOffText,
+            colStart = 2,
             positiveAction = {
                 AdbScript.TalkBackChangeSetting(TalkBackSetting.BLOCK_OUT, true).run()
             },
@@ -146,7 +181,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
     private fun JPanel.addBasicControls(whichRow: Int) {
         placeComponent(
             JLabel(navigationLabelString).apply { setMaxComponentSize() },
-            x = 0, y = whichRow, 2
+            x = 0, y = whichRow, w = 2
         )
         placeComponent(
             IconButton(
@@ -156,7 +191,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             ) {
                 AdbScript.TalkBackUserAction(TalkBackAction.PREVIOUS, selectedGranularity).run()
             }.create(),
-            x = 3, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 2, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
             IconButton(
@@ -166,7 +201,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             ) {
                 AdbScript.TalkBackUserAction(TalkBackAction.NEXT, selectedGranularity).run()
             }.create(),
-            x = 4, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 3, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
             IconButton(
@@ -176,7 +211,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
             ) {
                 AdbScript.TalkBackUserAction(TalkBackAction.PERFORM_CLICK_ACTION).run()
             }.create(),
-            x = 5, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 4, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
             IconButton(
@@ -184,7 +219,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 longTapButtonText,
                 ""
             ) { AdbScript.TalkBackUserAction(TalkBackAction.PERFORM_LONG_CLICK_ACTION).run() }.create(),
-            x = 6, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 5, y = whichRow, fillType = GridBagConstraints.BOTH
         )
     }
 
@@ -195,7 +230,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 backButtonText,
                 ""
             ) { AdbScript.PressKeyAdb(AdbKeyCode.BACK).run() }.create(),
-            x = 3, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 2, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
             IconButton(
@@ -203,7 +238,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 homeButtonText,
                 ""
             ) { AdbScript.PressKeyAdb(AdbKeyCode.HOME).run() }.create(),
-            x = 4, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 3, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
             IconButton(
@@ -211,7 +246,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 menuButtonText,
                 ""
             ) { AdbScript.TalkBackUserAction(TalkBackAction.TALKBACK_BREAKOUT).run() }.create(),
-            x = 5, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 4, y = whichRow, fillType = GridBagConstraints.BOTH
         )
         placeComponent(
             IconButton(
@@ -219,7 +254,7 @@ class TalkBackPanel(controller: Controller) : ControllerPanel(controller) {
                 actionsButtonText,
                 ""
             ) { AdbScript.TalkBackUserAction(TalkBackAction.SHOW_CUSTOM_ACTIONS).run() }.create(),
-            x = 6, y = whichRow, fillType = GridBagConstraints.BOTH
+            x = 5, y = whichRow, fillType = GridBagConstraints.BOTH
         )
     }
 }

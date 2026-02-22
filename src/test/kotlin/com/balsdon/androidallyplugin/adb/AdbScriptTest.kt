@@ -7,6 +7,7 @@ import com.balsdon.androidallyplugin.adb.parameters.SettingsScreen
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackAction
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackGranularity
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackSetting
+import com.balsdon.androidallyplugin.adb.parameters.SliderMode
 import com.balsdon.androidallyplugin.adb.parameters.TalkBackVolumeSetting
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -114,6 +115,36 @@ class AdbScriptTest {
     fun creates_a_tb4d_command_to_turn_up_volume() {
         val result = AdbScript.TalkBackSetVolume(TalkBackVolumeSetting.VOLUME_MAX).asScript()
         assertThat(result).isEqualTo("am broadcast -a com.a11y.adb.${TalkBackVolumeSetting.VOLUME_MAX.name.lowercase()}")
+    }
+
+    @Test
+    fun creates_slider_command_increase() {
+        val result = AdbScript.TalkBackSlider(SliderMode.INCREASE).asScript()
+        assertThat(result).isEqualTo("am broadcast -a com.a11y.adb.${TalkBackAction.SLIDER.name.lowercase()} -e mode increase")
+    }
+
+    @Test
+    fun creates_slider_command_decrease() {
+        val result = AdbScript.TalkBackSlider(SliderMode.DECREASE).asScript()
+        assertThat(result).isEqualTo("am broadcast -a com.a11y.adb.${TalkBackAction.SLIDER.name.lowercase()} -e mode decrease")
+    }
+
+    @Test
+    fun creates_slider_command_min() {
+        val result = AdbScript.TalkBackSlider(SliderMode.MIN).asScript()
+        assertThat(result).isEqualTo("am broadcast -a com.a11y.adb.${TalkBackAction.SLIDER.name.lowercase()} -e mode min")
+    }
+
+    @Test
+    fun creates_slider_command_max() {
+        val result = AdbScript.TalkBackSlider(SliderMode.MAX).asScript()
+        assertThat(result).isEqualTo("am broadcast -a com.a11y.adb.${TalkBackAction.SLIDER.name.lowercase()} -e mode max")
+    }
+
+    @Test
+    fun creates_slider_command_mid() {
+        val result = AdbScript.TalkBackSlider(SliderMode.MID).asScript()
+        assertThat(result).isEqualTo("am broadcast -a com.a11y.adb.${TalkBackAction.SLIDER.name.lowercase()} -e mode mid")
     }
 
     @Test
