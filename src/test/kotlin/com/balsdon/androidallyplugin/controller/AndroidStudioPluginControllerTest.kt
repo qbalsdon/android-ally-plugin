@@ -14,7 +14,6 @@ import com.intellij.openapi.util.Condition
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.messages.MessageBus
-import io.reactivex.rxjava3.schedulers.TestScheduler
 import org.jetbrains.kotlin.backend.common.push
 import org.junit.Assert
 import org.junit.Test
@@ -28,31 +27,29 @@ class AndroidStudioPluginControllerTest {
             projectFake,
             adbProviderFake
         )
+        val receivedUpdates = mutableListOf<Set<AndroidDevice>>()
+        testSubject.addConnectedDevicesListener(ConnectedDevicesListener { receivedUpdates.add(it) })
 
-        val testScheduler = TestScheduler()
         val testDevice1 = AndroidDeviceTestFake(serial = "1111")
         val testDevice2 = AndroidDeviceTestFake(serial = "2222")
-        val testObserver = testSubject.connectedDevicesNotifier.observeOn(testScheduler).test()
 
         // when devices are connected
         adbProviderFake.testDeviceConnected(testDevice1.rawIDevice)
         adbProviderFake.testDeviceConnected(testDevice2.rawIDevice)
-        testScheduler.triggerActions()
 
-        // ensure that we have the correct device list
-        assertThat(testObserver.values().size).isEqualTo(2)
-        assertThat(testObserver.values()[0].size).isEqualTo(1)
-        assertThat(testObserver.values()[1].size).isEqualTo(2)
+        // ensure that we have the correct device list (initial empty + 2 updates)
+        assertThat(receivedUpdates.size).isEqualTo(3)
+        assertThat(receivedUpdates[0].size).isEqualTo(0)
+        assertThat(receivedUpdates[1].size).isEqualTo(1)
+        assertThat(receivedUpdates[2].size).isEqualTo(2)
 
-        testObserver.values()[0].forEach { value ->
+        receivedUpdates[1].forEach { value ->
             assertThat(value.serial).isEqualTo("1111")
         }
 
-        testObserver.values()[1].forEachIndexed { index, value ->
+        receivedUpdates[2].forEachIndexed { index, value ->
             assertThat(value.serial).isEqualTo(if (index == 0) "1111" else "2222")
         }
-
-        testObserver.onComplete()
     }
 
     @Test
@@ -62,37 +59,34 @@ class AndroidStudioPluginControllerTest {
             projectFake,
             adbProviderFake
         )
+        val receivedUpdates = mutableListOf<Set<AndroidDevice>>()
+        testSubject.addConnectedDevicesListener(ConnectedDevicesListener { receivedUpdates.add(it) })
 
-        val testScheduler = TestScheduler()
         val testDevice1 = AndroidDeviceTestFake(serial = "1111")
         val testDevice2 = AndroidDeviceTestFake(serial = "2222")
-        val testObserver = testSubject.connectedDevicesNotifier.observeOn(testScheduler).test()
 
         // when devices are connected
         adbProviderFake.testDeviceConnected(testDevice1.rawIDevice)
         adbProviderFake.testDeviceConnected(testDevice2.rawIDevice)
         adbProviderFake.testDeviceConnected(testDevice2.rawIDevice)
-        testScheduler.triggerActions()
 
         // ensure that we have the correct device list
-        assertThat(testObserver.values().size).isEqualTo(3)
-        assertThat(testObserver.values()[0].size).isEqualTo(1)
-        assertThat(testObserver.values()[1].size).isEqualTo(2)
-        assertThat(testObserver.values()[2].size).isEqualTo(2)
+        assertThat(receivedUpdates.size).isEqualTo(4)
+        assertThat(receivedUpdates[1].size).isEqualTo(1)
+        assertThat(receivedUpdates[2].size).isEqualTo(2)
+        assertThat(receivedUpdates[3].size).isEqualTo(2)
 
-        testObserver.values()[0].forEach { value ->
+        receivedUpdates[1].forEach { value ->
             assertThat(value.serial).isEqualTo("1111")
         }
 
-        testObserver.values()[1].forEachIndexed { index, value ->
+        receivedUpdates[2].forEachIndexed { index, value ->
             assertThat(value.serial).isEqualTo(if (index == 0) "1111" else "2222")
         }
 
-        testObserver.values()[2].forEachIndexed { index, value ->
+        receivedUpdates[3].forEachIndexed { index, value ->
             assertThat(value.serial).isEqualTo(if (index == 0) "1111" else "2222")
         }
-
-        testObserver.onComplete()
     }
 
     @Test
@@ -102,32 +96,29 @@ class AndroidStudioPluginControllerTest {
             projectFake,
             adbProviderFake
         )
+        val receivedUpdates = mutableListOf<Set<AndroidDevice>>()
+        testSubject.addConnectedDevicesListener(ConnectedDevicesListener { receivedUpdates.add(it) })
 
-        val testScheduler = TestScheduler()
         val testDevice1 = AndroidDeviceTestFake(serial = "1111")
         val testDevice2 = AndroidDeviceTestFake(serial = "2222")
-        val testObserver = testSubject.connectedDevicesNotifier.observeOn(testScheduler).test()
 
-        // when devices are connected
+        // when devices are connected and then device changed (no list update)
         adbProviderFake.testDeviceConnected(testDevice1.rawIDevice)
         adbProviderFake.testDeviceConnected(testDevice2.rawIDevice)
         adbProviderFake.testDeviceChanged(testDevice2.rawIDevice)
-        testScheduler.triggerActions()
 
-        // ensure that we have the correct device list
-        assertThat(testObserver.values().size).isEqualTo(2)
-        assertThat(testObserver.values()[0].size).isEqualTo(1)
-        assertThat(testObserver.values()[1].size).isEqualTo(2)
+        // ensure that we have the correct device list (no extra update for deviceChanged)
+        assertThat(receivedUpdates.size).isEqualTo(3)
+        assertThat(receivedUpdates[1].size).isEqualTo(1)
+        assertThat(receivedUpdates[2].size).isEqualTo(2)
 
-        testObserver.values()[0].forEach { value ->
+        receivedUpdates[1].forEach { value ->
             assertThat(value.serial).isEqualTo("1111")
         }
 
-        testObserver.values()[1].forEachIndexed { index, value ->
+        receivedUpdates[2].forEachIndexed { index, value ->
             assertThat(value.serial).isEqualTo(if (index == 0) "1111" else "2222")
         }
-
-        testObserver.onComplete()
     }
 
     @Test
@@ -349,12 +340,12 @@ class AndroidStudioPluginControllerTest {
             projectFake,
             adbProviderFake
         )
+        val receivedUpdates = mutableListOf<Set<AndroidDevice>>()
+        testSubject.addConnectedDevicesListener(ConnectedDevicesListener { receivedUpdates.add(it) })
 
-        val testScheduler = TestScheduler()
         val testDevice1 = AndroidDeviceTestFake(serial = "1111")
         val testDevice2 = AndroidDeviceTestFake(serial = "2222")
         val testDevice3 = AndroidDeviceTestFake(serial = "3333")
-        val testObserver = testSubject.connectedDevicesNotifier.observeOn(testScheduler).test()
 
         // when devices are connected
         adbProviderFake.testDeviceConnected(testDevice1.rawIDevice)
@@ -363,24 +354,23 @@ class AndroidStudioPluginControllerTest {
 
         // when devices are removed
         adbProviderFake.testDeviceDisconnected(testDevice2.rawIDevice)
-        testScheduler.triggerActions()
 
         // ensure that we have the correct device list
-        assertThat(testObserver.values().size).isEqualTo(4)
-        assertThat(testObserver.values()[0].size).isEqualTo(1)
-        assertThat(testObserver.values()[1].size).isEqualTo(2)
-        assertThat(testObserver.values()[2].size).isEqualTo(3)
-        assertThat(testObserver.values()[3].size).isEqualTo(2)
+        assertThat(receivedUpdates.size).isEqualTo(5)
+        assertThat(receivedUpdates[1].size).isEqualTo(1)
+        assertThat(receivedUpdates[2].size).isEqualTo(2)
+        assertThat(receivedUpdates[3].size).isEqualTo(3)
+        assertThat(receivedUpdates[4].size).isEqualTo(2)
 
-        testObserver.values()[0].forEach { value ->
-            assertThat(value.serial).isEqualTo("1111") // Or any appropriate assertion
+        receivedUpdates[1].forEach { value ->
+            assertThat(value.serial).isEqualTo("1111")
         }
 
-        testObserver.values()[1].forEachIndexed { index, value ->
-            assertThat(value.serial).isEqualTo(if (index == 0) "1111" else "2222") // Or any appropriate assertion
+        receivedUpdates[2].forEachIndexed { index, value ->
+            assertThat(value.serial).isEqualTo(if (index == 0) "1111" else "2222")
         }
 
-        testObserver.values()[2].forEachIndexed { index, value ->
+        receivedUpdates[3].forEachIndexed { index, value ->
             assertThat(value.serial).isEqualTo(
                 when (index) {
                     0 -> "1111"
@@ -391,7 +381,7 @@ class AndroidStudioPluginControllerTest {
             )
         }
 
-        testObserver.values()[3].forEachIndexed { index, value ->
+        receivedUpdates[4].forEachIndexed { index, value ->
             assertThat(value.serial).isEqualTo(
                 when (index) {
                     0 -> "1111"
@@ -400,8 +390,6 @@ class AndroidStudioPluginControllerTest {
                 }
             )
         }
-
-        testObserver.onComplete()
     }
 
     private val adbProviderFake = object : AdbProvider {

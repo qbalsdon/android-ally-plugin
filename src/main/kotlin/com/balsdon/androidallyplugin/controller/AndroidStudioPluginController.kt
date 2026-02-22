@@ -16,8 +16,6 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 class AndroidStudioPluginController(
     private val project: Project,
@@ -25,10 +23,11 @@ class AndroidStudioPluginController(
 ) : Controller {
     private val groupId = "AndroidAlly"
     private val connectedDeviceList: MutableList<AndroidDevice> = mutableListOf()
-    private val androidDeviceSource = BehaviorSubject.create<Set<AndroidDevice>>()
+    private val connectedDevicesListeners = mutableListOf<ConnectedDevicesListener>()
     override var selectedDeviceSerialList: MutableSet<String> = mutableSetOf()
 
-    override val connectedDevicesNotifier: Observable<Set<AndroidDevice>> = androidDeviceSource
+    override val connectedDevices: Set<AndroidDevice>
+        get() = connectedDeviceList.toSet()
 
     /* The guidance is to avoid initialisations in constructors
          * @see [https://plugins.jetbrains.com/docs/intellij/plugin-extensions.html#implementing-extension]
@@ -42,7 +41,7 @@ class AndroidStudioPluginController(
                 if (updateDevice) {
                     connectedDeviceList.add(AndroidDevice(device))
                 }
-                androidDeviceSource.onNext(connectedDeviceList.toSet())
+                notifyConnectedDevicesListeners()
             }
 
             override fun deviceConnected(device: IDevice?) {
@@ -83,6 +82,20 @@ class AndroidStudioPluginController(
                 }
             }
         })
+    }
+
+    override fun addConnectedDevicesListener(listener: ConnectedDevicesListener) {
+        connectedDevicesListeners.add(listener)
+        listener.onConnectedDevicesChanged(connectedDevices)
+    }
+
+    override fun removeConnectedDevicesListener(listener: ConnectedDevicesListener) {
+        connectedDevicesListeners.remove(listener)
+    }
+
+    private fun notifyConnectedDevicesListeners() {
+        val devices = connectedDevices
+        connectedDevicesListeners.forEach { it.onConnectedDevicesChanged(devices) }
     }
 
     override fun showNotification(

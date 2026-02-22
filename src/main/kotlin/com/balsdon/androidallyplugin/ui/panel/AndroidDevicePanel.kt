@@ -3,6 +3,7 @@ package com.balsdon.androidallyplugin.ui.panel
 import com.balsdon.androidallyplugin.TB4DPackageName
 import com.balsdon.androidallyplugin.TB4DWebPage
 import com.balsdon.androidallyplugin.isTb4dVersionMatching
+import com.balsdon.androidallyplugin.controller.ConnectedDevicesListener
 import com.balsdon.androidallyplugin.controller.Controller
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.model.AndroidDevice
@@ -13,6 +14,7 @@ import com.balsdon.androidallyplugin.utils.addKeyAndActionListener
 import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.setMaxComponentSize
 import com.intellij.ide.BrowserUtil
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ui.JBUI
 import javax.swing.Box
 import javax.swing.BoxLayout
@@ -30,7 +32,6 @@ import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 
 class AndroidDevicePanel(private val controller: Controller) {
-    private val deviceListener = controller.connectedDevicesNotifier
     private val deviceListPanel: JPanel by lazy { JPanel().apply { layout = BoxLayout(this, BoxLayout.Y_AXIS) } }
 
     @Suppress("LongMethod")
@@ -106,9 +107,8 @@ class AndroidDevicePanel(private val controller: Controller) {
         }, BorderLayout.WEST)
 
         name = device.serial
-        device.requestData()
-            .take(1)
-            .subscribe { deviceInfo ->
+        device.requestData { deviceInfo ->
+            ApplicationManager.getApplication().invokeLater {
                 log("Device data: [${deviceInfo}]")
                 this.name = deviceInfo.name
                 nameLabel.text = deviceInfo.name
@@ -128,6 +128,7 @@ class AndroidDevicePanel(private val controller: Controller) {
                 }
                 tb4dInstallPanel(this, device, deviceInfo)
             }
+        }
     }
 
     private fun tb4dInstallPanel(parentPanel: JPanel, device: AndroidDevice, deviceInfo: BasicDeviceInfo) {
@@ -140,18 +141,17 @@ class AndroidDevicePanel(private val controller: Controller) {
                 add(JButton(localize("panel.device.label.install.tb4d")).apply {
                     addKeyAndActionListener {
                         this.isEnabled = false
-                        device
-                            .installTalkBackForDevelopers()
-                            .take(1)
-                            .subscribe {
+                        device.installTalkBackForDevelopers { success ->
+                            ApplicationManager.getApplication().invokeLater {
                                 this.isEnabled = true
-                                if (it) {
+                                if (success) {
                                     controller.showInstallTB4DSuccessNotification(device)
                                     parentPanel.remove(tb4dPanel)
                                 } else {
                                     controller.showInstallTB4DErrorNotification(device)
                                 }
                             }
+                        }
                     }
                 })
                 add(JButton(CustomIcon.INFO.create()).apply {
@@ -166,20 +166,24 @@ class AndroidDevicePanel(private val controller: Controller) {
                 add(JButton(localize("panel.device.label.update.tb4d")).apply {
                     addKeyAndActionListener {
                         this.isEnabled = false
-                        device.uninstallTalkBack4d().take(1).subscribe { uninstallOk ->
+                        device.uninstallTalkBack4d { uninstallOk ->
                             if (uninstallOk) {
-                                device.installTalkBackForDevelopers().take(1).subscribe { installOk ->
-                                    this.isEnabled = true
-                                    if (installOk) {
-                                        controller.showInstallTB4DSuccessNotification(device)
-                                        parentPanel.remove(tb4dPanel)
-                                    } else {
-                                        controller.showInstallTB4DErrorNotification(device)
+                                device.installTalkBackForDevelopers { installOk ->
+                                    ApplicationManager.getApplication().invokeLater {
+                                        this.isEnabled = true
+                                        if (installOk) {
+                                            controller.showInstallTB4DSuccessNotification(device)
+                                            parentPanel.remove(tb4dPanel)
+                                        } else {
+                                            controller.showInstallTB4DErrorNotification(device)
+                                        }
                                     }
                                 }
                             } else {
-                                this.isEnabled = true
-                                controller.showInstallTB4DErrorNotification(device)
+                                ApplicationManager.getApplication().invokeLater {
+                                    this.isEnabled = true
+                                    controller.showInstallTB4DErrorNotification(device)
+                                }
                             }
                         }
                     }
@@ -217,19 +221,24 @@ class AndroidDevicePanel(private val controller: Controller) {
         })
 
         add(deviceListPanel)
-        deviceListener
-            .distinctUntilChanged()
-            .subscribe {
+        var lastSerials: Set<String>? = null
+        val listener = ConnectedDevicesListener { devices ->
+            val serials = devices.mapTo(mutableSetOf()) { it.serial }
+            if (serials == lastSerials) return@ConnectedDevicesListener
+            lastSerials = serials
+            ApplicationManager.getApplication().invokeLater {
                 deviceListPanel.removeAll()
-                if (it.isEmpty()) {
+                if (devices.isEmpty()) {
                     deviceListPanel.add(JLabel(localize("panel.device.no_devices")))
                 } else {
-                    it.sortedWith(compareBy({ device -> device.isEmulator }, { device -> device.friendlyName }))
+                    devices.sortedWith(compareBy({ it.isEmulator }, { it.friendlyName }))
                         .forEach { device ->
                             deviceListPanel.add(createDeviceSelectionCheckBox(device))
                         }
                     deviceListPanel.addFiller()
                 }
             }
+        }
+        controller.addConnectedDevicesListener(listener)
     }
 }

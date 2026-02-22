@@ -61,10 +61,6 @@ dependencies {
     }
 
     // ----- Production dependencies -----
-    val rxJava = "3.1.8"
-    // RxJava
-    implementation("io.reactivex.rxjava3:rxjava:$rxJava")
-
     // WIP: Jewel
     // The platform version is a supported major IJP version (e.g., 232 or 233 for 2023.2 and 2023.3 respectively)
     // implementation("org.jetbrains.jewel:jewel-ide-laf-bridge-platform-specific:$jewelVersion-ij-${platformVersion}")

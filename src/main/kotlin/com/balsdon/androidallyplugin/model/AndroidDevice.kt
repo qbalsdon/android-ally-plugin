@@ -12,8 +12,6 @@ import com.balsdon.androidallyplugin.TB4DPackageName
 import com.balsdon.androidallyplugin.localize
 import com.balsdon.androidallyplugin.utils.log
 import com.balsdon.androidallyplugin.utils.onException
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -121,18 +119,15 @@ class AndroidDevice(private val rawDevice: IDevice) {
     /**
      * Opportunity for improvement here!!
      *
-     * This method runs async between the device being detected and reported back to the UI
-     * It's goal is to run all the commands on the ADB to gather info before reporting back
+     * This method runs async between the device being detected and reported back to the UI.
+     * It runs all the commands on the ADB to gather info before invoking the callback.
      * Friendly name, device sdk and api levels all run different commands and the
      * packageList can be a bit heavy.
-     *
-     * I need help making this efficient and less overwhelming for the system.
      *
      * There is no isReady function I could call or wait for.
      */
     @Suppress("MagicNumber")
-    fun requestData(): Observable<BasicDeviceInfo> {
-        val subject = BehaviorSubject.create<BasicDeviceInfo>()
+    fun requestData(callback: (BasicDeviceInfo) -> Unit) {
         val unknownDeviceLabel = localize("panel.device.label.device_unknown")
         val scope = CoroutineScope(Job() + Dispatchers.IO)
         scope.launch {
@@ -156,27 +151,24 @@ class AndroidDevice(private val rawDevice: IDevice) {
                 val hasTb4d = list.any { it.contains(TB4DPackageName) }
                 if (hasTb4d) {
                     getTb4dVersion { version ->
-                        subject.onNext(BasicDeviceInfo(name, api, sdk, isWatch, list, version))
+                        callback(BasicDeviceInfo(name, api, sdk, isWatch, list, version))
                     }
                 } else {
-                    subject.onNext(BasicDeviceInfo(name, api, sdk, isWatch, list, "none"))
+                    callback(BasicDeviceInfo(name, api, sdk, isWatch, list, "none"))
                 }
             }
         }
-        return subject
     }
 
-    fun installTalkBackForDevelopers() =
-        installAPK(if (isWatch) LatestWearApkFileName else LatestPhoneApkFileName)
+    fun installTalkBackForDevelopers(callback: (Boolean) -> Unit) =
+        installAPK(if (isWatch) LatestWearApkFileName else LatestPhoneApkFileName, callback)
 
-    fun uninstallTalkBack4d(): Observable<Boolean> {
-        val subject = BehaviorSubject.create<Boolean>()
+    fun uninstallTalkBack4d(callback: (Boolean) -> Unit) {
         CoroutineScope(Job() + Dispatchers.IO).launch {
             val result = runCatching { rawDevice.uninstallPackage(TB4DPackageName) }.getOrNull()
             val success = result.isNullOrBlank() || result.equals("Success", ignoreCase = true)
-            subject.onNext(success)
+            callback(success)
         }
-        return subject
     }
 
     fun executeScript(scriptString: String) {
@@ -190,8 +182,7 @@ class AndroidDevice(private val rawDevice: IDevice) {
      * Installs an APK by copying it out of resources and installing a temporary file
      */
     @Suppress("TooGenericExceptionCaught")
-    private fun installAPK(fileName: String): Observable<Boolean> {
-        val subject = BehaviorSubject.create<Boolean>()
+    private fun installAPK(fileName: String, callback: (Boolean) -> Unit) {
         log("Installing [$fileName] on [$friendlyName]")
         CoroutineScope(Job() + Dispatchers.IO).launch {
             val path = "/files/$fileName"
@@ -205,19 +196,18 @@ class AndroidDevice(private val rawDevice: IDevice) {
                     override fun done() {
                         log("Install was successful: $isSuccessfullyCompleted")
                         temporaryFile.delete()
-                        subject.onNext(isSuccessfullyCompleted)
+                        callback(isSuccessfullyCompleted)
                         super.done()
                     }
 
                 })
             } catch (installException: InstallException) {
-                subject.onNext(false)
+                callback(false)
                 log(installException)
             } catch (exception: Exception) {
-                subject.onNext(false)
+                callback(false)
                 log(exception)
             }
         }
-        return subject
     }
 }

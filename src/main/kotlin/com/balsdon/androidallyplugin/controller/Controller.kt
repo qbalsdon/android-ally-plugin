@@ -3,11 +3,22 @@ package com.balsdon.androidallyplugin.controller
 import com.balsdon.androidallyplugin.model.AndroidDevice
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
-import io.reactivex.rxjava3.core.Observable
+
+/**
+ * Listener for connected device set changes (e.g. device connected/disconnected).
+ * Same pattern as [com.android.ddmlib.AndroidDebugBridge.IDeviceChangeListener].
+ */
+fun interface ConnectedDevicesListener {
+    fun onConnectedDevicesChanged(devices: Set<AndroidDevice>)
+}
 
 interface Controller {
-    val connectedDevicesNotifier: Observable<Set<AndroidDevice>>
+    /** Current set of connected devices. */
+    val connectedDevices: Set<AndroidDevice>
     var selectedDeviceSerialList: MutableSet<String>
+
+    fun addConnectedDevicesListener(listener: ConnectedDevicesListener)
+    fun removeConnectedDevicesListener(listener: ConnectedDevicesListener)
 
     fun showNotification(
         title: String,
