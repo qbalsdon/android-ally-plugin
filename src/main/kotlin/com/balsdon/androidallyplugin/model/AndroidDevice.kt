@@ -156,7 +156,6 @@ class AndroidDevice(private val rawDevice: IDevice) {
                 val hasTb4d = list.any { it.contains(TB4DPackageName) }
                 if (hasTb4d) {
                     getTb4dVersion { version ->
-                        log("Quintin: $version")
                         subject.onNext(BasicDeviceInfo(name, api, sdk, isWatch, list, version))
                     }
                 } else {

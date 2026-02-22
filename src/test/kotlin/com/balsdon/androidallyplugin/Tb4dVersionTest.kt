@@ -8,7 +8,7 @@ class Tb4dVersionTest {
     @Test
     fun returns_true_when_installed_version_matches_expected() {
         assertThat(isTb4dVersionMatching(TB4DExpectedVersion)).isTrue()
-        assertThat(isTb4dVersionMatching("TfPu_release_15_1-2024_11_17_1446-TB4D_0_0_4")).isTrue()
+        assertThat(isTb4dVersionMatching("TfPu_release_14_1-2026_02_22_1447-TB4D_0_0_4")).isTrue()
     }
 
     @Test
